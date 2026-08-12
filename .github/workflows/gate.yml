@@ -79,6 +79,16 @@ jobs:
       # comment is not a carve-out worth maintaining.
       - name: No kit-native surface teaches a dead language form
         run: python3 scripts/check-dead-forms.py
+      # A form has TWO death dates: the day the spec retires it and the day
+      # the engine refuses it. Between them the REPLACEMENT does not parse,
+      # so a rule that fires early tells every author to write a file that
+      # dies at PARSE — the gate is not silent, it teaches the false. The
+      # rules for those forms are HELD, and the hold is decided by PROBING
+      # the binary, never by a flag someone must remember to flip. The step
+      # above runs before the release binary is fetched, so its hold rests
+      # on the safe default; the real measurement (and the mutation proof
+      # that the hold BITES once the engine takes the form) runs in the
+      # binary-truth step at the end, where NIKA_BIN exists.
       # clients.yaml is the SSOT of client coverage (mission nika-client-doors).
       # Offline half: schema · class-A manifests on disk · every prose count
       # claim equals the bundle-derived count (the ratchet for the 2026-07-30
@@ -214,3 +224,10 @@ jobs:
           NIKA_BIN=./nika python3 scripts/check-mcp-tools.py
           NIKA_BIN=./nika python3 scripts/check-skill-commands.py
           NIKA_BIN=./nika python3 scripts/check-clients-matrix.py
+          # The dead-form gate ran earlier with no binary in reach, so its
+          # held rules were held on the safe default rather than on a
+          # measurement. Re-run it here against the RELEASED binary — what
+          # a reader installs is what has to accept what they were taught —
+          # and prove the hold in both directions while we have it.
+          NIKA_BIN=./nika python3 scripts/tests/dead-forms-pending.test.py
+          NIKA_BIN=./nika python3 scripts/check-dead-forms.py
