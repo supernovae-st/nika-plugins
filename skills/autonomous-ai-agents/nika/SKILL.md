@@ -124,9 +124,7 @@ The artifact you are producing looks like this (W1 map form — the task
 key IS the identity):
 
 ```yaml
-nika: v1
-workflow:
-  id: daily-brief
+nika: daily-brief
 model: ollama/qwen3.5:4b
 permits:                       # absent = ZERO authority · an effect without a grant refuses
   exec: false
@@ -161,21 +159,14 @@ required; the rest earn their place. `nika mcp`'s `nika_schema` tool serves
 the machine-readable copy.
 
 ```yaml
-nika: v1                          # 1 · the language contract · exactly v1
-workflow:                         # 2 · identity
-  id: daily-brief
+nika: daily-brief                 # 1 · the mark AND the name · kebab-case
 model: ollama/qwen3.5:4b          # 3 · default model · <provider>/<name>
-types:                            # 4 · named types (PascalCase · acyclic)
-  Brief:
-    object:
-      headline: string
-      bullets: { array: string }
-inputs:                           # 5 · what the CALLER supplies
-  feed_url:
-    type: string
-config:                           # 6 · what the DEPLOYMENT supplies
+inputs:                           # 2 · what the CALLER supplies — and
+  feed_url:                       #     what a DEPLOYMENT supplies, via
+    type: string                  #     required: false + a default:
   locale:
     type: string
+    required: false
     default: "en"
 const:                            # 7 · baked into the file
   max_items: 5
@@ -218,14 +209,13 @@ outputs:                          # 13 · the return value
   brief: ${{ tasks.brief.output }}
 ```
 
-### Where a value comes from (four authorities)
+### Where a value comes from (three authorities)
 
 One question decides the block: **who supplies this?**
 
 | Block | Supplier | Read as | Use for |
 |---|---|---|---|
-| `inputs:` | the caller (`--var k=v`) | `${{ inputs.X }}` | per-run parameters |
-| `config:` | the deployment | `${{ config.X }}` | non-sensitive settings that may appear in logs |
+| `inputs:` | the caller (`--var k=v`), or the deployment via `required: false` + a `default:` | `${{ inputs.X }}` | per-run parameters · non-sensitive settings |
 | `const:` | the file itself | `${{ const.X }}` | fixed values baked in |
 | `secrets:` | a store | `${{ secrets.X }}` | credentials · masked · never inline |
 
@@ -264,7 +254,7 @@ of these on the same task:
 | `when:` | a local condition, evaluated after the gate |
 | `for_each:` | map the task over a list · `max_parallel:` caps it · `fail_fast:` aborts |
 | `retry:` | re-attempt policy |
-| `on_error:` / `on_finally:` | the failure path · cleanup that always runs |
+| `on_error:` / `after: { producer: unwind }` | the failure path · cleanup that always runs |
 | `output:` | named jq bindings, read as `${{ tasks.X.<name> }}` |
 | `returns:` | the task's typed output contract |
 | `timeout:` | quoted Go-duration · `"30s"` · `"5m"` |
@@ -280,9 +270,7 @@ introspection · media). Reach for one before writing `exec:`.
 neither, is a PARSE refusal. The child is an ordinary workflow file:
 
 ```yaml
-nika: v1
-workflow:
-  id: page-title
+nika: page-title
 inputs:
   url:
     type: string
@@ -304,9 +292,7 @@ refused (`NIKA-COMP-001`), because a call graph you cannot draw before the
 run is one you cannot bound:
 
 ```yaml
-nika: v1
-workflow:
-  id: site-report
+nika: site-report
 inputs:
   target:
     type: string

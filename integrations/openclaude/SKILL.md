@@ -62,13 +62,15 @@ comes back every week and hands you a receipt for it.
 2. Start from a skeleton, never a blank file. `nika new --from '?'` lists
    the embedded templates, `nika new --from <template> <file>.nika.yaml`
    writes one, and bare `nika try` lists complete runnable lessons.
-3. Fill it in. The envelope is `nika: v1` plus a `workflow:` object
-   carrying `id:`, plus a `tasks:` map keyed by task id. Exactly one verb
-   per task: `infer` (a model call) · `exec` (a subprocess, whose
-   `command:` is an argv list) · `invoke` (a builtin or MCP tool) ·
-   `agent` (a bounded multi-turn loop). Every value the file depends on is
-   declared in one of four authorities: `inputs:` · `config:` · `const:` ·
-   `secrets:`.
+3. Fill it in. The envelope opens with `nika: <kebab-case-name>` — that
+   one key carries both the mark and the file's name, and there is no
+   `workflow:` envelope key — plus a `tasks:` map keyed by task id.
+   Exactly one verb per task: `infer` (a model call) · `exec` (a
+   subprocess, whose `command:` is an argv list) · `invoke` (a builtin or
+   MCP tool) · `agent` (a bounded multi-turn loop). Every value the file
+   depends on is declared in one of three authorities: `inputs:` ·
+   `const:` · `secrets:` — a deployment-supplied value is an `inputs:`
+   entry with `required: false` and a `default:`.
 4. Declare the boundary. `permits:` states what the workflow may touch,
    and an ABSENT block means zero authority — any effect without a grant
    is refused at check time. `nika check <file> --infer-permits` prints

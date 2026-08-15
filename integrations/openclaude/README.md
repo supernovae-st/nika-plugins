@@ -61,8 +61,8 @@ nika init
 
 That scaffold carries the language floor, which matters because a session
 writing its first `.nika.yaml` from memory lands on retired shapes: the
-envelope is thirteen keys and closed, values are classified across
-`inputs:` · `config:` · `const:` · `secrets:` (the older catch-all blocks
+envelope is nine keys and closed, values are classified across
+`inputs:` · `const:` · `secrets:` (the older catch-all blocks
 refuse at PARSE), and an absent `permits:` block is ZERO authority rather
 than unrestricted — `NIKA-AUTH-006`. Every one of those is caught by
 `nika check` before a token is spent, and `--fix` / `--infer-permits`
