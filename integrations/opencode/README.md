@@ -55,10 +55,11 @@ An opencode session writing its first `.nika.yaml` from training data
 usually trips on the same three. Each is a refusal at `nika check`, before
 a token is spent — but knowing them saves the round trip:
 
-- **The envelope is closed.** Thirteen keys, `additionalProperties: false`;
+- **The envelope is closed.** Nine keys, `additionalProperties: false`;
   the two older catch-all value blocks are retired (`NIKA-VALUES-001` /
   `-002`). A parameter the caller supplies is an `inputs:` declaration, a
-  fixed value is a `const:` entry, deployment settings are `config:`, and
+  fixed value is a `const:` entry, a deployment setting is an `inputs:`
+  entry with `required: false` and a `default:`, and
   credentials are `secrets:` references. `nika check <file> --fix` migrates
   what it can prove.
 - **`permits:` absent means ZERO authority**, not unrestricted. An `exec:`,
