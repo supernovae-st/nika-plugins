@@ -27,6 +27,7 @@
 import importlib.util
 import io
 import pathlib
+import tempfile
 import re
 import sys
 from contextlib import redirect_stderr
@@ -70,6 +71,31 @@ def run_with(verdicts: dict):
     return rc, err.getvalue()
 
 
+
+FIXTURE = """# Control fixture · a teaching surface that names a dead block.
+#
+# `config:` is NOT pending — no probe can waive it — so it must go red in
+# BOTH worlds. Planting it here rather than reading it off the repo keeps
+# the control true whatever the tree looks like.
+The `config:` block is dead.
+"""
+
+
+def run_over_fixture(verdicts: dict):
+    """Run the gate over a one-file synthetic tree. Returns (rc, stderr)."""
+    with tempfile.TemporaryDirectory() as td:
+        root = pathlib.Path(td)
+        rel = "FIXTURE.md"
+        (root / rel).write_text(FIXTURE)
+        real_root, real_files = mod.ROOT, mod.tracked_teaching_files
+        mod.ROOT = root
+        mod.tracked_teaching_files = lambda: [rel]
+        try:
+            return run_with(verdicts)
+        finally:
+            mod.ROOT, mod.tracked_teaching_files = real_root, real_files
+
+
 ALL_KEYS = list(mod._PROBES)
 
 print("== the HOLD · engine refuses every replacement")
@@ -80,8 +106,20 @@ check("pending findings are HELD, not refused", len(held) > 0,
       "nothing was held — the mechanism never fired")
 check("the summary names the held replacements",
       "HELD, not enforced" in out_hold)
-check("a NON-pending form still refuses (control)", len(hard) > 0,
+# The control needs a NON-pending dead form to be REFUSED even when every
+# probe says "the engine rejects the replacement". It used to read that
+# form off the repo itself — which made the proof depend on the tree
+# staying dirty. It stopped being true the day the last real violation was
+# fixed, and the control failed for the one reason that is not a bug: the
+# surface got clean. A control that a repair can break is not a control.
+# So it carries its OWN fixture now, and asserts on that alone.
+rc_ctl, out_ctl = run_over_fixture({k: False for k in ALL_KEYS})
+hard_ctl = findings(out_ctl, "\u2717")
+check("a NON-pending form still refuses (control)", len(hard_ctl) > 0,
       "everything was waived — a gate that holds all is a gate that is off")
+check("the control's refusal is the one the fixture plants",
+      any("config:" in l for l in hard_ctl),
+      f"got {hard_ctl!r} — the fixture's `config:` line did not fire")
 
 print()
 print("== the BITE · engine accepts every replacement")
