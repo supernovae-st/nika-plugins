@@ -89,24 +89,46 @@ def run_with(verdicts: dict):
 
 
 
-FIXTURE = """# Control fixture · a teaching surface that names a dead block.
-#
-# `config:` is NOT pending — no probe can waive it — so it must go red in
-# BOTH worlds. Planting it here rather than reading it off the repo keeps
-# the control true whatever the tree looks like.
+# The fixture names dead forms of BOTH kinds, and ONLY on its last two
+# lines (a comment that spelled them would fire the rules too — every
+# scope here is prose). The config block is NOT pending — no probe can
+# waive it — so it must go red in BOTH worlds. The other three are the
+# PENDING forms, one per replacement key: the version-carrying head
+# (envelope-id) · the taint door (lift) · the finally hook (after-unwind).
+# Planting them here rather than reading them off the repo keeps the proof
+# true whatever the tree looks like: the day the last real violation was
+# fixed (2026-08-19 · the kit-native surfaces went clean on the nine-key
+# engine) a proof that read the tree failed for the one reason that is not
+# a bug — the surface got clean.
+FIXTURE = """# Fixture · a teaching surface that names dead forms of both kinds.
 The `config:` block is dead.
+The `nika: v1` head is dead. `declassify:` is dead. `on_finally:` is dead.
 """
+N_PENDING_IN_FIXTURE = 3   # one line, three pending forms, three rules fire
 
 
-def run_over_fixture(verdicts: dict):
-    """Run the gate over a one-file synthetic tree. Returns (rc, stderr)."""
+def synthetic_tree(root: pathlib.Path, text: str) -> list:
+    """Write a tree that carries the three ANCHOR surfaces by name (so the
+    exit code is the findings' and not the blind-sweep floor's); the
+    fixture sits in the README, the other two are inert. Returns the rels."""
+    rels = ["README.md", "integrations/fixture/README.md",
+            "skills/fixture/SKILL.md"]
+    for rel in rels:
+        (root / rel).parent.mkdir(parents=True, exist_ok=True)
+        (root / rel).write_text(text if rel == "README.md"
+                                else "# inert anchor\n")
+    return rels
+
+
+def run_over_fixture(verdicts: dict, text: str = FIXTURE):
+    """Run the gate over a synthetic tree with the probe pre-answered.
+    Returns (rc, stderr)."""
     with tempfile.TemporaryDirectory() as td:
         root = pathlib.Path(td)
-        rel = "FIXTURE.md"
-        (root / rel).write_text(FIXTURE)
+        rels = synthetic_tree(root, text)
         real_root, real_files = mod.ROOT, mod.tracked_teaching_files
         mod.ROOT = root
-        mod.tracked_teaching_files = lambda: [rel]
+        mod.tracked_teaching_files = lambda: list(rels)
         try:
             return run_with(verdicts)
         finally:
@@ -118,32 +140,31 @@ def run_over_fixture(verdicts: dict):
 # either lets this file judge both, which is what a mutation proof needs).
 ALL_KEYS = list(getattr(mod, "_PROBE_KEYS", None) or mod._PROBES)
 
+# Every world below runs over the planted fixture, never over the live
+# tree. It used to read the tree — which made the proof depend on the
+# tree staying dirty, and a proof that a repair can break is not a proof.
 print("== the HOLD · engine refuses every replacement")
-rc_hold, out_hold = run_with({k: False for k in ALL_KEYS})
+rc_hold, out_hold = run_over_fixture({k: False for k in ALL_KEYS})
 held = findings(out_hold, "⚠")
 hard = findings(out_hold, "✗")
-check("pending findings are HELD, not refused", len(held) > 0,
-      "nothing was held — the mechanism never fired")
+check("pending findings are HELD, not refused",
+      len(held) == N_PENDING_IN_FIXTURE,
+      f"{len(held)} held of {N_PENDING_IN_FIXTURE} planted — the mechanism "
+      f"did not fire once per pending form")
 check("the summary names the held replacements",
       "HELD, not enforced" in out_hold)
-# The control needs a NON-pending dead form to be REFUSED even when every
-# probe says "the engine rejects the replacement". It used to read that
-# form off the repo itself — which made the proof depend on the tree
-# staying dirty. It stopped being true the day the last real violation was
-# fixed, and the control failed for the one reason that is not a bug: the
-# surface got clean. A control that a repair can break is not a control.
-# So it carries its OWN fixture now, and asserts on that alone.
-rc_ctl, out_ctl = run_over_fixture({k: False for k in ALL_KEYS})
-hard_ctl = findings(out_ctl, "\u2717")
-check("a NON-pending form still refuses (control)", len(hard_ctl) > 0,
+check("a NON-pending form still refuses (control)", len(hard) > 0,
       "everything was waived — a gate that holds all is a gate that is off")
 check("the control's refusal is the one the fixture plants",
-      any("config:" in l for l in hard_ctl),
-      f"got {hard_ctl!r} — the fixture's `config:` line did not fire")
+      any("config:" in l for l in hard),
+      f"got {hard!r} — the fixture's `config:` line did not fire")
+check("the hold does not touch the exit code", rc_hold == 1
+      and not any("config:" in l for l in held),
+      f"rc={rc_hold} — the non-pending refusal alone must keep it red")
 
 print()
 print("== the BITE · engine accepts every replacement")
-rc_bite, out_bite = run_with({k: True for k in ALL_KEYS})
+rc_bite, out_bite = run_over_fixture({k: True for k in ALL_KEYS})
 held_b = findings(out_bite, "⚠")
 hard_b = findings(out_bite, "✗")
 check("nothing is held once the engine accepts", len(held_b) == 0,
@@ -168,18 +189,12 @@ finally:
     mod._rc = real_rc
     mod._probe_cache.clear()
 
-rc_unknown, out_unknown = run_with({k: None for k in ALL_KEYS})
+rc_unknown, out_unknown = run_over_fixture({k: None for k in ALL_KEYS})
 check("an unknown verdict HOLDS (warning is the safe side)",
-      len(findings(out_unknown, "⚠")) > 0)
+      len(findings(out_unknown, "⚠")) == N_PENDING_IN_FIXTURE)
 
 print()
 print("== the flip · a stub binary per world, zero real engine")
-# One PENDING form per replacement key, planted so the fixture is true
-# whatever the tree looks like: `\`nika: v1\`` in prose (envelope-id),
-# `declassify` (lift), `on_finally` (after-unwind).
-FLIP_FIXTURE = """# Flip fixture · a teaching surface that names three PENDING forms.
-The `nika: v1` head is dead. `declassify:` is dead. `on_finally:` is dead.
-"""
 # The stub judges `check <file>` from ONE rule: which envelope head it
 # accepts. What a real engine ALSO judges is spelled out so a probe that
 # adds a dead form to an accepted head still fails on the right binary:
@@ -218,15 +233,7 @@ def with_stub(mode: str):
         bin_path = root / "nika"
         bin_path.write_text(STUB % {"mode": mode})
         bin_path.chmod(bin_path.stat().st_mode | stat.S_IXUSR)
-        # The synthetic tree carries the three ANCHOR surfaces by name, so
-        # the exit code below is the findings' and not the blind-sweep
-        # floor's. The fixture sits in the README; the other two are inert.
-        rels = ["README.md", "integrations/flip/README.md",
-                "skills/flip/SKILL.md"]
-        for rel in rels:
-            (root / rel).parent.mkdir(parents=True, exist_ok=True)
-            (root / rel).write_text(FLIP_FIXTURE if rel == "README.md"
-                                    else "# inert anchor\n")
+        rels = synthetic_tree(root, FIXTURE)
         saved_env = os.environ.get("NIKA_BIN")
         real_root, real_files = mod.ROOT, mod.tracked_teaching_files
         os.environ["NIKA_BIN"] = str(bin_path)
@@ -256,18 +263,20 @@ check("on that binary NO pending rule is waived",
       len(findings(out_new, "⚠")) == 0,
       f"{len(findings(out_new, '⚠'))} still held — the gate is blind at the flip")
 check("on that binary every planted pending form BITES",
-      len(findings(out_new, "✗")) == 3 and rc_new == 1,
-      f"{len(findings(out_new, '✗'))} refusal(s), rc={rc_new}")
+      len(findings(out_new, "✗")) == N_PENDING_IN_FIXTURE + 1 and rc_new == 1,
+      f"{len(findings(out_new, '✗'))} refusal(s) (planted "
+      f"{N_PENDING_IN_FIXTURE} pending + 1 control), rc={rc_new}")
 
 v_old, rc_old, out_old = with_stub("old")
 check("a fourteen-key-only binary answers False for every replacement",
       all(v is False for v in v_old.values()),
       f"got {v_old!r} — the 0.108.0 hold changed")
-check("on that binary the planted forms are HELD and the summary says "
-      "the engine REFUSES",
-      len(findings(out_old, "⚠")) == 3 and rc_old == 0
+check("on that binary the planted pending forms are HELD and the summary "
+      "says the engine REFUSES",
+      len(findings(out_old, "⚠")) == N_PENDING_IN_FIXTURE
       and "asked and REFUSES" in out_old,
-      f"{len(findings(out_old, '⚠'))} held, rc={rc_old}")
+      f"{len(findings(out_old, '⚠'))} held (rc={rc_old} · red from the "
+      f"non-pending control alone)")
 
 v_none, rc_none, out_none = with_stub("none")
 check("a binary that accepts neither head answers None for every replacement",
