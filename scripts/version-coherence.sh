@@ -2,7 +2,7 @@
 # version-coherence.sh — the 0.x law across every live install surface.
 #
 # Doctrine: the whole constellation rides 0.x until the readiness-gated
-# 1.0.0 launch; ONLY the language envelope (`nika: v1`) is frozen. This
+# 1.0.0 launch; ONLY the nine-key language envelope is frozen. This
 # guard catches two drift classes:
 #   1. a satellite artifact tagging itself 1.x before the launch
 #   2. an install surface quoting a version that is not the latest release
