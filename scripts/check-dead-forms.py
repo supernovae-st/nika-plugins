@@ -47,9 +47,13 @@
 # built to survive.
 #
 # USING a dead form is banned everywhere. NAMING one is legitimate where
-# porting or history is the subject — but the language never shipped, so
-# there is nothing to port FROM and no history to narrate. The exemption
-# list is kept as machinery and is empty.
+# porting or history is the subject. That subject EXISTS: 0.108.0 shipped
+# the fourteen-key envelope publicly (2026-08-05 → 2026-08-18) and 0.109.0
+# retired it, so real files need porting. Today the only surface with that
+# subject is the engine-mirrored `nika-migration` skill, which SKIP_PREFIXES
+# already leaves to the engine's own gate; no kit-native surface has it, so
+# the exemption list is kept as machinery and is empty. See
+# MAY_NAME_THE_RETIRED.
 #
 # Exit 0 = clean. Exit 1 = a dead form is being taught (file:line printed).
 
@@ -110,6 +114,22 @@ FENCE_SCOPE, PROSE_SCOPE, ANY_SCOPE = "fence", "prose", "any"
 # replacement is probed on its own. One boolean would have been a lie:
 # measured 2026-08-12, FOUR distinct replacements are refused, and they
 # fail with three different codes.
+#
+# WHY IT WAS REPAIRED AGAIN (2026-08-19). The control itself was written
+# in the OLD envelope. Measured on a 0.109.0 build (the nine-key engine):
+# the control is refused (NIKA-PARSE-005 on `workflow:`), every probe
+# answers None, every PENDING rule is waived by default, and the summary
+# blamed a missing binary that was right there — the gate built for the
+# flip went blind AT the flip, and lied about why. The control now has
+# TWO heads (the nine-key one first, the fourteen-key one second); the
+# first the binary accepts is the base of every other probe, and a
+# binary that accepts neither is UNASKED, never a verdict. The `lift`
+# probe also moved to the spec's canonical shape (a taint lift on a
+# binding the check cannot resolve): lifting on a resolved `const:` is
+# NIKA-AUTH-011 "the door guards an empty room" on the nine-key engine,
+# which would have HELD the lift rules forever with an honest-looking
+# "the engine refuses". Proven both ways in
+# scripts/tests/dead-forms-pending.test.py (a stub binary per world).
 PENDING = "pending-engine"
 
 
@@ -118,13 +138,12 @@ def pending(pat, scope, why, replacement):
     return (pat, scope, why, (PENDING, replacement))
 
 
-# The control. Old envelope, one read, permits declared — measured green
-# on 0.108.0. Every probe below is this file plus ONE new form, so a red
-# can only come from that form.
-_CONTROL = """\
-nika: v1
-workflow:
-  id: probe-control
+# The control: one read, permits declared, in TWO envelope heads. The
+# nine-key head (0.109.0+) is tried first, the fourteen-key head (0.108.0)
+# second; the first the binary accepts is the base every other probe is
+# built on, so a red can only come from the ONE form a probe adds. A
+# binary that accepts neither head leaves every probe UNASKED (None).
+_BODY = """\
 const:
   p: "./x.txt"
 permits:
@@ -137,23 +156,61 @@ tasks:
       tool: "nika:read"
       args: { path: "${{ const.p }}" }
 """
-
+_NEW_HEAD = 'nika: probe-control\n'
 _OLD_HEAD = 'nika: v1\nworkflow:\n  id: probe-control\n'
+_CONTROL_NEW = _NEW_HEAD + _BODY
+_CONTROL_OLD = _OLD_HEAD + _BODY
 
-# replacement key -> the file that uses it. Measured 2026-08-12 · 0.108.0:
-#   envelope-id   NIKA-PARSE-003  the value is exactly `v1`
-#   lift          NIKA-PARSE-005  unknown field `lift` (task AND envelope)
-#   after-unwind  NIKA-DAG-005    `unwind` is not a predicate · set is closed
-_PROBES = {
-    "envelope-id": _CONTROL.replace(_OLD_HEAD, "nika: probe-new-envelope\n"),
-    "lift": _CONTROL + '    lift:\n      - law: taint\n'
-                       '        from: t\n        because: "probe"\n',
-    "after-unwind": _CONTROL + '  cleanup:\n    after: { t: unwind }\n'
-                               '    invoke:\n      tool: "nika:read"\n'
-                               '      args: { path: "${{ const.p }}" }\n',
-}
+# The replacement keys the PENDING rules name. Measured on both engines:
+#   0.108.0 (2026-08-12)              0.109.0 build (2026-08-19)
+#   envelope-id  NIKA-PARSE-003       accepted (it IS the nine-key head)
+#   lift         NIKA-PARSE-005       accepted in the spec-10 shape below
+#   after-unwind NIKA-DAG-005         accepted
+_PROBE_KEYS = ("envelope-id", "lift", "after-unwind")
 
 _probe_cache: dict = {}
+_base_cache: dict = {}
+
+
+def _base():
+    """(head, document) the binary ACCEPTS · None = the probe cannot see."""
+    if "base" not in _base_cache:
+        if _rc(_CONTROL_NEW) == 0:
+            _base_cache["base"] = (_NEW_HEAD, _CONTROL_NEW)
+        elif _rc(_CONTROL_OLD) == 0:
+            _base_cache["base"] = (_OLD_HEAD, _CONTROL_OLD)
+        else:
+            _base_cache["base"] = None
+    return _base_cache["base"]
+
+
+def _probe_doc(key: str):
+    """The document that tests the REPLACEMENT `key`, built on the accepted base."""
+    if key == "envelope-id":
+        return _CONTROL_NEW              # the question IS the nine-key head
+    b = _base()
+    if b is None:
+        return None
+    head, ctl = b
+    if key == "lift":
+        # The canonical shape of the spec's authored doors: a taint lift on
+        # a binding the check cannot resolve (`inputs.p`, no default). A lift
+        # on the resolved `const.p` (never tainted) is refused as
+        # NIKA-AUTH-011 "the door guards an empty room" — a probe in that
+        # shape would report "the engine refuses `lift:`" forever, and be
+        # wrong about the door, not the engine. Measured 2026-08-19.
+        return head + ('inputs:\n  p:\n    type: string\n'
+                       'permits:\n  tools: ["nika:read"]\n  fs:\n'
+                       '    read: ["./x.txt"]\n'
+                       'tasks:\n  t:\n    invoke:\n      tool: "nika:read"\n'
+                       '      args: { path: "${{ inputs.p }}" }\n'
+                       '    lift:\n      - law: taint\n        from: inputs.p\n'
+                       '        because: "probe"\n')
+    if key == "after-unwind":
+        return ctl + ('  cleanup:\n    after: { t: unwind }\n'
+                      '    invoke:\n      tool: "nika:read"\n'
+                      '      args: { path: "${{ const.p }}" }\n')
+    return None
 
 
 # NIKA_BIN is the repo's convention for "the binary this CI actually
@@ -177,23 +234,36 @@ def _rc(text: str):
             return None
 
 
+def _have_binary() -> bool:
+    import shutil
+    return pathlib.Path(_nika()).exists() or shutil.which(_nika()) is not None
+
+
 def engine_accepts(replacement):
     """True (parses) · False (refused) · None (could not ask).
 
-    The control runs first. If the OLD form is not green the probe cannot
-    see, so it answers None rather than guess — an instrument has to be
-    qualified before its verdict counts, and a gate owes that to its own
-    premise as much as a measurement does.
+    The control runs first, nine-key head then fourteen-key head. If the
+    binary accepts neither, the probe cannot see and answers None rather
+    than guess — an instrument has to be qualified before its verdict
+    counts, and a gate owes that to its own premise as much as a
+    measurement does.
     """
     if replacement in _probe_cache:
         return _probe_cache[replacement]
-    import shutil
     verdict = None
-    have = pathlib.Path(_nika()).exists() or shutil.which(_nika()) is not None
-    if have and _rc(_CONTROL) == 0:
-        verdict = _rc(_PROBES[replacement]) == 0
+    if _have_binary() and _base() is not None:
+        doc = _probe_doc(replacement)
+        verdict = None if doc is None else (_rc(doc) == 0)
     _probe_cache[replacement] = verdict
     return verdict
+
+
+def probe_status() -> str:
+    """Why a probe answered None: `no-binary` · `unqualified` (the binary
+    runs but accepts neither control head) · `ok` (verdicts are real)."""
+    if not _have_binary():
+        return "no-binary"
+    return "ok" if _base() is not None else "unqualified"
 
 
 # (regex, scope, why[, PENDING]) — scope decides WHERE the literal counts
@@ -234,8 +304,8 @@ RULES = [
      "(`- law: data-as-code` · `because:`)", "lift"),
 
     # ---- the freeze · envelope keys · only inside a nika document -----
-    # PENDING · dissolving this block requires `nika: <id>`, which the
-    # engine refuses today. See engine_takes_new_envelope().
+    # PENDING · dissolving this block requires `nika: <id>`, which 0.108.0
+    # refused and 0.109.0 takes — probed, never declared (engine_accepts).
     pending(re.compile(r"^workflow:"), FENCE_SCOPE,
             "the `workflow:` envelope is dead — `nika: <id>` IS the mark and "
             "the name (an `invoke:` target keeps its own `workflow:` key)",
@@ -257,8 +327,9 @@ RULES = [
      "the policy envelope block is dead"),
     (re.compile(r"^\s*(?:prefer|optimize):"), FENCE_SCOPE,
      "prefer:/optimize: died with the policy: block"),
-    # PENDING · the replacement IS the form the engine rejects. This is the
-    # rule the two-arm probe was written for.
+    # PENDING · the replacement IS the nine-key head (refused on 0.108.0,
+    # the base itself on 0.109.0). This is the rule the probe was written
+    # for.
     pending(re.compile(r"^nika:\s*[\"']?v?[0-9]"), FENCE_SCOPE,
             "`nika:` carries the workflow ID, never a version — "
             "`nika: my-flow-id`", "envelope-id"),
@@ -287,8 +358,13 @@ RULES = [
      "dead edge form — with: / after:"),
 ]
 
-# Machinery kept, deliberately empty: the language never shipped, so no
-# surface has porting or history as its subject.
+# Machinery kept, deliberately empty. The fourteen-key language DID ship
+# (0.108.0), so a surface whose SUBJECT is porting it may name the retired
+# forms in prose — today that surface is the engine-mirrored
+# `nika-migration` skill under .agents/plugins/, proven upstream and
+# skipped here by SKIP_PREFIXES; no kit-native surface has that subject.
+# The day one does, its path goes here (prose scope only · a fence that
+# USES a dead form is red everywhere).
 MAY_NAME_THE_RETIRED: set = set()
 
 
@@ -389,9 +465,16 @@ def main() -> int:
         rows = " · ".join(f"{k} ×{v}" for k, v in sorted(held.items()))
         unasked = [k for k in held if engine_accepts(k) is None]
         if unasked:
-            why = (f"the replacement could not be probed — no runnable "
-                   f"`{_nika()}` (set NIKA_BIN). Holding is the safe side, "
-                   f"but this hold is a DEFAULT, not a measurement")
+            # Two ways to be unasked, and they are NOT the same claim.
+            if probe_status() == "no-binary":
+                cause = f"no runnable `{_nika()}` (set NIKA_BIN)"
+            else:
+                cause = (f"`{_nika()}` runs but accepts NEITHER control "
+                         f"head (nine-key nor fourteen-key envelope), so "
+                         f"the probe is unqualified")
+            why = (f"the replacement could not be probed — {cause}. "
+                   f"Holding is the safe side, but this hold is a "
+                   f"DEFAULT, not a measurement")
         else:
             why = ("the engine was asked and REFUSES the replacement they "
                    "advise, so migrating now would teach a form `nika "

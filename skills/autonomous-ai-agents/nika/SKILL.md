@@ -197,7 +197,7 @@ tasks:                            # 8 · the work
       raw: ${{ tasks.fetch.output }}
       n: ${{ const.max_items }}
       lang: ${{ inputs.locale }}
-    returns: Brief
+    returns: string
     infer:
       max_tokens: 400
       prompt: |
@@ -252,10 +252,10 @@ of these on the same task:
 | `for_each:` | map the task over a list · `max_parallel:` caps it · `fail_fast:` aborts |
 | `retry:` | re-attempt policy |
 | `on_error:` / `after: { producer: unwind }` | the failure path · cleanup that always runs |
-| `output:` | named jq bindings, read as `${{ tasks.X.<name> }}` |
+| `extract:` | named jq bindings, read as `${{ tasks.X.<name> }}` |
 | `returns:` | the task's typed output contract |
 | `timeout:` | quoted Go-duration · `"30s"` · `"5m"` |
-| `inert:` / `declassify:` | the two audited doors: data-as-code, and taint |
+| `lift:` | the one authored door · each entry names its law (`- law: taint` with `from:` · `- law: data-as-code`) and its `because:` |
 
 `nika catalog --tools` lists the builtins an `invoke` reaches without any
 MCP server — 28 of them across six families (core · file · data · network ·
