@@ -171,13 +171,20 @@ jobs:
                 f"(synced at engine {manifest['synced_at_engine_sha'][:9]})")
           EOF
       # Upstream MOVING is a different signal from the kit being corrupted:
-      # on the daily cron it fails loud (re-sync is due — bump the pins from
-      # engine main); on push/PR it only warns, so an author's unrelated PR
-      # never inherits a red gate from engine motion.
-      - name: Upstream drift (engine main moved past the pins?)
+      # on the daily cron it fails loud (re-sync is due — a newer engine
+      # release exists); on push/PR it only warns, so an author's unrelated
+      # PR never inherits a red gate from engine motion.
+      # The mirror follows the engine at mirror.json.engine_ref — the RELEASED
+      # tag (2026-08-18: mirrored from main it taught the 0.109 language to
+      # 0.108.0 installs). Two questions, two signals: (a) do the bytes match
+      # the ref they claim (a tag never moves, so a difference is corruption
+      # · hard RED) · (b) is there a NEWER release than the ref (re-sync
+      # signal · warns on push/PR, fails on the daily cron).
+      - name: Upstream drift (the bytes match engine_ref · a newer release exists?)
         run: |
           set -euo pipefail
-          base="https://raw.githubusercontent.com/supernovae-st/nika/main"
+          ref="$(python3 -c 'import json; print(json.load(open("mirror.json"))["engine_ref"])')"
+          base="https://raw.githubusercontent.com/supernovae-st/nika/${ref}"
           drifted=0
           # path=local file · source (optional)=where it lives in the ENGINE
           # tree when the two differ (e.g. the root marketplace logo pinned
@@ -187,15 +194,20 @@ jobs:
             curl -fsSL "${base}/${src}" -o /tmp/upstream
             if ! diff -q /tmp/upstream "$f" > /dev/null; then
               drifted=1
-              echo "::warning::${f} differs from engine main (${src}) — upstream moved, re-sync + re-pin due"
+              echo "::error::${f} differs from engine ${ref} (${src}) — a tag never moves: the mirror is corrupt, re-sync at ${ref}"
               diff -u "$f" /tmp/upstream | head -40 || true
             fi
           done < <(python3 -c 'import json; [print(e["path"], e.get("source", e["path"]), sep="\t") for e in json.load(open("mirror.json"))["entries"] if e["class"]=="engine-mirror"]')
-          if [ "$drifted" = "1" ] && [ "${{ github.event_name }}" = "schedule" ]; then
-            echo "::error::engine main moved past the mirror pins — run the re-sync"
-            exit 1
+          if [ "$drifted" = "1" ]; then exit 1; fi
+          echo "mirror bytes match engine ${ref}"
+          latest="$(curl -fsSL -o /dev/null -w '%{url_effective}' https://github.com/supernovae-st/nika/releases/latest | sed 's|.*/tag/||')"
+          if [ "$latest" != "$ref" ]; then
+            msg="engine released ${latest} and the mirror follows ${ref} — run scripts/resync-mirror.py --ref ${latest} (release-heal opens the PR daily)"
+            if [ "${{ github.event_name }}" = "schedule" ]; then echo "::error::${msg}"; exit 1; fi
+            echo "::warning::${msg}"
+          else
+            echo "the mirror follows the newest release (${ref})"
           fi
-          [ "$drifted" = "0" ] && echo "mirror current with engine main" || true
       # Additions are a THIRD signal (drift moves pinned bytes · corruption
       # breaks pins · an ADDITION is invisible to both): the engine bundle
       # scope must hold no file the mirror does not pin. Same severity split

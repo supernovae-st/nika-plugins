@@ -20,20 +20,23 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: The mirror follows engine main
+      - name: The mirror follows the newest engine release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          python3 scripts/resync-mirror.py
+          latest="$(curl -fsSL -o /dev/null -w '%{url_effective}' https://github.com/supernovae-st/nika/releases/latest | sed 's|.*/tag/||')"
+          ref="$(python3 -c 'import json; print(json.load(open("mirror.json"))["engine_ref"])')"
+          if [ "$latest" = "$ref" ]; then echo "mirror follows the newest release (${ref}) — nothing to heal"; exit 0; fi
+          python3 scripts/resync-mirror.py --ref "$latest"
           git add -A
           if git diff --cached --quiet; then echo "mirror current — nothing to heal"; exit 0; fi
           git config user.name "nika-release[bot]"
           git config user.email "nika@supernovae.studio"
           git checkout -B bot/mirror-resync
-          git commit -m "sync(mirror): the mirror follows engine main (release-heal)"
+          git commit -m "sync(mirror): the mirror follows the engine release ${latest} (release-heal)"
           git push -f origin bot/mirror-resync
           gh pr create --head bot/mirror-resync \
-            --title "sync(mirror): the mirror follows engine main" \
-            --body "Automated resync (release-heal). The manifests/pins gate judges; merge on green." \
+            --title "sync(mirror): the mirror follows the engine release ${latest}" \
+            --body "Automated resync (release-heal): engine released ${latest}; the mirror moves from ${ref} to it. The manifests/pins gate judges against that same released binary; merge on green." \
             2>/dev/null || echo "PR already open — refreshed"

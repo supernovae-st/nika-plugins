@@ -27,7 +27,7 @@ sub-second pure-shell pipelines with zero AI and zero HTTP (a
 | a step / function | one task, exactly one verb |
 | `curl` / `wget` / `fetch()` helper | `invoke:` `tool: "nika:fetch"` — **for an API, set `mode: raw` or `mode: jq`** (the default `markdown` mode is for pages and escapes JSON bodies) |
 | `curl … \| jq` in one breath | ONE fetch task: `mode: jq` + `jq: '<expression>'` — the shape rides the fetch |
-| `jq` / `sed` on JSON | `nika:jq` (arg name is `expression`), or an `extract:` binding |
+| `jq` / `sed` on JSON | `nika:jq` (arg name is `expression`), or an `output:` binding |
 | `cat` / `cp` / `mkdir` / `tee` | `nika:read` / `nika:write` (`create_dirs: true`) |
 | in-place file edits | `nika:edit` |
 | the LLM call (SDK, `curl` to an API) | `infer:` with `prompt`, `schema?`, `max_tokens` |
@@ -37,7 +37,7 @@ sub-second pure-shell pipelines with zero AI and zero HTTP (a
 | `if <condition>` | a `when:` gate |
 | `$1` positional parameters | an `inputs:` declaration · supplied with `--var key=value` |
 | a value baked into the script | a `const:` entry · read as `${{ const.x }}` |
-| `$SOME_SETTING` (non-sensitive) | an `inputs:` declaration with `required: false` and a `default:` · read as `${{ inputs.KEY }}` |
+| `$SOME_SETTING` (non-sensitive) | a `config:` declaration · read as `${{ config.KEY }}` |
 | an env var a CHILD process must see | `permits: { env: [NAME] }` — a child inherits nothing |
 | `API_KEY=…` literals | `${{ secrets.X }}` + `secrets:` block with its `egress:` sink |
 | step B reads step A's output | `with: { a: "${{ tasks.A.output }}" }` on B — the binding IS the edge — then `${{ with.a }}` in the body |
@@ -87,9 +87,9 @@ preserving and idempotent.
 |---|---|---|
 | `vars:` entry, caller-supplied | `inputs:` (typed · `required:` · `default:`) | `--fix` |
 | `vars:` entry, fixed value | `const:` | `--fix` |
-| `workflow:` envelope key (scalar or object) | `nika: <kebab-case-name>` + `tasks:` map | `--fix` |
+| scalar `workflow:` + `tasks:` list | `workflow:` object + `tasks:` map | `--fix` |
 | `after: { t: succeeded / failed }` | `success` / `failure` | `--fix` |
-| `env:` entry, non-sensitive | `inputs:` (typed · `required: false` · `default:`) | **yours** |
+| `env:` entry, non-sensitive | `config:` (typed) | **yours** |
 | `env:` entry, a credential | `secrets:` (a store reference) | **yours** |
 | `env:` name a child must see | `permits: { env: [NAME] }` | **yours** |
 | no `permits:` block, any effect | the inferred block (`--infer-permits`) | **yours** |

@@ -23,12 +23,11 @@ parity is the proof.
    `# SLOT:` markers.
 3. **Map native-first.** The order is `invoke: nika:*` →
    `invoke: mcp:<server>/<tool>` → `exec:` last. HTTP → `nika:fetch` ·
-   JSON shaping → `nika:jq` or an `extract:` binding · file plumbing →
+   JSON shaping → `nika:jq` or an `output:` binding · file plumbing →
    `nika:read`/`nika:write` · LLM calls → `infer:` with `max_tokens` ·
    loops → `for_each:` · conditionals → `when:` · caller parameters →
    an `inputs:` declaration · baked values → `const:` · non-sensitive
-   settings → an `inputs:` entry with `required: false` and a
-   `default:` · credentials → `${{ secrets.X }}`
+   settings → `config:` · credentials → `${{ secrets.X }}`
    declared with an `egress:` sink. Every task that reads another's
    output binds it — `with: { alias: "${{ tasks.A.output }}" }` (the
    binding IS the edge) — and reads `${{ with.alias }}`; pure ordering
