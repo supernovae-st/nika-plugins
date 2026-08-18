@@ -259,7 +259,8 @@ def check_upstream(findings_warn):
     repo = manifest["engine_repo"]
     known = {e.get("source", e["path"]) for e in manifest["entries"]
              if e["class"] == "engine-mirror"}
-    url = f"https://api.github.com/repos/{repo}/git/trees/main?recursive=1"
+    ref = manifest.get("engine_ref", "main")  # the released tag the mirror follows
+    url = f"https://api.github.com/repos/{repo}/git/trees/{ref}?recursive=1"
     try:
         with urllib.request.urlopen(url, timeout=30) as resp:
             tree = json.loads(resp.read())["tree"]

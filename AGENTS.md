@@ -15,16 +15,21 @@ Every content file belongs to one of two classes, declared in
 `mirror.json` (the SSOT the gate loops over — never a hardcoded list):
 
 - **engine-mirror** (`.agents/plugins/nika/**`) — a **byte-identical
-  mirror of the engine repo** (`supernovae-st/nika`, same paths, `main`),
-  pinned by sha256 at the engine SHA it was proven against. Found a
-  wording bug in the authoring `SKILL.md`? **Fix it in the engine repo**,
-  merge there, then re-sync the bytes AND the pins here. A hand-edit on
-  this side is a pin mismatch → hard RED (corruption signal). Engine main
-  moving past the pins is a WARNING on PRs and a loud failure on the
-  daily cron (re-sync signal) — two different signals, never conflated.
+  mirror of the engine repo** (`supernovae-st/nika`, same paths) at the
+  **released tag** `mirror.json.engine_ref` (the stable train · what
+  `brew install` gives a user), pinned by sha256 at the engine SHA it was
+  proven against — never `main`: the kit is teaching, and mirrored from
+  main it taught the 0.109 language to 0.108.0 installs (2026-08-18).
+  Found a wording bug in the authoring `SKILL.md`? **Fix it in the engine
+  repo**, merge there; it reaches the marketplace with the next release
+  (the release-heal moves the mirror to each new tag). A hand-edit on
+  this side, or bytes that differ from the tag, is a pin mismatch → hard
+  RED (corruption signal). A newer engine release than `engine_ref` is a
+  WARNING on PRs and a loud failure on the daily cron (re-sync signal) —
+  two different signals, never conflated.
 - **kit-native** (`skills/**` — the Hermes delegation skill ·
   `integrations/**` — the per-client wiring packs) — owned HERE, not
-  mirrored. Its proof is the released binary: the gate asserts every
+  mirrored. Its proof is the SAME released binary the mirror follows: the gate asserts every
   `nika <subcommand>` it teaches ships in the latest release
   (`scripts/check-skill-commands.py`) and every advertised `nika_*` tool
   is served over the wire (`scripts/check-mcp-tools.py`).
