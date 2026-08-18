@@ -151,16 +151,15 @@ One file, plain YAML: tasks, a named wire (the binding IS the edge —
 `brief` runs after `fetch` because it reads it), a bounded model step,
 a declared output. That file is what gets checked, run, diffed and reused.
 
-### The envelope — thirteen keys, no more
+### The envelope — nine keys, no more
 
 `additionalProperties: false` at the top level: a key outside this list is
-a PARSE refusal, not a warning. Only `nika:`, `workflow:` and `tasks:` are
-required; the rest earn their place. `nika mcp`'s `nika_schema` tool serves
-the machine-readable copy.
+a PARSE refusal, not a warning. Only `nika:` and `tasks:` are required; the
+rest earn their place. `nika mcp`'s `nika_schema` tool serves the
+machine-readable copy.
 
 ```yaml
 nika: daily-brief                 # 1 · the mark AND the name · kebab-case
-model: ollama/qwen3.5:4b          # 3 · default model · <provider>/<name>
 inputs:                           # 2 · what the CALLER supplies — and
   feed_url:                       #     what a DEPLOYMENT supplies, via
     type: string                  #     required: false + a default:
@@ -168,26 +167,24 @@ inputs:                           # 2 · what the CALLER supplies — and
     type: string
     required: false
     default: "en"
-const:                            # 7 · baked into the file
+model: ollama/qwen3.5:4b          # 3 · default model · <provider>/<name>
+const:                            # 4 · baked into the file
   max_items: 5
-secrets:                          # 8 · store references · never literals
+secrets:                          # 5 · store references · never literals
   FEED_TOKEN:
     source: env
     key: FEED_TOKEN
     egress:                       # the sanctioned sinks · absent = default-deny
       - { to: "nika:fetch" }
       - { to: "infer" }
-permits:                          # 9 · absent = ZERO authority
+permits:                          # 6 · absent = ZERO authority
   net:
     http: ["hn.algolia.com"]
   tools: ["nika:fetch"]
-run:                              # 10 · entropy + clock, declared not ambient
+run:                              # 7 · entropy + clock, declared not ambient
   entropy: { seeded: 42 }
   clock: virtual
-policy:                           # 11 · named law, judged at check
-  require:
-    human_gate_before: ["exec"]
-tasks:                            # 12 · the work
+tasks:                            # 8 · the work
   fetch:
     timeout: "30s"
     invoke:
@@ -199,13 +196,13 @@ tasks:                            # 12 · the work
     with:
       raw: ${{ tasks.fetch.output }}
       n: ${{ const.max_items }}
-      lang: ${{ config.locale }}
+      lang: ${{ inputs.locale }}
     returns: Brief
     infer:
       max_tokens: 400
       prompt: |
         In ${{ with.lang }}, give ${{ with.n }} bullets: ${{ with.raw }}
-outputs:                          # 13 · the return value
+outputs:                          # 9 · the return value
   brief: ${{ tasks.brief.output }}
 ```
 
