@@ -221,12 +221,11 @@ and a `default:`.
 | `when:` | a CEL boolean gate (`size()` is the only function) |
 | `for_each:` | fan out over a collection · the body reads the current element as `${{ item }}` and its position as `${{ index }}` (loop-scoped locals, NOT a fourth value authority · `item.field` reaches into an object element) · the task's `.output` is the ARRAY of per-iteration outputs, in input order · `max_parallel:` caps concurrency (1 = sequential) · `fail_fast:` aborts on the first error (default true) |
 | `retry:` | `max_attempts` · `backoff_ms` · `backoff_strategy` · `backoff_max_ms` · `jitter` · `on_codes` — transient failures only; a wrong prompt never heals by retry |
-| `on_error:` | exactly ONE action — `recover:` · `skip:` (preserves the original error at `tasks.X.error`) · `fail_workflow:` — with an optional `on_codes:` filter |
+| `on_error:` | exactly ONE action — `recover:` · `skip:` (preserves the original error at `tasks.X.error`). Failing is the default; `fail_workflow:` is dead |
 | `extract:` | named jq bindings → `${{ tasks.X.<name> }}` |
 | `returns:` | the task's output contract — exclusive with a verb-level `schema:` (`NIKA-TYPE-003`) |
 | `timeout:` | a quoted Go duration |
-| `inert:` | declares a `nika:fetch` payload code-bearing but never loaded — the non-empty string IS the justification. Lifts the data-as-code sink law ONLY, never the net boundary |
-| `declassify:` | the one door through the permit-parameterization taint · raises ONE binding from untrusted to trusted, check-visible and receipt-recorded. Never a permit bypass — the value is still matched against the declared boundary |
+| `lift:` | the one authored door · `law: taint` (`from:` a binding) or `law: data-as-code` (`because:` the justification). Never a permit bypass. `declassify:` · `inert:` · `to: trusted` are dead |
 
 ## The one way (take the default, and the checker goes quiet)
 
@@ -472,22 +471,24 @@ a mandatory run-time re-gate; escaping that re-gate is SEC-004. The
 diagnostic talks about the capability boundary, so the reflex is to
 widen `permits:` — **that reflex is the trap, and it dead-ends.**
 
-**The door is `declassify:`** — a task-level key, the ONLY sanctioned
-lift (spec 10 · NEP-0004 law 5):
+**The door is `lift:`** — a task-level key, the ONLY sanctioned
+raise (spec 10 · NEP-0004 law 5). `declassify:` · `inert:` ·
+`to: trusted` died with the nine-key envelope:
 
 ```yaml
 tasks:
   load:
     invoke: { tool: nika:read, args: { path: "${{ inputs.p }}" } }
-    declassify:
-      - from: inputs.p          # ONE binding
-        to: trusted             # the one raise v1 knows
+    lift:
+      - law: taint
+        from: inputs.p          # ONE binding
         because: "deployment-controlled path, reviewed at release time"
 ```
 
-All three fields are required and `because:` must be non-empty — it is
-recorded in the receipt with the taint path and the value digest. It
-lifts the TAINT law only: the value is still matched against the
+`law:` is a closed enum (`taint` · `data-as-code`). `taint` requires
+`from:` (and forbids it elsewhere). `because:` must be non-empty — it
+is recorded in the receipt with the taint path and the value digest.
+It lifts the named law only: the value is still matched against the
 declared boundary, so this is never a permit bypass.
 
 **Why the staging recipe is the wrong first move.** Landing the value
@@ -496,7 +497,7 @@ it is — until the CLI has to READ that file back. That read adds
 `fs.read`, which completes the lethal trifecta, which makes a dominating
 human gate mandatory. Measured in a real session: the chain runs shim →
 `fs.read` → trifecta → mandatory gate → a gate that cannot be answered
-(see the run notes on `nika:prompt`). Reach for `declassify:` first.
+(see the run notes on `nika:prompt`). Reach for `lift:` first.
 Staging remains correct where the value genuinely must not touch a
 command line AND nothing reads the file back inside the same workflow.
 
