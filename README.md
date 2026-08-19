@@ -11,7 +11,7 @@
   <a href="https://github.com/supernovae-st/nika-plugins/actions/workflows/gate.yml"><img src="https://github.com/supernovae-st/nika-plugins/actions/workflows/gate.yml/badge.svg" alt="gate"></a>
   <a href="https://github.com/supernovae-st/nika/releases/latest"><img src="https://img.shields.io/github/v/release/supernovae-st/nika?label=engine&color=ff7a3c" alt="engine release"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/supernovae-st/nika-plugins?color=5b8cff&label=license" alt="license"></a>
-  <a href="https://skills.sh/supernovae-st/nika-plugins"><img src="https://skills.sh/b/supernovae-st/nika-plugins" alt="skills.sh"></a>
+  <a href="https://skills.sh/supernovae-st/nika-agents"><img src="https://skills.sh/b/supernovae-st/nika-plugins" alt="skills.sh"></a>
 </p>
 
 <h1 align="center">One Add · your agent learns the language</h1>
@@ -107,7 +107,7 @@ npx skills add supernovae-st/nika-plugins
 ```
 
 <sub>The kit-native skill pack, e2e-proven and listed live on
-<a href="https://skills.sh/supernovae-st/nika-plugins">skills.sh</a>.</sub>
+<a href="https://skills.sh/supernovae-st/nika-agents">skills.sh</a>.</sub>
 
 ### Cursor
 
@@ -222,11 +222,11 @@ a deterministic receipt:
 | **Grok Build** | `grok inspect --json` lists every component with origins · `grok mcp doctor --json`: handshake OK, 9 tools ([fiche](integrations/grok-build/)) |
 | **Kimi Code** | a stream-json run emits `tool_calls: mcp__nika__nika_canon` · the oracle loaded AND called ([fiche](integrations/kimi-code/)) |
 | **opencode** | `opencode mcp list` → `✓ nika connected` ([fiche](integrations/opencode/)) |
-| **Hermes / skills.sh** | e2e-proven skill pack, listed live ([skills.sh](https://skills.sh/supernovae-st/nika-plugins)) |
+| **Hermes / skills.sh** | e2e-proven skill pack, listed live ([skills.sh](https://skills.sh/supernovae-st/nika-agents)) |
 | **Any MCP client** | the containerized oracle answers `initialize` + `tools/list` on every CI run ([integrations/mcp](integrations/mcp/)) |
 
 <sub>Listed across the ecosystem:
-<a href="https://skills.sh/supernovae-st/nika-plugins">skills.sh</a> ·
+<a href="https://skills.sh/supernovae-st/nika-agents">skills.sh</a> ·
 <a href="https://claudepluginhub.com">ClaudePluginHub</a> ·
 <a href="https://github.com/davila7/claude-code-templates">aitmpl.com</a> ·
 <a href="https://crates.io/crates/nika">crates.io</a> ·
