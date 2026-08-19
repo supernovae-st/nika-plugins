@@ -418,7 +418,11 @@ live.
 1. NEVER run an unchecked workflow — `nika check` first, every time.
 2. ALWAYS pass `--max-cost-usd` when the model is a paid cloud model.
 3. Prefer local models (`ollama/...`) or `mock/echo` for drafts; escalate to
-   cloud models only when needed.
+   cloud models only when needed. Probe every new builtin on `mock/echo`
+   *before* wiring it after a paid infer. The model extracts facts
+   (`type: integer` for numeric enums); `nika:jq` or `nika:decide` is
+   the law — do not pay a second infer to pick a level
+   (`nika try 13-extract-then-law`).
 4. Report the final run card honestly: status, actual cost, trace path,
    `trace verify` verdict.
 5. One workflow file per delegated task; keep files in the user's repo so
