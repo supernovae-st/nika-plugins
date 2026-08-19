@@ -5,6 +5,12 @@ Versions move together across all manifests (the mirror gate pins it).
 
 ## Unreleased
 
+Authoring skill: the one authored door is `lift:` (a list of `{law,
+from?, because}`). The 0.109.2 marketplace copy still taught the dead
+`declassify:` / `inert:` spellings; 0.109.2 `nika check` already
+PARSE-refuses them (`NIKA-PARSE-005`). `on_error` has two modes
+(`recover` · `skip`); failing is the default.
+
 ## 0.109.2 — 2026-08-19
 
 Lockstep on the engine wave.
