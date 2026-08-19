@@ -51,6 +51,7 @@ four are the decisions that cost rounds when guessed instead of copied.
 | fetch a URL and shape what comes back | `05-fetch-chain` |
 | open-ended work, step count unknown up front | `06-code-review` |
 | the same task for every item of a collection | `07-for-each-locales` |
+| extract facts, then score them without a second infer | `13-extract-then-law` |
 | land a typed artifact on disk | `t1-meeting-actions` |
 | poll something, act only when a condition holds | `t1-price-watch` |
 | rows in, chart and report out, zero model calls | `t2-csv-chart-report` |
@@ -93,9 +94,12 @@ the `.nika.yaml` extension. `nika new <slug>` makes one yours;
    the diagnostics — they name the exact task, reference and fix.
    Unknown code? `nika explain NIKA-XXXX`.
 5. Repeat 3–4 until clean. **Never hand a file to the human that does
-   not pass `nika check --native-strict`.** That flag is the bar, not an
-   extra: the hooks that check on your behalf and the gate in front of
-   `nika run` both use it, so a file that fails it cannot be run at all.
+   not pass `nika check --native-strict` AND `paid_ready: true`.**
+   `--native-strict` is the run-gate bar. `.paid_ready` is the paid-infer
+   bar (`nika check --json | jq .paid_ready`). A green exit with leftover
+   `infer-as-law` / `digit-string-enum` / `glob-readme` / `jq-as-map` /
+   `inspect-unwired` is legal, not the one-way. The MCP `nika_check`
+   oracle fails that family by default.
    The exec ledger does NOT buy an exemption (measured: a `.py` wrapper
    fails with a complete ledger) — it documents intent for a reviewer.
    What passes is an `exec:` of a real tool (`git`, `docker`); what
@@ -268,8 +272,28 @@ otherwise, in this order:
    an ordinary task you name, declaring `after: { producer: unwind }`.
    Swallowing an error is never the plan.
 10. **Prove it before handing it over.** `nika check` clean, then
-    `--native-strict`, then a golden pin if the workflow is hermetic.
-    Only then does the human get the run line.
+    `--native-strict`, then `paid_ready: true`, then a golden pin if
+    the workflow is hermetic. Only then does the human get the run line.
+
+## Paid infer (the order that is cheaper than tokens)
+
+1. `nika check --json --native-strict` until `clean` and `paid_ready`
+   are both true.
+2. Probe every new builtin in a one-task file on `mock/echo` *before*
+   wiring it after a paid `infer:`.
+3. Numeric facts are `type: integer` with a numeric `enum`.
+4. Pin markdown globs (`exclude: "**/README.md"`).
+5. **The model extracts facts. `nika:jq` or `nika:decide` is the law.**
+   Shape: `13-extract-then-law`.
+6. Then swap `model:` off `mock/`.
+
+## After valid: is there a better one-way? (not optional)
+
+A green check is legal, not best. `.paid_ready` is the boolean for
+"may this file leave mock?". Recurse on the file as an environment
+(Zhang/Kraska/Khattab 2026 · arXiv:2512.24601): two example reads,
+decompose (`for_each` / a child workflow), verify with jq not a second
+infer. Handoff only when `paid_ready` is true.
 
 ## Cost honesty (never hide unknown spend)
 
