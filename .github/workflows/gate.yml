@@ -138,6 +138,10 @@ jobs:
               sys.exit("plugin versions diverge — bump them together")
           print(f"one version everywhere: {uniq.pop()}")
           EOF
+      - name: The release mirror aligns kit-native marketplace versions
+        run: |
+          python3 scripts/tests/resync-mirror.test.py
+          python3 scripts/tests/skill-commands.test.py
       # mirror.json is the drift CONTRACT (two classes):
       #   engine-mirror — byte-identical projection of supernovae-st/nika,
       #     pinned by sha256 at the engine SHA it was proven against.

@@ -72,8 +72,10 @@ def shipped_subcommands(nika: str) -> set:
             m = re.match(r"\s{2,}([a-z][a-z0-9-]*)\b", line)
             if m:
                 cmds.add(m.group(1))
-    if not cmds:
-        raise SystemExit("check-skill-commands: could not parse `nika --help`")
+    # The 0.115 first-contact help is intentionally a five-line guide rather
+    # than clap's full `Commands:` table. An empty parse therefore means
+    # "probe every taught door", not "the binary has no commands". The
+    # per-command `nika <sub> --help` probe below stays fail-closed.
     return cmds
 
 
