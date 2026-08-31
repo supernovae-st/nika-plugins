@@ -48,6 +48,40 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 RAW = "https://raw.githubusercontent.com/{repo}/{ref}/{path}"
 API = "https://api.github.com/repos/{repo}/commits/{ref}"
 TAG_RE = re.compile(r"^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$")
+MARKETPLACE_MANIFESTS = (
+    ".claude-plugin/marketplace.json",
+    ".cursor-plugin/marketplace.json",
+)
+
+
+def align_marketplace_versions(version: str, dry: bool = False) -> int:
+    """Keep the kit-native marketplace manifests on the mirrored train.
+
+    The plugin manifests themselves are engine-mirror files. The two root
+    marketplace manifests are owned here, so copying the mirror cannot update
+    them. Missing this second half produced a permanently red release-heal PR
+    at v0.115.0: the versions-agree gate correctly saw two trains.
+    """
+    changed = 0
+    for relative in MARKETPLACE_MANIFESTS:
+        path = ROOT / relative
+        document = json.loads(path.read_text())
+        entries = [entry for entry in document.get("plugins", [])
+                   if entry.get("name") == "nika"]
+        if len(entries) != 1:
+            sys.exit(f"{relative}: expected exactly one nika plugin entry")
+        entry = entries[0]
+        previous = entry.get("version")
+        if previous == version:
+            print(f"  = {relative}  version {version}")
+            continue
+        changed += 1
+        print(f"  ~ {relative}  version {previous} → {version}")
+        if not dry:
+            entry["version"] = version
+            path.write_text(json.dumps(document, indent=2,
+                                       ensure_ascii=False) + "\n")
+    return changed
 
 
 class Source:
@@ -182,6 +216,18 @@ def main() -> int:
             manifest["engine_ref"] = ref
     source = Source.resolve(repo, ref, sys.argv)
 
+    # The tag, mirrored manifests and marketplace listings are one train.
+    # Refuse a tag whose own portable manifest claims another version before
+    # writing anything locally.
+    portable_manifest = json.loads(
+        source.read(".agents/plugins/nika/plugin.json"))
+    release_version = ref.removeprefix("v")
+    if portable_manifest.get("version") != release_version:
+        sys.exit(
+            f"engine {ref} plugin manifest claims "
+            f"{portable_manifest.get('version')!r}, expected {release_version!r}"
+        )
+
     changed = 0
     for e in manifest["entries"]:
         if e["class"] != "engine-mirror":
@@ -251,6 +297,8 @@ def main() -> int:
         print(f"  ! {path}: entry source no longer exists at engine {ref} — "
               f"prune or re-source the entry (left untouched)")
 
+    marketplace_changed = align_marketplace_versions(release_version, dry)
+
     head = source.head()
     stamp_moved = (manifest.get("synced_at_engine_sha") != head
                    or json.loads(manifest_path.read_text()).get("engine_ref") != ref)
@@ -258,10 +306,17 @@ def main() -> int:
         manifest["synced_at_engine_sha"] = head
         manifest_path.write_text(json.dumps(manifest, indent=2,
                                             ensure_ascii=False) + "\n")
-        print(f"re-pinned {changed} file(s) at engine {ref} ({head[:9]}) — review the "
-              f"diff, then commit")
+        print(f"re-pinned {changed} file(s) and aligned {marketplace_changed} "
+              f"marketplace manifest(s) at engine {ref} ({head[:9]}) — review "
+              f"the diff, then commit")
     elif changed or stamp_moved:
-        print(f"--dry: {changed} file(s) would re-sync (engine {ref} · {head[:9]})")
+        print(f"--dry: {changed} file(s) would re-sync and "
+              f"{marketplace_changed} marketplace manifest(s) would align "
+              f"(engine {ref} · {head[:9]})")
+    elif marketplace_changed:
+        action = "would align" if dry else "aligned"
+        print(f"{action} {marketplace_changed} marketplace manifest(s) with "
+              f"engine {ref} ({head[:9]})")
     else:
         # A clean pass still heals a polluted stamp field.
         if not dry and json.loads(manifest_path.read_text()).get("engine_sha") is not None:
