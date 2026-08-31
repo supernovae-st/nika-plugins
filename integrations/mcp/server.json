@@ -25,20 +25,6 @@
       "transport": {
         "type": "stdio"
       }
-    },
-    {
-      "registryType": "npm",
-      "identifier": "@supernovae-st/nika",
-      "version": "0.99.0",
-      "transport": {
-        "type": "stdio"
-      },
-      "packageArguments": [
-        {
-          "type": "positional",
-          "value": "mcp"
-        }
-      ]
     }
   ]
 }

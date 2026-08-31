@@ -59,6 +59,13 @@ def set_cells(tree: pathlib.Path, cells: dict) -> None:
         yaml.safe_dump(doc, fh, allow_unicode=True, sort_keys=False)
 
 
+def replace_text(path: pathlib.Path, old: str, new: str) -> None:
+    text = path.read_text()
+    if old not in text:
+        raise AssertionError(f"mutation anchor absent: {old}")
+    path.write_text(text.replace(old, new, 1))
+
+
 def main() -> int:
     fails = 0
     total = 0
@@ -98,6 +105,16 @@ def main() -> int:
              lambda t: set_cells(t, {"manifest": "native-manifest",
                                      "skills": "native-manifest",
                                      "mcp": "wire", "scaffold": "init"}))
+        case("claude desktop reclaims retired MCPB install", "RED",
+             lambda t: replace_text(
+                 t / "clients.yaml",
+                 "install the current engine via Homebrew or a verified release archive · then nika wire claude-desktop",
+                 "one-click .mcpb bundle (release assets)"))
+        case("README promises MCPB on every release", "RED",
+             lambda t: replace_text(
+                 t / "integrations/mcp/README.md",
+                 "MCPB is a historical distribution lane",
+                 "MCPB hosts: every engine release ships bundles"))
 
     if fails:
         print(f"\n{fails}/{total} mutation(s) survived — the gate does not "
