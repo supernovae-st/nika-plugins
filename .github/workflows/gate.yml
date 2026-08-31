@@ -45,15 +45,24 @@ jobs:
           python3 - << 'EOF'
           import json
           tools = None
+          version = None
           for line in open("/tmp/mcp.out"):
               line = line.strip()
               if not line:
                   continue
               msg = json.loads(line)
+              if msg.get("id") == 1 and "result" in msg:
+                  version = msg["result"]["serverInfo"]["version"]
               if msg.get("id") == 2 and "result" in msg:
                   tools = [t["name"] for t in msg["result"]["tools"]]
+          expected = json.load(open("mirror.json"))["engine_ref"].removeprefix("v")
+          assert version == expected, (
+              f"container serves {version}, mirror follows {expected} — "
+              "run scripts/resync-mirror.py"
+          )
           assert tools, "no tools/list reply from the containerized oracle"
-          print(f"in-container oracle serves {len(tools)} tools: {' '.join(sorted(tools))}")
+          print(f"in-container oracle {version} serves {len(tools)} tools: "
+                f"{' '.join(sorted(tools))}")
           EOF
 
   gate:

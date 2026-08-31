@@ -52,6 +52,7 @@ MARKETPLACE_MANIFESTS = (
     ".claude-plugin/marketplace.json",
     ".cursor-plugin/marketplace.json",
 )
+DOCKERFILE = "integrations/mcp/Dockerfile"
 
 
 def align_marketplace_versions(version: str, dry: bool = False) -> int:
@@ -82,6 +83,36 @@ def align_marketplace_versions(version: str, dry: bool = False) -> int:
             path.write_text(json.dumps(document, indent=2,
                                        ensure_ascii=False) + "\n")
     return changed
+
+
+def align_docker_version(version: str, dry: bool = False) -> int:
+    """Keep the directory-checker image on the mirrored release train.
+
+    The Dockerfile is kit-native, so copying the engine bundle cannot move its
+    default. That left the marketplace at 0.116.2 while a default image still
+    served 0.99.0. Both the executable ARG and its copyable pin example are
+    projected here; an unexpected shape fails closed instead of silently
+    leaving one of them stale.
+    """
+    path = ROOT / DOCKERFILE
+    text = path.read_text()
+    updated, replacements = re.subn(
+        r"NIKA_VERSION=[0-9]+\.[0-9]+\.[0-9]+",
+        f"NIKA_VERSION={version}",
+        text,
+    )
+    if replacements != 2:
+        sys.exit(
+            f"{DOCKERFILE}: expected exactly two NIKA_VERSION surfaces "
+            f"(pin example + ARG), found {replacements}"
+        )
+    if updated == text:
+        print(f"  = {DOCKERFILE}  version {version}")
+        return 0
+    print(f"  ~ {DOCKERFILE}  default image → {version}")
+    if not dry:
+        path.write_text(updated)
+    return 1
 
 
 class Source:
@@ -298,6 +329,7 @@ def main() -> int:
               f"prune or re-source the entry (left untouched)")
 
     marketplace_changed = align_marketplace_versions(release_version, dry)
+    docker_changed = align_docker_version(release_version, dry)
 
     head = source.head()
     stamp_moved = (manifest.get("synced_at_engine_sha") != head
@@ -306,16 +338,19 @@ def main() -> int:
         manifest["synced_at_engine_sha"] = head
         manifest_path.write_text(json.dumps(manifest, indent=2,
                                             ensure_ascii=False) + "\n")
-        print(f"re-pinned {changed} file(s) and aligned {marketplace_changed} "
-              f"marketplace manifest(s) at engine {ref} ({head[:9]}) — review "
+        print(f"re-pinned {changed} file(s), aligned {marketplace_changed} "
+              f"marketplace manifest(s) and {docker_changed} Docker default(s) "
+              f"at engine {ref} ({head[:9]}) — review "
               f"the diff, then commit")
     elif changed or stamp_moved:
-        print(f"--dry: {changed} file(s) would re-sync and "
-              f"{marketplace_changed} marketplace manifest(s) would align "
+        print(f"--dry: {changed} file(s) would re-sync, "
+              f"{marketplace_changed} marketplace manifest(s) and "
+              f"{docker_changed} Docker default(s) would align "
               f"(engine {ref} · {head[:9]})")
-    elif marketplace_changed:
+    elif marketplace_changed or docker_changed:
         action = "would align" if dry else "aligned"
-        print(f"{action} {marketplace_changed} marketplace manifest(s) with "
+        print(f"{action} {marketplace_changed} marketplace manifest(s) and "
+              f"{docker_changed} Docker default(s) with "
               f"engine {ref} ({head[:9]})")
     else:
         # A clean pass still heals a polluted stamp field.
