@@ -191,6 +191,40 @@ def check_agent_plugin(rows, findings):
     return claimed
 
 
+def check_mcpb_history(rows, findings):
+    """Keep the retired MCPB lane honest instead of teaching it as current."""
+    by_id = {row.get("id"): row for row in rows}
+    desktop = by_id.get("claude-desktop", {})
+    if ".mcpb" in str(desktop.get("install", "")):
+        findings.append(
+            "claude-desktop: install teaches .mcpb as current; the lane ended "
+            "at v0.99.0 — teach engine install + nika wire")
+
+    readme = (ROOT / "integrations/mcp/README.md").read_text(encoding="utf-8")
+    if "historical distribution lane" not in readme:
+        findings.append(
+            "integrations/mcp/README.md must name MCPB as a historical "
+            "distribution lane")
+    if "every engine release ships" in readme:
+        findings.append(
+            "integrations/mcp/README.md promises MCPB on every release")
+
+    archive = json.loads((ROOT / "integrations/mcp/server.json").read_text())
+    if archive.get("version") != "0.99.0":
+        findings.append("integrations/mcp/server.json is the v0.99.0 archive")
+    packages = archive.get("packages") or []
+    if not packages or any(p.get("registryType") != "mcpb" for p in packages):
+        findings.append(
+            "integrations/mcp/server.json may contain only the real archived "
+            "MCPB packages")
+    for package in packages:
+        if package.get("version") != "0.99.0" or "/v0.99.0/" not in str(
+                package.get("identifier", "")):
+            findings.append(
+                "integrations/mcp/server.json package escapes the v0.99.0 "
+                "archive boundary")
+
+
 def check_counts(findings):
     derived = derived_counts()
     for rel in COUNT_SCAN:
@@ -342,6 +376,7 @@ def main() -> int:
     if rows:
         check_manifests(rows, findings)
         portable = check_agent_plugin(rows, findings)
+        check_mcpb_history(rows, findings)
         derived = check_counts(findings)
         check_wire(rows, findings)
         print(f"  agent-plugin: portable manifest "

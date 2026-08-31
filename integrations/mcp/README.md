@@ -30,12 +30,13 @@ builds the oracle from the release artifacts (SHA256SUMS-verified, multi-arch
 amd64/arm64) — `docker build -t nika-mcp . && docker run -i --rm nika-mcp`
 speaks stdio JSON-RPC, introspection-probed in-container.
 
-MCPB hosts (one-click bundle installers, Smithery-class): every engine
-release ships `.mcpb` bundles — `nika-mcp-<platform>-<version>.mcpb` next
-to the tarballs, checksums in `MCPB.sha256`. `manifest_version 0.2`,
-`server.type binary`, entry point `server/nika` with `args: [mcp]` — the
-same oracle, zero runtime dependencies, probed from the unpacked bundle
-before publish.
+MCPB is a historical distribution lane, not a current release promise.
+Engine `v0.99.0` shipped the two archived bundles recorded in
+[`server.json`](server.json); later trains, including `v0.116.0`, do not ship
+`.mcpb` assets or `MCPB.sha256`. Do not submit that archival manifest as the
+current engine version. Install the engine through Homebrew or a verified
+release archive, then use `nika wire <client>`; Docker hosts can use the
+verified image recipe above.
 
 ## What the oracle serves
 
@@ -76,11 +77,10 @@ the CLI, where `--max-cost-usd`, effect permits and the trace live. An agent
 that wants to run a workflow shells out to `nika run` under your terminal's
 permissions, visibly, like any other command you'd review.
 
-Companions in this folder: [`server.json`](server.json) is the MCP Registry
-manifest, publishable as-is — its `mcpb` package lanes point at the live
-0.99.0 release bundles with their real `fileSha256` (bump both at the
-MCP-Registry submission); the npm lane behind
-them is the future-revival shape, not a live package yet (install via
-brew, the Dockerfile, or the bundles meanwhile);
+Companions in this folder: [`server.json`](server.json) is the archived
+MCP Registry manifest for the two real `v0.99.0` bundles and their original
+`fileSha256` values. It is evidence of that historical lane, not a template to
+version-bump or a claim that current releases carry bundles. Install current
+Nika via Homebrew, a verified release archive, or the Dockerfile;
 [`THREAT-MODEL.md`](THREAT-MODEL.md) states plainly what the oracle and the
 trace chain do and do not prove.
