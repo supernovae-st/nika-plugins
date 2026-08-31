@@ -25,6 +25,12 @@ with tempfile.TemporaryDirectory() as tmp:
         path = root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(marketplace("0.115.0")) + "\n")
+    dockerfile = root / MODULE.DOCKERFILE
+    dockerfile.parent.mkdir(parents=True, exist_ok=True)
+    dockerfile.write_text(
+        "# --build-arg NIKA_VERSION=0.115.0\n"
+        "ARG NIKA_VERSION=0.115.0\n"
+    )
 
     changed = MODULE.align_marketplace_versions("0.116.0")
     assert changed == 2, f"expected two aligned manifests, got {changed}"
@@ -34,6 +40,19 @@ with tempfile.TemporaryDirectory() as tmp:
 
     unchanged = MODULE.align_marketplace_versions("0.116.0")
     assert unchanged == 0, f"idempotence failed: {unchanged} change(s)"
+
+    docker_changed = MODULE.align_docker_version("0.116.0")
+    assert docker_changed == 1, "expected the Docker default to align"
+    assert dockerfile.read_text().count("NIKA_VERSION=0.116.0") == 2
+    assert MODULE.align_docker_version("0.116.0") == 0, "Docker alignment is not idempotent"
+
+    dockerfile.write_text("ARG NIKA_VERSION=0.115.0\n")
+    try:
+        MODULE.align_docker_version("0.116.0")
+    except SystemExit as error:
+        assert "exactly two NIKA_VERSION surfaces" in str(error)
+    else:
+        raise AssertionError("a missing Docker version surface did not fail closed")
 
     cursor = root / ".cursor-plugin/marketplace.json"
     cursor.write_text(json.dumps({"plugins": []}) + "\n")
