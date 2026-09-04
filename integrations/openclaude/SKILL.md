@@ -59,8 +59,8 @@ comes back every week and hands you a receipt for it.
    so and stop — installing is the user's move
    (`brew install supernovae-st/tap/nika`, or the paths listed at
    nika.sh). Never improvise workflow YAML from memory.
-2. Start from a skeleton, never a blank file. `nika new --from '?'` lists
-   the embedded templates, `nika new --from <template> <file>.nika.yaml`
+2. Start from a skeleton, never a blank file. `nika new '?'` lists
+   the embedded templates, `nika new <template> <file>.nika.yaml`
    writes one, and bare `nika try` lists complete runnable lessons.
 3. Fill it in. The envelope opens with `nika: <kebab-case-name>` — that
    one key carries both the mark and the file's name, and there is no

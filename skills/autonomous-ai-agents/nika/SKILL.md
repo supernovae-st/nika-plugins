@@ -112,11 +112,11 @@ running — never suppress them.
 Turn a repeated task into a file. List templates, then instantiate:
 
 ```
-terminal(command="nika new --from '?'")
-terminal(command="nika new flow.nika.yaml --from chain", workdir="~/project")
+terminal(command="nika new '?'")
+terminal(command="nika new chain flow.nika.yaml", workdir="~/project")
 ```
 
-`--from` also accepts plain-words intent. Edit the skeleton, then
+The first argument also accepts plain-words intent. Edit the skeleton, then
 **check it**. `nika explain flow.nika.yaml` narrates what it will do, the
 waves, the cost floor, and what it touches — before anything runs.
 
@@ -384,7 +384,7 @@ live.
 | Command | Use |
 |---------|-----|
 | `nika welcome` | What Nika is + what this machine has (offline, exit 0) |
-| `nika new <file> --from <template>` | Scaffold a workflow (`--from '?'` lists) |
+| `nika new <template> <file>` | Scaffold a workflow (`nika new '?'` lists) |
 | `nika check <file> --json` | Static pre-flight — ALWAYS before run |
 | `nika explain <file>` | Narrate: waves, cost floor, touches |
 | `nika run <file> --model <p/m> --max-cost-usd <usd>` | Execute with budget |
@@ -399,7 +399,7 @@ live.
 
 1. Verify readiness: `terminal(command="nika --version")`; install per
    Prerequisites if missing.
-2. If the task is new, scaffold: `nika new <file> --from <template>`.
+2. If the task is new, scaffold: `nika new <template> <file>`.
 3. Check: `nika check <file> --json`. Fix every finding
    (`nika explain <code>`). Do not run an unchecked file.
 4. Preview offline when useful: `nika run <file> --model mock/echo`.
@@ -435,8 +435,8 @@ live.
 - `nika run` renders live on a TTY; when piped (Hermes terminal), output can
   stay quiet until completion — for anything long, prefer `background=true` +
   poll, then read `nika trace show <trace>` for the final card.
-- `nika new` with no `--from` opens a guided TTY flow; in a pipe it fails
-  fast naming the flag — always pass `--from <template>` when delegating.
+- `nika new` with no intent opens a guided TTY flow; in a pipe it fails
+  fast naming the missing argument — always pass a template or intent when delegating.
 - The budget guard stops NEW admissions: one wide parallel wave can overshoot
   by that wave's spend. Tighten with `max_parallel:` when the budget is strict.
 - Uncataloged model ids meter as $0 — never rely on `--max-cost-usd` for a
@@ -463,4 +463,3 @@ terminal(command="nika try 01-hello")
 
 Success criteria: run completes exit 0 with a final run card · `nika check`
 exits 0 before any real run · `nika trace verify` exits 0 after the run.
-

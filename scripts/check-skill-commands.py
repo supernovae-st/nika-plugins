@@ -11,7 +11,8 @@
 # with exit 0). A skill teaching a command the release does not ship (e.g. a
 # 0.99-train verb against a 0.98 brew) goes RED here.
 #
-# Exit 0 = every taught subcommand ships. Exit 1 = drift (names printed).
+# Exit 0 = taught subcommands ship and no known retired invocation is taught.
+# This is not a full shell-argument validator. Exit 1 = drift (forms printed).
 # Local run: NIKA_BIN=/path/to/nika python3 scripts/check-skill-commands.py
 
 import json
@@ -79,6 +80,20 @@ def shipped_subcommands(nika: str) -> set:
     return cmds
 
 
+def retired_command_forms(md: pathlib.Path) -> list:
+    """Known removed argv, even when its subcommand still ships.
+
+    Match the flag before or after the destination and in agent terminal
+    calls as well as inline code. Stop at a command/span boundary so a
+    later `nika run --from` is not confused with the retired creation flag.
+    The canonical creation form is `nika new <template|intent> <dest>`.
+    """
+    pattern = re.compile(r"\bnika[ \t]+new\b[^\n`;]*?[ \t]--from(?![a-zA-Z0-9_-])")
+    return [(number, match.group(0))
+            for number, line in enumerate(md.read_text().splitlines(), 1)
+            for match in pattern.finditer(line)]
+
+
 def quiet_door_ships(nika: str, sub: str, cache: dict) -> bool:
     """A door absent from the top-level help may still ship: the 0.107 help
     regroup hid `nika mcp` and `nika catalog` from the Commands list while
@@ -104,6 +119,12 @@ def main() -> int:
     probed: dict = {}
     failed = False
     for md in kit_native_paths():
+        retired = retired_command_forms(md)
+        for line, form in retired:
+            failed = True
+            print(f"✗ {md.relative_to(ROOT)}:{line} teaches retired argv: {form}; "
+                  "use nika new <template|intent> <dest> (no --from)",
+                  file=sys.stderr)
         taught = taught_subcommands(md)
         missing = {s for s in taught - shipped
                    if not quiet_door_ships(nika, s, probed)}
@@ -111,9 +132,9 @@ def main() -> int:
             failed = True
             print(f"✗ {md.relative_to(ROOT)} teaches unshipped subcommands: "
                   f"{sorted(missing)}", file=sys.stderr)
-        else:
+        elif not retired:
             print(f"✓ {md.relative_to(ROOT)} · {len(taught)} taught "
-                  f"subcommands all ship: {' · '.join(sorted(taught))}")
+                  f"subcommands ship; no known retired argv: {' · '.join(sorted(taught))}")
     return 1 if failed else 0
 
 
