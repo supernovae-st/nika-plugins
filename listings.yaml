@@ -474,11 +474,12 @@ entries:
 
   - surface: agentic-awesome-skills (sickn33 · 42.8k stars skill catalog)
     class: submitted-pr
-    status: pending
+    status: merged
     url: https://github.com/sickn33/agentic-awesome-skills/pull/806
     submitted: 2026-07-10
     description_block: skills-registries lead (description-bank §per-surface)
-    notes: skills/nika/SKILL.md byte-identical to the kit (v1.1.0 hardline) ·
+    notes: merged 2026-07-12T05:10:40Z (state re-verified 2026-09-04) ·
+      the submitted skills/nika/SKILL.md was kit v1.1.0, not a live mirror ·
       source-only per their CONTRIBUTING · their skill-review workflow runs on
       the PR · guard-history cited (Nous skill-guard SAFE) · first-party disclosed
 
@@ -639,11 +640,11 @@ entries:
     url: https://github.com/NousResearch/hermes-agent/pull/61632
     submitted: 2026-07-09
     description_block: hermes/agent catalogs lead (description-bank §per-surface)
-    payload: optional-skills/autonomous-ai-agents/nika/SKILL.md (byte-identical
-      mirror of skills/autonomous-ai-agents/nika/SKILL.md v1.0.5 · git blob
-      8c8c4355013a0cc739bda32992a59b128a57f76b · PR branch updated in the
-      same move as every kit-side skill bump — parity is re-verified by
-      comparing this blob against the fork branch's contents sha)
+    payload: optional-skills/autonomous-ai-agents/nika/SKILL.md follows
+      skills/autonomous-ai-agents/nika/SKILL.md v1.2.2 · git blob
+      7271075ea2eea4e06f804c547961a9f73e77ddc0 · source and host-contract
+      tests verified 2026-09-04; fork update is complete only when the
+      open branch contents SHA equals this blob
     kill_check: 2026-09-07
     notes: upside-not-gate (day-1 = tap/URL already live) · measured external
       merge latency ≥14d · fallback category software-development offered
@@ -746,12 +747,14 @@ entries:
 
   - surface: buildwithclaude (davepoon · plugins/all-skills · resubmission)
     class: submitted-pr
-    status: pending
+    status: merged
     url: https://github.com/davepoon/buildwithclaude/pull/238
     submitted: 2026-07-11
     description_block: skills-registries frontmatter (their reviewed shape) +
       the Claude Code-native authoring body (kit blob e376c830)
-    notes: invited resubmit (their 237 review said body was Hermes tool-call
+    notes: merged 2026-07-14T11:48:02Z (state re-verified 2026-09-04) ·
+      a later source update requires a new upstream change, not the old fork branch ·
+      invited resubmit (their 237 review said body was Hermes tool-call
       language · frontmatter fine) — body now byte-identical to the kit's
       Claude Code plugin skill (.agents/plugins/nika/skills/nika-authoring/
       SKILL.md) · zero Hermes references grep-verified pre-submit ·

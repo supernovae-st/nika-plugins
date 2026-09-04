@@ -1,7 +1,7 @@
 ---
 name: nika
-description: "Runs repeatable AI work as checked, budgeted, trace-verified workflow files."
-version: 1.2.1
+description: "Runs repeatable AI work with checks, budgets and traces."
+version: 1.2.2
 author: Thibaut Melen (@ThibautMelen) · SuperNovae Studio (github.com/supernovae-st)
 license: MIT
 platforms: [linux, macos]
@@ -322,17 +322,19 @@ refusal is not. Cycles are refused too (`NIKA-COMP-003`).
 - Mid-run, the ledger stops the workflow the moment real spend crosses the
   budget: the crossing call completes, nothing new starts, the run fails
   `NIKA-1704` (exit 1) with spent-vs-budget
-- Estimates use LIST RATES from the vendored public catalog; local · mock ·
-  unpriced work is never blocked
-- A model absent from the catalog meters as $0 — a paid *uncataloged* model
-  runs with no budget protection; prefer cataloged ids (`nika catalog`)
+- Estimates use LIST RATES from the vendored public catalog. The checker
+  estimates output-token cost, not the prompt/input bill or entire invoice.
+- An unpriced call has no measured USD amount. The USD budget cannot bound
+  that unknown spend; never report it as free or $0. Prefer cataloged ids
+  (`nika catalog`) when budget protection matters.
 - Report the cost line from the final run card (the summary block `nika
   run` prints last — status, cost, trace path) back to the user verbatim
 
 ### Receipts and verification
 
-Every run writes a trace under `.nika/traces/` — the run card prints the
-trace path on its `trace:` line. Pass that path; bare, both commands fall
+Execution journals are enabled by default under `.nika/traces/`; recording
+can be disabled, a refusal before execution can have no journal, and a lost
+run can leave incomplete evidence. Use the recorded trace path; bare, both commands fall
 back to the workspace's latest trace and say which one they read:
 
 ```
@@ -345,19 +347,20 @@ ladder and reports **the highest tier honestly attained**:
 
 | Tier | What it proves | How to reach it |
 |---|---|---|
-| chain intact | no line was altered after it was written | every run |
+| chain intact | the recorded links are internally consistent | a recorded hash-chained journal |
 | `SEALED` | a custody key signed the run | `--key <pub>` |
 | `ANCHORED` | the `<trace>.anchor.json` sidecar verifies offline | `--anchored` |
 | `REPLAYED` | a fresh journal of the same workflow matches | `--replay <trace>` |
 
-Exit 0 the tier holds · 2 broken or forged · 3 unchained or a missing
-input. A fourth verdict is not a failure: **`INCOMPLETE`** means the
+Report the exit code and the verifier's actual tier together. **`INCOMPLETE`** means the
 journal never reached a terminal frame — the run was killed or crashed, so
-the chain still attests every complete line while the lifecycle end is
+the chain still links the complete lines while the lifecycle end is
 unattested. Report it as what it is; do not call it a pass or a break.
 
-Quote the chain head back against the one the run card printed — that is
-what closes the loop; the chain alone is tamper-EVIDENT, not tamper-proof.
+Compare the chain head with independently trusted evidence, or verify its
+trusted seal. An unkeyed chain can be rewritten consistently; even a valid
+signature does not prove that its producer told the truth. Verification
+reads existing evidence and never creates or seals a journal.
 
 For a run someone else must audit, `nika trace evidence <trace>` writes
 `<trace-stem>.evidence/` — `journal.ndjson`, `pack.json` (the manifest and
@@ -439,8 +442,8 @@ live.
   fast naming the missing argument — always pass a template or intent when delegating.
 - The budget guard stops NEW admissions: one wide parallel wave can overshoot
   by that wave's spend. Tighten with `max_parallel:` when the budget is strict.
-- Uncataloged model ids meter as $0 — never rely on `--max-cost-usd` for a
-  custom endpoint model.
+- Unpriced model calls have no measured USD bound. Do not rely on
+  `--max-cost-usd` alone for a custom endpoint or promise a hard invoice cap.
 - Workflow `outputs:` are not resolved on a budget stop — per-task values
   live in the trace (`nika trace outputs`).
 - Deleting a `permits:` block to unblock a refusal does the opposite: absent
@@ -450,8 +453,8 @@ live.
   then draws a drift hint on grants its own body never uses. The hint is
   advisory; the containment refusal underneath it is not — do not "fix" the
   hint by emptying the block.
-- `nika trace verify` exits 0 on `INCOMPLETE` too. Read the verdict word,
-  not just the exit code, before telling the user a run is proven.
+- `INCOMPLETE` is not proof of a completed lifecycle. Read the actual verdict
+  and available evidence before telling the user what has been proved.
 
 ## Verification
 

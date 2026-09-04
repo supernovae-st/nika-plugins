@@ -18,14 +18,15 @@ Plain statements, scoped to what the machinery proves. Nothing more.
 
 ## The trace chain (`nika trace verify`)
 
-- **Tamper-evident, not producer-honest.** Each event links to the previous
-  by sha256; editing a trace after the fact breaks the chain (exit 2). That
-  proves the file was not altered since it was written — it does NOT prove
-  the writer told the truth at write time. A malicious runner could log
-  consistent lies; an honest chain from a trusted binary is the pairing
-  that means something.
-- **Costs are list-rate estimates.** Uncataloged models meter as $0 and are
-  flagged as unpriced, never silently priced.
+- **Chain consistency is not producer honesty.** Changing an event without
+  updating its hash links breaks the chain. Recomputing an entire unkeyed
+  chain can restore consistency, so compare its head with independently
+  trusted evidence or verify a trusted seal. Even a valid signature does
+  not prove the writer told the truth. Verification reads existing evidence;
+  it cannot create a missing journal or seal an incomplete one.
+- **Costs are list-rate estimates.** Unpriced calls have no measured USD
+  amount. Do not turn absent pricing into a claim of free work or a guaranteed
+  invoice ceiling; in-flight calls can also overshoot an admission-stop budget.
 
 ## What never happens
 
