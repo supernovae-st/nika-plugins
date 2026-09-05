@@ -4,10 +4,10 @@
 #
 # Build:  docker build -t nika-mcp .
 # Run:    docker run -i --rm nika-mcp        (stdio JSON-RPC)
-# Pin a version: docker build --build-arg NIKA_VERSION=0.118.6 -t nika-mcp .
+# Pin a version: docker build --build-arg NIKA_VERSION=0.118.7 -t nika-mcp .
 
 FROM ubuntu:24.04 AS fetch
-ARG NIKA_VERSION=0.118.6
+ARG NIKA_VERSION=0.118.7
 ARG TARGETARCH
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl ca-certificates \
