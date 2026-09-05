@@ -28,6 +28,44 @@ and has no keyword. The engine-side kit gate
 (`the_kit_never_teaches_a_form_the_engine_refuses`) now holds those
 spellings, proven by mutation.
 
+## 0.118.6 — 2026-09-05
+
+Lockstep on the engine wave. Authoring distinguishes draft checking from
+child execution, limits unwind to started producers and links predicate
+spellings to the existing table and checker.
+
+## 0.118.5 — 2026-09-05
+
+Lockstep on the engine wave.
+
+## 0.118.4 — 2026-09-05
+
+Lockstep on the engine wave.
+
+## 0.118.3 — 2026-09-05
+
+Lockstep on the engine wave.
+
+## 0.118.2 — 2026-09-05
+
+Lockstep on the engine wave.
+
+## 0.118.1 — 2026-09-04
+
+Lockstep on the engine wave.
+
+## 0.118.0 — 2026-09-04
+
+Lockstep on the engine wave.
+
+## 0.117.1 — 2026-09-02
+
+Lockstep on the engine wave.
+
+## 0.117.0 — 2026-09-02
+
+Lockstep on the engine wave.
+
 ## 0.116.2 — 2026-08-31
 
 Lockstep on the engine wave.
