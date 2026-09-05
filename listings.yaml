@@ -474,7 +474,7 @@ entries:
 
   - surface: agentic-awesome-skills (sickn33 · 42.8k stars skill catalog)
     class: submitted-pr
-    status: pending
+    status: merged  # merged 2026-07-12
     url: https://github.com/sickn33/agentic-awesome-skills/pull/806
     submitted: 2026-07-10
     description_block: skills-registries lead (description-bank §per-surface)
@@ -746,7 +746,7 @@ entries:
 
   - surface: buildwithclaude (davepoon · plugins/all-skills · resubmission)
     class: submitted-pr
-    status: pending
+    status: merged  # merged 2026-07-14
     url: https://github.com/davepoon/buildwithclaude/pull/238
     submitted: 2026-07-11
     description_block: skills-registries frontmatter (their reviewed shape) +
