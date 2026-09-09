@@ -91,7 +91,8 @@ def retired_command_forms(md: pathlib.Path) -> list:
     pattern = re.compile(r"\bnika[ \t]+new\b[^\n`;]*?[ \t]--from(?![a-zA-Z0-9_-])")
     return [(number, match.group(0))
             for number, line in enumerate(md.read_text().splitlines(), 1)
-            for match in pattern.finditer(line)]
+            for match in pattern.finditer(line)
+            if not re.match(r"[^`]*` is obsolete here\. Use positional intent and destination;", line[match.end():])]
 
 
 def quiet_door_ships(nika: str, sub: str, cache: dict) -> bool:

@@ -63,6 +63,7 @@ with tempfile.TemporaryDirectory() as tmp:
             assert code == 1, f"retired form slipped green: {form}"
             assert "--from" in stderr.getvalue(), stderr.getvalue()
         for form in [
+            "- `nika new --from ...` is obsolete here. Use positional intent and destination;",
             "`nika new '?'`", "`nika new chain flow.nika.yaml`",
             "```sh\nnika new 'summarize a page' flow.nika.yaml --force\n```",
             "`nika run flow.nika.yaml --from task`",

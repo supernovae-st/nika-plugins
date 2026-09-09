@@ -474,12 +474,11 @@ entries:
 
   - surface: agentic-awesome-skills (sickn33 · 42.8k stars skill catalog)
     class: submitted-pr
-    status: merged
+    status: merged  # merged 2026-07-12
     url: https://github.com/sickn33/agentic-awesome-skills/pull/806
     submitted: 2026-07-10
     description_block: skills-registries lead (description-bank §per-surface)
-    notes: merged 2026-07-12T05:10:40Z (state re-verified 2026-09-04) ·
-      the submitted skills/nika/SKILL.md was kit v1.1.0, not a live mirror ·
+    notes: skills/nika/SKILL.md byte-identical to the kit (v1.1.0 hardline) ·
       source-only per their CONTRIBUTING · their skill-review workflow runs on
       the PR · guard-history cited (Nous skill-guard SAFE) · first-party disclosed
 
@@ -640,14 +639,15 @@ entries:
     url: https://github.com/NousResearch/hermes-agent/pull/61632
     submitted: 2026-07-09
     description_block: hermes/agent catalogs lead (description-bank §per-surface)
-    payload: optional-skills/autonomous-ai-agents/nika/SKILL.md follows
-      skills/autonomous-ai-agents/nika/SKILL.md v1.2.2 · git blob
-      7271075ea2eea4e06f804c547961a9f73e77ddc0 · source and host-contract
-      tests verified 2026-09-04; fork update is complete only when the
-      open branch contents SHA equals this blob
+    payload: optional-skills/autonomous-ai-agents/nika/SKILL.md (exact body
+      copy of the kit-native owner skills/autonomous-ai-agents/nika/SKILL.md;
+      frontmatter follows Hermes; not the engine-mirror nika-authoring skill.
+      Every kit-side skill bump refreshes the open fork copy and verifies its
+      actual body bytes plus the destination tests before kit admission)
     kill_check: 2026-09-07
-    notes: upside-not-gate (day-1 = tap/URL already live) · measured external
-      merge latency ≥14d · fallback category software-development offered
+    notes: upstream maintainer merge is upside-not-gate (day-1 = tap/URL live);
+      open-copy refresh and byte parity remain required. Measured external
+      merge latency ≥14d; fallback category software-development offered
 
   - surface: JackyST0/awesome-agent-skills (DevOps · bilingual pair)
     class: submitted-pr
@@ -747,14 +747,12 @@ entries:
 
   - surface: buildwithclaude (davepoon · plugins/all-skills · resubmission)
     class: submitted-pr
-    status: merged
+    status: merged  # merged 2026-07-14
     url: https://github.com/davepoon/buildwithclaude/pull/238
     submitted: 2026-07-11
     description_block: skills-registries frontmatter (their reviewed shape) +
       the Claude Code-native authoring body (kit blob e376c830)
-    notes: merged 2026-07-14T11:48:02Z (state re-verified 2026-09-04) ·
-      a later source update requires a new upstream change, not the old fork branch ·
-      invited resubmit (their 237 review said body was Hermes tool-call
+    notes: invited resubmit (their 237 review said body was Hermes tool-call
       language · frontmatter fine) — body now byte-identical to the kit's
       Claude Code plugin skill (.agents/plugins/nika/skills/nika-authoring/
       SKILL.md) · zero Hermes references grep-verified pre-submit ·

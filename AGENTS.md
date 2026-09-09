@@ -41,17 +41,21 @@ the gate workflow, `mirror.json`, `listings.yaml` (every
 external listing/submission registers there — pinned description from the
 bank · cadence class · kill criterion >60d), and this file.
 
-**External skill copies (parity watch).** The open submission
-NousResearch/hermes-agent#61632 carries the kit-native Hermes skill
-`skills/autonomous-ai-agents/nika/SKILL.md`. Refresh that exact fork file
-with each kit-side change and verify its bytes and host-specific tests.
-Resolve the PR's actual state and head before updating it; an old fork ref
-is not a live upstream publication. The former watches
-sickn33/agentic-awesome-skills#806 and davepoon/buildwithclaude#238 merged
-on 2026-07-12 and 2026-07-14 respectively; their outcomes live in
-`listings.yaml`. Updating a merged copy requires a new upstream change,
-not a push to the settled submission branch. New copies name their source
-file and any host-owned frontmatter at submit time.
+**External copies of the Hermes skill (parity watch).** The open submission
+PR NousResearch/hermes-agent#61632 receives
+`optional-skills/autonomous-ai-agents/nika/SKILL.md` from the **kit-native**
+owner `skills/autonomous-ai-agents/nika/SKILL.md`. Its body is copied exactly;
+frontmatter must satisfy Hermes. The engine-mirror `nika-authoring` skill is
+not this copy's source: the Hermes owner preserves its host tools, required
+title, seven sections, and license disclosure while teaching the same released
+engine contract. Repair that owner here; keep engine-mirror files unchanged.
+Every kit-side skill bump refreshes each open copy in the same move. Verify
+the fork branch's actual body bytes against this owner and run the destination's
+required tests; a prepared local copy is not a published refresh. A stale external
+copy is the same corruption class as a pin mismatch. Upstream maintainer merge
+latency is separate from this refresh requirement. When a watched PR merges or
+closes, move it from this watch into its `listings.yaml` outcome; new external
+byte-copies join this list at submit time.
 
 ## Load-bearing facts (verify in-repo · never from memory)
 
