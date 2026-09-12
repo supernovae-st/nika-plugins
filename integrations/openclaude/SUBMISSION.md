@@ -2,8 +2,8 @@
 # Skill Hub submission — prepared, NOT opened
 
 Everything needed to open the `Gitlawb/openclaude-skills` PR lives here.
-**Opening it is an operator gesture.** No agent pushes to, or opens a PR
-against, a repository we do not own.
+Submit only when external contribution is within the user's mandate and the
+destination's contribution policy. This prepared pack is not a submitted PR.
 
 Rules below were read from their `CONTRIBUTING.md`, `DECISIONS.md` and
 `.maintainers/trust.json` on 2026-07-28. Re-read them at submission time —
@@ -65,8 +65,8 @@ terms, not because it is the way in.
 > every week (digest, triage, release notes, an ETL pass) out of the chat
 > loop and into a file you can audit, budget and replay. The skill's
 > procedure is the engine's own discipline: start from a template, declare
-> the effect boundary, audit until clean, report the cost ceiling honestly,
-> and leave the run itself to the human.
+> the effect boundary, audit until clean, report output-cost estimates and unpriced input honestly,
+> and complete execution only within the user's authorized scope and budget.
 >
 > `trust: community` per CONTRIBUTING. Validator run locally, registry
 > regenerated in this PR.

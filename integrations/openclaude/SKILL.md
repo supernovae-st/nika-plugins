@@ -1,7 +1,7 @@
 ---
 name: nika-workflow
 title: Nika Workflow
-description: Captures a repeated AI chore as a Nika workflow file — audited before it runs, cost-capped while it runs, hash-chain traced after.
+description: Author or port repeatable AI work into checked .nika.yaml workflows. Use for workflow artifacts and their diagnosis, not ordinary coding or one-off answers.
 category: general
 tags:
   - workflow
@@ -10,7 +10,7 @@ tags:
   - audit
   - local-first
 trust: community
-version: 0.1.1
+version: 0.1.2
 license: MIT
 author: ThibautMelen
 tools_required:
@@ -19,104 +19,85 @@ tools_required:
 
 # Nika Workflow
 
-[Nika](https://nika.sh) is an open-source Rust engine that captures a
-repeatable AI task as one plain-text `*.nika.yaml` file. The file is
-audited before a single token is spent, runs against local or cloud
-providers under a spend ceiling, and records a hash-chained journal you
-can verify afterwards.
+Use [Nika](https://nika.sh) through the host's Bash tool to capture repeatable
+AI work in a `*.nika.yaml` artifact. Nika is an AGPL-3.0-or-later workflow engine;
+this MIT-licensed skill teaches the public 0.118.7 contract. The host owns the
+user's intent and authorization. A check gives evidence; engine and host gates
+still control execution.
 
-Use it for the work that repeats. Nika is not a coding agent and does not
-compete with one: OpenClaude writes the code, Nika runs the chore that
-comes back every week and hands you a receipt for it.
+## Scope and discovery
 
-## Use this skill when
+Use this skill when the user wants to author, port, check or diagnose a workflow.
+For an ordinary code edit or one-off answer, use the corresponding host tool.
+A workflow is useful when repeatable work has defined inputs, outputs and a
+failure policy; do not create one merely because a task uses several steps.
 
-- The user describes a prompt or prompt chain they run more than once — a
-  weekly digest, an inbox triage pass, a release-note draft — and wants it
-  captured as something re-runnable.
-- A shell or Python script in the repo calls a model API, or wraps HTTP,
-  file and JSON plumbing around model output.
-- The user asks for a hard spend ceiling on an AI task, or asks what a
-  task will cost before it runs.
-- The user needs a record of what an AI run actually did: a receipt, an
-  audit trail, something a reviewer can check independently.
-- A `*.nika.yaml` file is open or being written, or `nika check` reported
-  a `NIKA-XXXX` finding that needs fixing.
+Identify the installed release with `nika --version`. If absent, complete setup
+already authorized in the request or report the missing prerequisite and the
+installation route at https://nika.sh. Use `nika doctor` when setup needs
+diagnosis. Do not assume a model or host capability from its product name.
 
-## Do NOT use this skill when
+Read the existing file and callers before creating a replacement. For a new
+shape, `nika new '?'` lists templates and `nika new <template> <file>.nika.yaml`
+creates one. Resolve exact syntax from `nika spec --schema`, `nika catalog`,
+`nika catalog --tools` and the matching release's
+[authoring guide](https://github.com/supernovae-st/nika/blob/v0.118.7/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
+Read examples for unresolved structures, not a fixed quota before every edit.
 
-- The user wants a one-off answer or a single tool call — answer directly,
-  a workflow file is overhead.
-- The user wants application code written, refactored or reviewed — that
-  belongs to a coding skill.
-- The task needs conversational back-and-forth mid-execution — workflows
-  are non-interactive by design; a confirm gate asks one question, it does
-  not hold a discussion.
+## Author and validate
 
-## Procedure
+- Use `nika: <id>` and a `tasks:` map. Each task has exactly one verb:
+  `infer`, `exec`, `invoke` or `agent`. Prefer native tools to shell glue;
+  `exec.command` is an argv list. Bound inference and adaptive loops explicitly.
+- Caller values belong in `inputs:`, fixed values in `const:`, credentials in
+  `secrets:` with declared `egress:` sinks. Bind task data through `with:`;
+  use `after:` for ordering without data. Never put credential values in files,
+  arguments or reports.
+- Declare `permits:` from the intended effects. Missing grants give zero
+  authority; pure compute declares `permits: {}`. Review the proposal from
+  `nika check <file> --infer-permits` against the user's scope before applying
+  it. A diagnostic does not justify widening authority.
+- Check the final file with `nika check <file> --json --native-strict`, including
+  the intended model override. Read the exit status and the distinct `clean`,
+  `native_strict_clean` and `paid_ready` verdicts. A paid-ready file can still
+  fail another check. For composition, inspect coverage and child findings.
+- Repair causes using `nika explain NIKA-XXXX`; `--fix` handles supported
+  mechanical repairs whose diff should be inspected. Continue until the
+  requested artifact checks clean or a concrete dependency/decision blocks it.
 
-1. Confirm the engine is present: `nika --version`. If it is missing, say
-   so and stop — installing is the user's move
-   (`brew install supernovae-st/tap/nika`, or the paths listed at
-   nika.sh). Never improvise workflow YAML from memory.
-2. Start from a skeleton, never a blank file. `nika new '?'` lists
-   the embedded templates, `nika new <template> <file>.nika.yaml`
-   writes one, and bare `nika try` lists complete runnable lessons.
-3. Fill it in. The envelope opens with `nika: <kebab-case-name>` — that
-   one key carries both the mark and the file's name, and there is no
-   `workflow:` envelope key — plus a `tasks:` map keyed by task id.
-   Exactly one verb per task: `infer` (a model call) · `exec` (a
-   subprocess, whose `command:` is an argv list) · `invoke` (a builtin or
-   MCP tool) · `agent` (a bounded multi-turn loop). Every value the file
-   depends on is declared in one of three authorities: `inputs:` ·
-   `const:` · `secrets:` — a deployment-supplied value is an `inputs:`
-   entry with `required: false` and a `default:`.
-4. Declare the boundary. `permits:` states what the workflow may touch,
-   and an ABSENT block means zero authority — any effect without a grant
-   is refused at check time. `nika check <file> --infer-permits` prints
-   the tightest block the workflow actually needs; paste it in.
-5. Audit before anything runs: `nika check <file>`. Exit 0 is clean, exit
-   2 carries findings. Each finding names its task and the fix it wants;
-   `nika check <file> --fix` applies the mechanical repairs. Decode an
-   unfamiliar code with `nika explain NIKA-XXXX`. Loop until clean.
-6. Report cost from the check output, never from a guess. `≤ $X` is a
-   ceiling; `≥ $X FLOOR` means at least one task is unbounded, and you
-   name why. A model running locally is unpriced compute — say unpriced,
-   never free.
-7. Hand the run to the user. Typing `nika run <file>` is their move; give
-   them the line, with `--max-cost-usd <n>` when spend matters. An offline
-   rehearsal costs nothing: `--model mock/echo`.
-8. After a run that mattered, prove it. `nika trace verify <trace>` checks
-   the hash-chained journal under `.nika/traces/`, and
-   `nika trace evidence <trace>` exports a pack a reviewer can check without
-   trusting you. Cite the trace, never a memory of the run.
+## Execution and evidence
 
-## Examples
+Complete execution when already requested and authorized, preserving inputs,
+model, effect scope, spend limits and existing human gates. Use
+`nika run <file> --max-cost-usd <authorized-cap>` with the actual checked values.
+Do not answer a human gate from generic run permission. Preserve the host's
+session identifier for long work; before retrying an interrupted call, reconcile
+its process, recorded trace, outputs and possible partial effects.
 
-In scope: *"every Monday I paste a competitor changelog into a model and
-ask what changed"* → capture it as a workflow with a fetch task, a bounded
-`infer`, and a written report; audit it clean; hand over the run line.
+`--model mock/echo` changes envelope inference only. Task-pinned models, tools,
+network calls, subprocesses and writes remain real. Rehearse only within an
+isolated authorized boundary. `nika test <file> --update` supports a restricted
+simulated plane that refuses network, subprocess and write effects; use it only
+for workflows that fit that plane. Effecting migrations need controlled artifact
+comparisons. Retire a source script only after parity and caller migration cover
+its behavior and removal is authorized.
 
-In scope: *"this deploy script calls a model to draft the release note"* →
-port the model call to `infer:`, the file writes to the `nika:write`
-builtin, declare the permits, pin the behavior with
-`nika test <file> --update`, and leave the old script for the user to
-retire.
+The checker estimates output-token cost, not the complete invoice. Input billing
+may be unpriced; local compute is unpriced, never free. Metered caps stop new
+admissions after crossing the budget, while already admitted calls can overshoot.
+Unknown prices must remain unknown.
 
-Out of scope: *"explain what this regular expression does"* → answer
-directly; no file, no workflow.
+Use `nika trace show <trace>`, `nika trace outputs <trace>` and
+`nika trace verify <trace>` for the identified run. Report the actual proof tier:
+an intact chain is distinct from lifecycle completion or producer honesty.
+Recording is enabled by default, but missing or incomplete recording does not
+prove that execution never started or that no effects occurred. Export
+`nika trace evidence <trace>` when an auditor pack is requested.
 
-Out of scope: *"refactor this module"* → a coding skill owns that. Nika
-does not write application code.
+## Completion
 
-## Self-check before responding
-
-- Did `nika check` exit 0 on the exact file being handed over? If it did
-  not, the file is not ready to hand over.
-- Is the cost reported the way the audit reported it — a ceiling, or a
-  floor with a named reason — with no local model described as free?
-- Does the file declare a `permits:` block, or is the body genuinely pure
-  compute and saying so with an empty one?
-- Was the run proposed as a command line rather than executed?
-- Is every credential referenced through the declared `secrets:` block,
-  with no literal value written anywhere in the file?
+Return the artifact, actual check verdict and remaining blockers. If execution
+was requested, inspect the produced outputs against expected results and report
+the real exit status, metered cost or unknowns, exact trace and verified tier.
+A check is not a run receipt; a static port is not parity. Do not stop at a plan
+or unchecked first draft when the remaining work is authorized.
