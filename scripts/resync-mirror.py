@@ -259,11 +259,25 @@ def main() -> int:
             f"{portable_manifest.get('version')!r}, expected {release_version!r}"
         )
 
+    # Addition-blindness ratchet (earned 2026-07-30: the engine grew
+    # commands/doctor.md and the walk above — entries-only — never saw it,
+    # while the mirrored manifests already announced six commands). Walk
+    # the engine scope FIRST so a retired file (commands/new.md at
+    # v0.120.0) is a prune warning, not a hard abort mid-copy.
+    scope = manifest.setdefault("engine_scope", ".agents/plugins/nika/")
+    upstream_set = set(source.ls(scope))
+    known = {e.get("source", e["path"]) for e in manifest["entries"]
+             if e["class"] == "engine-mirror"}
+
     changed = 0
     for e in manifest["entries"]:
         if e["class"] != "engine-mirror":
             continue
         path = e.get("source", e["path"])
+        if path.startswith(scope) and path not in upstream_set:
+            print(f"  ! {path}: entry source no longer exists at engine {ref} — "
+                  f"prune or re-source the entry (left untouched)")
+            continue
         try:
             upstream = source.read(path)
         except urllib.error.HTTPError as err:
@@ -291,17 +305,6 @@ def main() -> int:
             if str(local).endswith(".sh"):
                 local.chmod(0o755)
             e["sha256"] = digest
-
-    # Addition-blindness ratchet (earned 2026-07-30: the engine grew
-    # commands/doctor.md and the walk above — entries-only — never saw it,
-    # while the mirrored manifests already announced six commands). The
-    # engine bundle scope must be FULLY covered: an upstream file without
-    # an entry is mirrored + pinned on the spot; an entry whose source
-    # vanished upstream is named loud (pruning stays a human move).
-    scope = manifest.setdefault("engine_scope", ".agents/plugins/nika/")
-    upstream_set = set(source.ls(scope))
-    known = {e.get("source", e["path"]) for e in manifest["entries"]
-             if e["class"] == "engine-mirror"}
     for path in sorted(upstream_set - known):
         upstream = source.read(path)
         digest = hashlib.sha256(upstream).hexdigest()
@@ -323,10 +326,6 @@ def main() -> int:
         if e["class"] == "kit-native" and e["path"].startswith(scope) and e["path"] in upstream_set:
             print(f"  ! {e['path']}: kit-native here but PRESENT at engine {ref} — "
                   f"flip its class to engine-mirror (drop the note) and re-run")
-    for path in sorted(p for p in known
-                       if p.startswith(scope) and p not in upstream_set):
-        print(f"  ! {path}: entry source no longer exists at engine {ref} — "
-              f"prune or re-source the entry (left untouched)")
 
     marketplace_changed = align_marketplace_versions(release_version, dry)
     docker_changed = align_docker_version(release_version, dry)
