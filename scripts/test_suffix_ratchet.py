@@ -32,6 +32,14 @@ class SuffixRatchet(unittest.TestCase):
         self.assertNotIn(".nika.yaml", line)
         self.assertTrue(ratchet.content_hit_lines(line), line)
 
+    def test_json_double_escaped_regex_is_detected_without_plain_spelling(self):
+        line = r'"pattern": "^[^/].*\\.nika\\.yaml$"'
+        self.assertNotIn(".nika.yaml", line)
+        self.assertTrue(ratchet.content_hit_lines(line), line)
+        ya = r"filter .nika\\.ya?ml"
+        self.assertNotIn(".nika.yaml", ya)
+        self.assertTrue(ratchet.content_hit_lines(ya), ya)
+
     def test_planted_live_file_is_detected(self):
         exceptions, _ = ratchet.load_exceptions()
         findings = ratchet.scan(

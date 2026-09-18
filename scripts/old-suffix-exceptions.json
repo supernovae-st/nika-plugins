@@ -144,16 +144,16 @@
       "category": "ratchet",
       "reason": "The scanner's own forbidden-pattern data.",
       "owner": "nika-plugins",
-      "count": 29,
-      "lines_sha256": "sha256:6fe8dda3a510e04f5e09b58149c02d794d85f2bbfefbd80de5206a067957a24e"
+      "count": 37,
+      "lines_sha256": "sha256:3ca48a667b27c8faab36b4a24197520bc5fca6616c03740d5ef95fab15735452"
     },
     {
       "path": "scripts/test_suffix_ratchet.py",
       "category": "negative",
       "reason": "Mutation fixture that must keep the retired spelling to prove detection.",
       "owner": "nika-plugins",
-      "count": 14,
-      "lines_sha256": "sha256:5910662e44016ba699175000bfd1334fcc8b5dc267394a4bd8d0867b5bb4dafa"
+      "count": 18,
+      "lines_sha256": "sha256:7d905b01eab2511f5a473f93750f523019fbaa175d1e602e09f41d73a059f6df"
     }
   ]
 }

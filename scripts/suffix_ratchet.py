@@ -38,6 +38,11 @@ CONTENT_NEEDLES = (
     "*.nika.ya?ml",
     ".nika.{yaml,yml}",
     ".nika.{yml,yaml}",
+    # JSON-encoded regex (two backslashes in the file text).
+    r"\\.nika\\.yaml",
+    r"\\.nika\\.yml",
+    r"\\.nika\\.ya?ml",
+    r".nika\\.ya?ml",
 )
 
 
@@ -206,6 +211,17 @@ def _alias_needles_detected_independently() -> list[str]:
     glob = "globs " + "*.nika.yaml"
     if not content_hit_lines(glob):
         misses.append(f"glob line not detected: {glob}")
+
+    json_line = r'"pattern": "^[^/].*\\.nika\\.yaml$"'
+    if ".nika.yaml" in json_line:
+        misses.append("json double-escape fixture accidentally contains plain spelling")
+    elif not content_hit_lines(json_line):
+        misses.append(f"json double-escaped line not detected: {json_line}")
+    ya_line = r"alias .nika\\.ya?ml"
+    if ".nika.yaml" in ya_line:
+        misses.append("ya?ml double-escape fixture accidentally contains plain spelling")
+    elif not content_hit_lines(ya_line):
+        misses.append(f"json ya?ml double-escaped line not detected: {ya_line}")
     return misses
 
 
