@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 190" role="img" aria-label="The loop: you describe the job in plain words, the agent writes the .nika.yaml, nika check audits it before a token is spent, nika run stays yours to type, nika trace verify seals the receipt · the file is the repeatable part">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 190" role="img" aria-label="The loop: you describe the job in plain words, the agent writes the .nika, nika check audits it before a token is spent, nika run stays yours to type, nika trace verify seals the receipt · the file is the repeatable part">
   <!-- The loop · same THEME contract as hero-dark.svg (the light twin swaps
        only the THEME block · scripts/media/derive-hero-light.py). -->
   <style>
@@ -67,7 +67,7 @@
     <text class="mono lbl" x="382" y="42">the agent writes it</text>
     <rect x="382" y="54" width="125" height="40" rx="8" fill="var(--chip-bg)" stroke="var(--chip-stroke)"/>
     <rect class="h2" x="382" y="54" width="125" height="40" rx="8" fill="none" stroke="var(--accent)" opacity="0"/>
-    <text class="mono cmd" x="400" y="80">.nika.yaml</text>
+    <text class="mono cmd" x="400" y="80">.nika</text>
 
     <text class="mono arrow" x="515" y="80">→</text>
 

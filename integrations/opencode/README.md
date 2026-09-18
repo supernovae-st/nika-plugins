@@ -51,7 +51,7 @@ so the `/nika:*` slash commands are a plugin feature, not an MCP one.
 
 ## Three things a session gets wrong from memory
 
-An opencode session writing its first `.nika.yaml` from training data
+An opencode session writing its first `.nika` from training data
 usually trips on the same three. Each is a refusal at `nika check`, before
 a token is spent — but knowing them saves the round trip:
 

@@ -53,7 +53,7 @@ claude plugin install nika@nika
 ```
 
 From then on the session carries 4 skills, 3 subagents, 6 slash commands,
-3 hooks and the read-only oracle `nika mcp`. Write `hello.nika.yaml`; the
+3 hooks and the read-only oracle `nika mcp`. Write `hello.nika`; the
 `mock/echo` model rehearses with no key and no network:
 
 ```yaml
@@ -69,7 +69,7 @@ outputs:
   greeting: ${{ tasks.greeting.output }}
 ```
 
-Ask the session « Validate hello.nika.yaml and repair every finding. » The
+Ask the session « Validate hello.nika and repair every finding. » The
 agent calls the oracle's `nika_check`. The same call by hand, over stdio, with
 `jq` unwrapping the answer:
 
@@ -91,7 +91,7 @@ proposes; a file with live findings is refused, and the refusal carries the
 findings so the agent repairs and re-checks by itself:
 
 ```sh
-nika check hello.nika.yaml
+nika check hello.nika
 ```
 
 ```
@@ -281,14 +281,14 @@ Then paste one of these into your agent:
 
 > Turn this repeatable task into a checked Nika workflow.
 
-> Validate this .nika.yaml file and repair every finding.
+> Validate this .nika file and repair every finding.
 
 > Diagnose this failed Nika run from its trace.
 
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="media/loop-dark.svg">
-    <img src="media/loop-light.svg" alt="The loop: you describe the job in plain words, the agent writes the .nika.yaml, nika check audits it before a token is spent, nika run stays yours to type, nika trace verify seals the receipt · the file is the repeatable part" width="100%">
+    <img src="media/loop-light.svg" alt="The loop: you describe the job in plain words, the agent writes the .nika, nika check audits it before a token is spent, nika run stays yours to type, nika trace verify seals the receipt · the file is the repeatable part" width="100%">
   </picture>
 </p>
 
@@ -321,9 +321,9 @@ can verify afterwards:
 | `/nika:check` · `/nika:explain` · `/nika:new` | audit a file · explain a finding code · scaffold from a template |
 | `/nika:trace` · `/nika:permits` · `/nika:doctor` | read a run's flight recorder · infer and paste the tightest permits boundary · diagnose this machine's Nika surface |
 | session-context hook | a workspace with workflows greets the agent with the nika map at session start (Cursor and Claude Code dialects) |
-| check-on-edit hook | every agent edit to a `*.nika.yaml` is audited immediately; findings land in the hook log, the edit is never blocked |
+| check-on-edit hook | every agent edit to a `*.nika` is audited immediately; findings land in the hook log, the edit is never blocked |
 | guard-run hook | a `nika run` must pass `nika check` first; the deny carries the findings |
-| language rule · delegation rule | the four verbs (`infer` · `exec` · `invoke` · `agent`) on `*.nika.yaml` · when to propose a workflow and which surface to reach for |
+| language rule · delegation rule | the four verbs (`infer` · `exec` · `invoke` · `agent`) on `*.nika` · when to propose a workflow and which surface to reach for |
 | MCP oracle | `nika_check` · `nika_inspect` · `nika_explain` · `nika_schema` · `nika_examples` · `nika_template` · `nika_canon` · `nika_catalog` · `nika_tools`; read-only by design: there is no run tool over MCP ([threat model](integrations/mcp/THREAT-MODEL.md)) |
 
 The bundle's own README, mirrored from the engine, carries the hook laws
@@ -353,7 +353,7 @@ measured on recorded in that file:
 <a href="https://skills.sh/supernovae-st/nika-plugins">skills.sh</a> ·
 <a href="https://claudepluginhub.com">ClaudePluginHub</a> ·
 <a href="https://github.com/davila7/claude-code-templates">aitmpl.com</a> ·
-<a href="https://github.com/SchemaStore/schemastore">SchemaStore</a> (<code>*.nika.yaml</code> in every IDE) ·
+<a href="https://github.com/SchemaStore/schemastore">SchemaStore</a> (YAML catalog; a <code>*.nika</code> fileMatch follow-up is still owed) ·
 <a href="https://www.libhunt.com/r/nika">LibHunt</a> ·
 <a href="https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/supernovae-st/nika">Software Heritage</a>
 · every submission lives in <a href="listings.yaml"><code>listings.yaml</code></a>, verified on a cadence.</sub>

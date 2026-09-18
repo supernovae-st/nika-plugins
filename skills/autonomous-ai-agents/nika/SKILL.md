@@ -19,14 +19,14 @@ metadata:
 # Nika Skill
 
 Use [Nika](https://nika.sh) through the Hermes `terminal` tool to capture repeatable
-AI work in checked `*.nika.yaml` files. Nika is an AGPL-3.0-or-later workflow engine;
+AI work in checked `*.nika` files. Nika is an AGPL-3.0-or-later workflow engine;
 this MIT-licensed skill teaches the Hermes handoff to public Nika 0.118.7. Hermes
 owns the user's intent and authorization; Nika checks the file, admits execution
 under its boundaries, and produces outputs and evidence when execution records them.
 
 ## When to Use
 
-- Author, check, run, or diagnose an existing `*.nika.yaml` workflow.
+- Author, check, run, or diagnose an existing `*.nika` workflow.
 - Capture repeated model, file, HTTP, or command work in a reusable artifact.
 - Inspect costs, declared authority, outputs, or evidence before repeating a job.
 
@@ -57,7 +57,7 @@ Discover a template and create a file without overwriting an existing owner:
 
 ```
 terminal(command="nika new '?'")
-terminal(command="nika new chain flow.nika.yaml", workdir="~/project")
+terminal(command="nika new chain flow.nika", workdir="~/project")
 ```
 
 Read the generated file. For language details, use the installed `nika --help`,
@@ -73,8 +73,8 @@ Check the exact file after every edit, with the model override intended for the
 run if there is one:
 
 ```
-terminal(command="nika check flow.nika.yaml --json --native-strict", workdir="~/project")
-terminal(command="nika explain flow.nika.yaml", workdir="~/project")
+terminal(command="nika check flow.nika --json --native-strict", workdir="~/project")
+terminal(command="nika explain flow.nika", workdir="~/project")
 ```
 
 Read the exit code AND the JSON. `clean`, `native_strict_clean`, and `paid_ready`
@@ -87,13 +87,13 @@ Use `nika explain NIKA-XXXX` for a diagnostic. Fix its cause and check again.
 Preserve existing authorization and budgets. Continue work already authorized;
 resolve only a genuinely missing business decision, authority, or spend limit.
 Do not widen `permits:` or secret `egress:` merely to silence the checker.
-`nika check flow.nika.yaml --infer-permits` proposes a boundary to review against
+`nika check flow.nika --infer-permits` proposes a boundary to review against
 the intended effects; it does not authorize that boundary. Missing permits grant
 zero authority. Keep secrets store-backed and admit only intended sinks.
 
 ### A small native example
 
-Save this as `hash-abc.nika.yaml`. It needs no model or external service and calls
+Save this as `hash-abc.nika`. It needs no model or external service and calls
 a native builtin; check it before considering any run:
 
 ```yaml
@@ -130,7 +130,7 @@ authorized, execute through `terminal`. This is a command shape: replace every
 placeholder with the checked value; retain the user's configured cap.
 
 ```
-terminal(command="nika run flow.nika.yaml --model <provider/model> --var <input>=<value> --max-cost-usd <authorized-cap>", workdir="~/project")
+terminal(command="nika run flow.nika --model <provider/model> --var <input>=<value> --max-cost-usd <authorized-cap>", workdir="~/project")
 ```
 
 For long work, use the Hermes terminal's supported background/session mechanism
@@ -140,7 +140,7 @@ Before retrying after interruption, reconcile the process, trace, outputs, and
 external effects. Preserve negative results and never retry publication blindly.
 
 For a paused `nika:prompt`, use
-`nika run flow.nika.yaml --resume <trace> --answer <task>=<value>`
+`nika run flow.nika --resume <trace> --answer <task>=<value>`
 to supply the authorized answer; it is execution, not inspection.
 Read `nika run --help` and preserve the original inputs, model, cap, and scope.
 Transient errors may use bounded `retry:`; expected errors may use a deliberate
@@ -206,7 +206,7 @@ unstarted producer, and process death can prevent cleanup.
 ## Verification
 
 For the native example, first use
-`nika check hash-abc.nika.yaml --json --native-strict` through `terminal`.
+`nika check hash-abc.nika --json --native-strict` through `terminal`.
 A clean check proves the file passed that preflight; it is not a run receipt.
 If an execution is authorized and performed, compare the output to SHA-256 of
 `abc` (`ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad`).

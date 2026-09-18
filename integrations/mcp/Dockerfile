@@ -1,5 +1,5 @@
 # Nika MCP oracle — read-only stdio server (validate + learn · no execution)
-# Runs `nika mcp`: agents validate .nika.yaml workflows and learn the language
+# Runs `nika mcp`: agents validate .nika workflows and learn the language
 # (schema · templates · examples · catalogs). Execution stays on the CLI.
 #
 # Build:  docker build -t nika-mcp .
