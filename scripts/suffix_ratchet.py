@@ -1,141 +1,320 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: Apache-2.0
-"""Live old-suffix ratchet for issue #1684.
+"""Refuse live retired Nika program suffixes in tracked paths and text.
 
-Canonical executable Nika program source is lowercase ``*.nika``.
-Retired live spellings ``.nika.yaml`` and ``.nika.yml`` must not appear
-in tracked pathnames or live teaching text. Project ``nika.yaml`` and
-runtime ``.nika/`` are different artifacts and are not this gate.
+Canonical executable source is lowercase ``*.nika``. Project ``nika.yaml``
+and runtime ``.nika/`` are different artifacts.
 
-Exceptions must name path + bounded match + category + reason + owner.
-Categories: historical · frozen-evidence · negative-test.
-This is not a live compatibility exemption.
+Exceptions are exact files only — never a directory prefix. Frozen
+evidence pins the whole-file digest. Other rows pin hit-count and the
+hash of the matching lines, so a new occurrence in an allowlisted file
+is red.
+
+    python3 scripts/suffix_ratchet.py
+    python3 scripts/suffix_ratchet.py --selftest
+    python3 scripts/suffix_ratchet.py --dump-pins
 """
 from __future__ import annotations
 
-import pathlib
-import re
+import argparse
+import hashlib
+import json
 import subprocess
 import sys
+from pathlib import Path
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-FORBIDDEN = re.compile(r"\.nika\.ya?ml")
-
-# path relative to repo root · regex limited to that file · category · reason · owner
-EXCEPTIONS: list[dict] = [{'category': 'negative-test',
-  'match': '\\.nika\\.ya?ml',
-  'owner': 'nika-plugins',
-  'path': 'scripts/suffix_ratchet.py',
-  'reason': "the ratchet's own forbidden-pattern data"},
- {'category': 'negative-test',
-  'match': '\\.nika\\.ya?ml',
-  'owner': 'nika-plugins',
-  'path': 'scripts/test_suffix_ratchet.py',
-  'reason': 'mutation fixture that must keep the retired spelling to prove detection'},
- {'category': 'frozen-evidence',
-  'match': '\\.nika\\.ya?ml',
-  'owner': 'engine-release / scripts/resync-mirror.py',
-  'path_prefix': '.agents/plugins/nika/',
-  'reason': 'RELEASE-BOUND engine-mirror of tag v0.118.7; canonical plugin is engine '
-            '.agents/plugins/nika. Do not hand-edit; resync after engine file-identity commit + '
-            'authorized tag.'},
- {'category': 'historical',
-  'match': 'SchemaStore catalog \\(\\*\\.nika\\.yaml editor association\\)',
-  'owner': 'nika-plugins listings',
-  'path': 'listings.yaml',
-  'reason': 'record of merged SchemaStore PR 5899 fileMatch, not live first-party teaching'},
- {'category': 'historical',
-  'match': 'validates \\*\\.nika\\.yaml',
-  'owner': 'nika-plugins listings',
-  'path': 'listings.yaml',
-  'reason': 'notes the SchemaStore merge as it actually shipped'},
- {'category': 'historical',
-  'match': 'linkml-triage\\.nika\\.yaml',
-  'owner': 'nika-plugins listings',
-  'path': 'listings.yaml',
-  'reason': 'external proof artifact filename as submitted'},
- {'category': 'historical',
-  'match': 'pixi-release-notes\\.nika\\.yaml',
-  'owner': 'nika-plugins listings',
-  'path': 'listings.yaml',
-  'reason': 'external proof artifact filename as submitted'},
- {'category': 'historical',
-  'match': 'anki-release-notes\\.nika\\.yaml',
-  'owner': 'nika-plugins listings',
-  'path': 'listings.yaml',
-  'reason': 'external proof artifact filename as submitted'},
- {'category': 'historical',
-  'match': 'workflow\\.nika\\.yaml',
-  'owner': 'nika-plugins listings',
-  'path': 'listings.yaml',
-  'reason': 'OWASP DockSec payload as offered in the listing record'}]
+ROOT = Path(__file__).resolve().parents[1]
+EXCEPTIONS_PATH = ROOT / "scripts" / "old-suffix-exceptions.json"
+RETIRED = (".nika.yaml", ".nika.yml")
+CATEGORIES = {"historical", "frozen", "negative", "ratchet"}
+CONTENT_NEEDLES = (
+    ".nika.yaml",
+    ".nika.yml",
+    r"\.nika\.ya?ml",
+    r"\.nika\.yaml",
+    r"\.nika\.yml",
+    "*.nika.yaml",
+    "*.nika.yml",
+    "*.nika.ya?ml",
+    ".nika.{yaml,yml}",
+    ".nika.{yml,yaml}",
+)
 
 
-def tracked_files() -> list[pathlib.Path]:
+def sha256_bytes(raw: bytes) -> str:
+    return "sha256:" + hashlib.sha256(raw).hexdigest()
+
+
+def lines_sha256(lines: list[str]) -> str:
+    return sha256_bytes(("\n".join(lines) + "\n").encode("utf-8"))
+
+
+def git_ls_files() -> list[str]:
     out = subprocess.run(
-        ["git", "-C", str(ROOT), "ls-files", "-z"],
-        check=True,
+        ["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"],
+        cwd=ROOT,
         capture_output=True,
+        check=True,
+    ).stdout
+    return [p.decode() for p in out.split(b"\0") if p]
+
+
+def load_exceptions() -> tuple[list[dict], dict]:
+    data = json.loads(EXCEPTIONS_PATH.read_text(encoding="utf-8"))
+    rows = data.get("exceptions") or []
+    seen: set[str] = set()
+    for row in rows:
+        for key in ("path", "category", "reason", "owner"):
+            if not row.get(key):
+                raise SystemExit(f"old-suffix exception missing {key}: {row}")
+        path = row["path"]
+        if path.endswith("/") or "*" in path or path.endswith("\\"):
+            raise SystemExit(f"exception path must be an exact file, not a prefix/glob: {path}")
+        if row["category"] not in CATEGORIES:
+            raise SystemExit(f"unknown exception category: {row['category']}")
+        if path in seen:
+            raise SystemExit(f"duplicate exception path: {path}")
+        seen.add(path)
+        if row["category"] == "frozen":
+            if not row.get("digest"):
+                raise SystemExit(f"frozen exception missing digest: {path}")
+        else:
+            if "count" not in row or not row.get("lines_sha256"):
+                raise SystemExit(f"content exception missing count/lines_sha256: {path}")
+    return rows, data.get("selftest") or {}
+
+
+def content_hit_lines(text: str) -> list[str]:
+    return [line for line in text.splitlines() if any(n in line for n in CONTENT_NEEDLES)]
+
+
+def read_rel(rel: str, overlay: dict[str, str] | None) -> tuple[bytes, str] | None:
+    if overlay is not None and rel in overlay:
+        text = overlay[rel]
+        return text.encode("utf-8"), text
+    path = ROOT / rel
+    try:
+        raw = path.read_bytes()
+        return raw, raw.decode("utf-8")
+    except (UnicodeDecodeError, IsADirectoryError, OSError):
+        return None
+
+
+def scan(
+    exceptions: list[dict],
+    *,
+    overlay: dict[str, str] | None = None,
+    extra_paths: list[str] | None = None,
+) -> list[str]:
+    by_path = {row["path"]: row for row in exceptions}
+    files = git_ls_files()
+    if extra_paths:
+        files = list(dict.fromkeys([*files, *extra_paths]))
+    failures: list[str] = []
+    used: set[str] = set()
+    for rel in files:
+        row = by_path.get(rel)
+        loaded = read_rel(rel, overlay)
+        retired_path = rel.endswith(RETIRED)
+        if loaded is None:
+            if retired_path and row is None:
+                failures.append(f"path {rel} · retired program suffix")
+            continue
+        raw, text = loaded
+        hits = content_hit_lines(text)
+        if retired_path:
+            if row is None or row["category"] != "frozen":
+                failures.append(f"path {rel} · retired program suffix")
+            elif sha256_bytes(raw) != row["digest"]:
+                failures.append(f"{rel} · frozen digest mismatch")
+            else:
+                used.add(rel)
+            continue
+        if not hits:
+            continue
+        if row is None:
+            for i, line in enumerate(text.splitlines(), 1):
+                if any(n in line for n in CONTENT_NEEDLES):
+                    failures.append(f"{rel}:{i} · {line.strip()[:160]}")
+            continue
+        used.add(rel)
+        digest = sha256_bytes(raw)
+        if row["category"] == "frozen":
+            if digest != row["digest"]:
+                failures.append(f"{rel} · frozen digest mismatch")
+            continue
+        if len(hits) != row["count"]:
+            failures.append(f"{rel} · hit count {len(hits)} != pinned {row['count']}")
+        actual = lines_sha256(hits)
+        if actual != row["lines_sha256"]:
+            failures.append(f"{rel} · matching-lines hash mismatch")
+    for row in exceptions:
+        if row["path"] not in used:
+            failures.append(f"stale exception · {row['path']}")
+    return failures
+
+
+def dump_pins() -> int:
+    exceptions, _ = load_exceptions()
+    files = set(git_ls_files())
+    for row in exceptions:
+        rel = row["path"]
+        loaded = read_rel(rel, None)
+        if loaded is None:
+            print(f"# missing {rel}", file=sys.stderr)
+            continue
+        raw, text = loaded
+        hits = content_hit_lines(text)
+        print(f"{rel}")
+        print(f"  digest: {sha256_bytes(raw)}")
+        print(f"  count: {len(hits)}")
+        print(f"  lines_sha256: {lines_sha256(hits)}")
+        if rel not in files:
+            print("  # not in git ls-files", file=sys.stderr)
+    return 0
+
+
+def _alias_needles_detected_independently() -> list[str]:
+    misses: list[str] = []
+    required = (
+        ".nika.yaml",
+        ".nika.yml",
+        r"\.nika\.yaml",
+        r"\.nika\.yml",
+        r"\.nika\.ya?ml",
+        "*.nika.yaml",
+        "*.nika.yml",
+        ".nika.{yaml,yml}",
+        ".nika.{yml,yaml}",
     )
-    return [ROOT / p.decode() for p in out.stdout.split(b"\0") if p]
+    for needle in required:
+        if needle not in CONTENT_NEEDLES:
+            misses.append(f"needle missing from CONTENT_NEEDLES: {needle}")
+
+    escaped_line = "pattern " + r"\.nika\.yaml"
+    if ".nika.yaml" in escaped_line:
+        misses.append("escaped-only fixture accidentally contains plain spelling")
+    elif not content_hit_lines(escaped_line):
+        misses.append(f"escaped-only line not detected: {escaped_line}")
+
+    brace = "accepts " + ".nika.{yaml,yml}"
+    if ".nika.yaml" in brace:
+        misses.append("brace fixture accidentally contains plain spelling")
+    elif not content_hit_lines(brace):
+        misses.append(f"brace line not detected: {brace}")
+
+    glob = "globs " + "*.nika.yaml"
+    if not content_hit_lines(glob):
+        misses.append(f"glob line not detected: {glob}")
+    return misses
 
 
-def exception_for(rel: str, line: str) -> dict | None:
-    for exc in EXCEPTIONS:
-        if "path_prefix" in exc:
-            if not rel.startswith(exc["path_prefix"]):
-                continue
-        elif exc.get("path") != rel:
-            continue
-        if re.search(exc["match"], line):
-            return exc
-    return None
+def selftest() -> int:
+    bad = 0
+    exceptions, cfg = load_exceptions()
+    clean = scan(exceptions)
+    if clean:
+        print("selftest: live tree should be clean, got:")
+        for item in clean:
+            print(f"  {item}")
+        bad += 1
+    else:
+        print("selftest: live tree clean")
 
+    alias_misses = _alias_needles_detected_independently()
+    if alias_misses:
+        print("selftest: alias detection failed:")
+        for item in alias_misses:
+            print(f"  {item}")
+        bad += 1
+    else:
+        print("selftest: escaped / glob / brace aliases detected independently")
 
-def scan() -> list[str]:
-    findings: list[str] = []
-    used: set[tuple[str, str]] = set()
-    for path in tracked_files():
-        rel = path.relative_to(ROOT).as_posix()
-        if FORBIDDEN.search(rel):
-            if exception_for(rel, rel) is None:
-                findings.append(f"PATH {rel}: retired suffix in a tracked pathname")
+    inject = cfg.get("inject_path")
+    if inject:
+        loaded = read_rel(inject, None)
+        if loaded is None:
+            print(f"selftest: inject_path unreadable: {inject}")
+            bad += 1
+        else:
+            orig = loaded[1]
+            injected = orig.rstrip() + "\n\n`nika run foo.nika.yaml`\n"
+            chapter_fail = scan(exceptions, overlay={inject: injected})
+            if not any(inject in item for item in chapter_fail):
+                print("selftest: missed injection into allowlisted file", chapter_fail)
+                bad += 1
             else:
-                exc = exception_for(rel, rel); used.add((exc.get("path") or exc.get("path_prefix"), exc["match"]))
-        try:
-            text = path.read_text(encoding="utf-8")
-        except (UnicodeDecodeError, IsADirectoryError, OSError):
-            continue
-        for n, line in enumerate(text.splitlines(), 1):
-            if not FORBIDDEN.search(line):
-                continue
-            exc = exception_for(rel, line)
-            if exc is None:
-                findings.append(f"{rel}:{n}: {line.strip()[:200]}")
-            else:
-                used.add((exc.get("path") or exc.get("path_prefix"), exc["match"]))
-    declared = set()
-    for e in EXCEPTIONS:
-        key = (e.get("path") or e.get("path_prefix"), e["match"])
-        declared.add(key)
-    stale = declared - used
-    for path, match in sorted(stale):
-        findings.append(f"STALE EXCEPTION {path} match={match!r} — no remaining hit")
-    return findings
+                print(f"selftest: injection into {inject} detected")
+
+    new_file = cfg.get("new_file")
+    if new_file:
+        proof_fail = scan(
+            exceptions,
+            extra_paths=[new_file],
+            overlay={new_file: "nika check hello.nika.yaml\n"},
+        )
+        if not any(new_file in item for item in proof_fail):
+            print("selftest: missed new unlisted file", proof_fail)
+            bad += 1
+        else:
+            print(f"selftest: new file {new_file} detected")
+
+    prefix_file = cfg.get("new_prefix_file")
+    if prefix_file:
+        prefix_fail = scan(
+            exceptions,
+            extra_paths=[prefix_file],
+            overlay={prefix_file: "historical leftover foo.nika.yaml\n"},
+        )
+        if not any(prefix_file in item for item in prefix_fail):
+            print("selftest: missed new file under former prefix", prefix_fail)
+            bad += 1
+        else:
+            print(f"selftest: new prefix file {prefix_file} detected")
+
+    escaped_file = cfg.get("escaped_file", "scripts/_escaped-alias.md")
+    escaped_fail = scan(
+        exceptions,
+        extra_paths=[escaped_file],
+        overlay={escaped_file: "regex " + r"\.nika\.yaml" + "\n"},
+    )
+    if not any(escaped_file in item for item in escaped_fail):
+        print("selftest: missed escaped-alias-only file", escaped_fail)
+        bad += 1
+    else:
+        print("selftest: escaped-alias-only file detected")
+
+    again = scan(exceptions)
+    if again:
+        print("selftest: overlay leaked into live scan", again)
+        bad += 1
+    else:
+        print("selftest: legitimate history and negative tests still pass")
+    return bad
 
 
 def main() -> int:
-    planted = "this-line-must-match .nika.yaml as a scanner self-check"
-    if not FORBIDDEN.search(planted):
-        print("suffix-ratchet: scanner no longer matches the retired spelling", file=sys.stderr)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--selftest", action="store_true")
+    parser.add_argument("--dump-pins", action="store_true")
+    args = parser.parse_args()
+    if args.dump_pins:
+        return dump_pins()
+    if args.selftest:
+        return selftest()
+    misses = _alias_needles_detected_independently()
+    if misses:
+        print("suffix-ratchet: alias scanner regression:", file=sys.stderr)
+        for item in misses:
+            print(f"  {item}", file=sys.stderr)
         return 1
-    findings = scan()
-    if findings:
-        print("suffix-ratchet: retired .nika.yaml / .nika.yml still live:", file=sys.stderr)
-        for f in findings:
-            print(f"  {f}", file=sys.stderr)
+    failures = scan(load_exceptions()[0])
+    for item in failures:
+        print(f"  {item}", file=sys.stderr)
+    if failures:
+        print(f"suffix-ratchet: retired suffix still live ({len(failures)} hit(s))", file=sys.stderr)
         return 1
-    print("suffix-ratchet: ok — no live .nika.yaml / .nika.yml outside allowlisted exceptions")
+    print("suffix-ratchet: ok — no live retired suffix outside pinned exceptions")
     return 0
 
 

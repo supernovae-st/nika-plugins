@@ -91,6 +91,7 @@ jobs:
       - name: Retired program-suffix ratchet
         run: |
           python3 scripts/suffix_ratchet.py
+          python3 scripts/suffix_ratchet.py --selftest
           python3 -m unittest scripts/test_suffix_ratchet.py -v
       # A form has TWO death dates: the day the spec retires it and the day
       # the engine refuses it. Between them the REPLACEMENT does not parse,

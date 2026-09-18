@@ -1,0 +1,159 @@
+{
+  "selftest": {
+    "inject_path": "listings.yaml",
+    "new_file": "scripts/_ratchet-injection.md",
+    "new_prefix_file": ".agents/plugins/nika/_ratchet-injection.md"
+  },
+  "exceptions": [
+    {
+      "path": ".agents/plugins/nika/.claude-plugin/plugin.json",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:fb2913ecb77e32dc40931db6e2b898747e4c9d4efed363002376a6429c94ccf6"
+    },
+    {
+      "path": ".agents/plugins/nika/.cursor-plugin/plugin.json",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:942cae4d0873659c31ad2867fd6dfbdbd3d519d9bc1312512641ce514c15d588"
+    },
+    {
+      "path": ".agents/plugins/nika/CHANGELOG.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:4513ff585192a5c5402ccbe9962a217f55cc8b60a9afb63cf604228285a26e6f"
+    },
+    {
+      "path": ".agents/plugins/nika/README.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:69ec5bda2e7827f2210f788cc8fc82dc95db88826d7d42aa21741ed236cd7d16"
+    },
+    {
+      "path": ".agents/plugins/nika/agents/nika-author.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:adea8317296edffae1a8fbffbf23341b5a2ee524a0b52eced3db8fa0a7f27ceb"
+    },
+    {
+      "path": ".agents/plugins/nika/agents/nika-migrator.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:e453b0504c767f8fa6311350f2925127a32885c97809d3d56ab431c0d9c89ad0"
+    },
+    {
+      "path": ".agents/plugins/nika/commands/check.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:4b175cbe37212263c946ab5649124005d0a8e26802b23a71281ed390f6bb4fca"
+    },
+    {
+      "path": ".agents/plugins/nika/commands/explain.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:d79d034a0e8a42e0d8ed4ffa8a846395c3512cdf62fcaffd01b9f5d939bf930b"
+    },
+    {
+      "path": ".agents/plugins/nika/commands/new.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:649918784b0b44504c9ce992ffa46ed89067cc79ed9a4e8ee43f77ebb079c8f7"
+    },
+    {
+      "path": ".agents/plugins/nika/commands/permits.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:4a2f3a45e3de359d62e0758ed93d89fc930b616725cf3336150dbdf062cf2a3b"
+    },
+    {
+      "path": ".agents/plugins/nika/rules/nika-delegation.mdc",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:c6c7825a29809304d5b111a8128b1fd473a5e9fba680b2f49c0f3705451ebd05"
+    },
+    {
+      "path": ".agents/plugins/nika/rules/nika-workflow-language.mdc",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:d8b630491fcdf8a9d7aa4d58fe5f050478d0d2d8d78776af297290ce783d9342"
+    },
+    {
+      "path": ".agents/plugins/nika/scripts/check-on-edit.sh",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:7ed3985241e0e187c831f116f1031db3f0f7b924eeafa7d4778a754ff58e0ca7"
+    },
+    {
+      "path": ".agents/plugins/nika/scripts/session-context.sh",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:37d8e56046305cffb1b5e2765aad0d5f310698e871855190725a6e270a1a9458"
+    },
+    {
+      "path": ".agents/plugins/nika/scripts/tests/guard-judge-exit.test.sh",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:c44b0a4856df1ae00d2b5ce75ead6ce2bfc98ede1148ee1ff5c04e5d46ddc498"
+    },
+    {
+      "path": ".agents/plugins/nika/scripts/tests/guard-run.test.sh",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:1f76c7315918a7ec0a9a46053722914b73a8e8046928ef459cc154397509c52d"
+    },
+    {
+      "path": ".agents/plugins/nika/skills/nika-authoring/SKILL.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:e9724c589bdf532d144ed7cef2ca2a010bfe44b6ffef09ae37b02d3bab458de0"
+    },
+    {
+      "path": ".agents/plugins/nika/skills/nika-migration/SKILL.md",
+      "category": "frozen",
+      "reason": "Immutable published bytes; a matching mutation or a new sibling file is red.",
+      "owner": "nika-plugins",
+      "digest": "sha256:f6911147347a66bec6f3550175aa3383243b5110f699ae6fcd138e8a972a923c"
+    },
+    {
+      "path": "listings.yaml",
+      "category": "historical",
+      "reason": "Dated record of the retired spelling as it actually shipped.",
+      "owner": "nika-plugins",
+      "count": 6,
+      "lines_sha256": "sha256:b18d6d4269633e611fb421108f89259fcbe0830ef9fc6dbc11ce20f2cc8a912b"
+    },
+    {
+      "path": "scripts/suffix_ratchet.py",
+      "category": "ratchet",
+      "reason": "The scanner's own forbidden-pattern data.",
+      "owner": "nika-plugins",
+      "count": 29,
+      "lines_sha256": "sha256:6fe8dda3a510e04f5e09b58149c02d794d85f2bbfefbd80de5206a067957a24e"
+    },
+    {
+      "path": "scripts/test_suffix_ratchet.py",
+      "category": "negative",
+      "reason": "Mutation fixture that must keep the retired spelling to prove detection.",
+      "owner": "nika-plugins",
+      "count": 14,
+      "lines_sha256": "sha256:5910662e44016ba699175000bfd1334fcc8b5dc267394a4bd8d0867b5bb4dafa"
+    }
+  ]
+}
