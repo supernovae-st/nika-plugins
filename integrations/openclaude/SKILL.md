@@ -1,7 +1,7 @@
 ---
 name: nika-workflow
 title: Nika Workflow
-description: Author or port repeatable AI work into checked .nika.yaml workflows. Use for workflow artifacts and their diagnosis, not ordinary coding or one-off answers.
+description: Author or port repeatable AI work into checked .nika workflows. Use for workflow artifacts and their diagnosis, not ordinary coding or one-off answers.
 category: general
 tags:
   - workflow
@@ -20,8 +20,8 @@ tools_required:
 # Nika Workflow
 
 Use [Nika](https://nika.sh) through the host's Bash tool to capture repeatable
-AI work in a `*.nika.yaml` artifact. Nika is an AGPL-3.0-or-later workflow engine;
-this MIT-licensed skill teaches the public 0.118.7 contract. The host owns the
+AI work in a `*.nika` artifact. Nika is an AGPL-3.0-or-later workflow engine;
+this MIT-licensed skill teaches the public Nika 0.120 compile door. The host owns the
 user's intent and authorization. A check gives evidence; engine and host gates
 still control execution.
 
@@ -38,8 +38,11 @@ installation route at https://nika.sh. Use `nika doctor` when setup needs
 diagnosis. Do not assume a model or host capability from its product name.
 
 Read the existing file and callers before creating a replacement. For a new
-shape, `nika new '?'` lists templates and `nika new <template> <file>.nika.yaml`
-creates one. Resolve exact syntax from `nika spec --schema`, `nika catalog`,
+shape, `nika compile --list` names templates and
+`nika compile hello hello.nika` writes a Ready destination. Preview with
+`nika compile <template> --json`; remaining questions use
+`--answer KEY=JSON_LITERAL`; unknown intent stays incomplete. Resolve exact
+syntax from `nika spec --schema`, `nika catalog`,
 `nika catalog --tools` and the matching release's
 [authoring guide](https://github.com/supernovae-st/nika/blob/v0.118.7/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
 Read examples for unresolved structures, not a fixed quota before every edit.

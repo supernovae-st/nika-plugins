@@ -1,6 +1,6 @@
 ---
 name: nika-debugging
-description: Diagnose and repair failed, paused or suspicious Nika runs from their traces (.nika/traces). Use when nika run exited red, a run paused on a prompt, a NIKA-XXXX runtime finding needs a root cause, a trace must be read or tamper-verified, or a fixed workflow needs a surgical partial rerun.
+description: Diagnose failed, paused or suspicious Nika runs from traces. Use for runtime failures, integrity checks and recovery; static workflow edits belong to authoring.
 ---
 
 # Debugging Nika runs
@@ -92,6 +92,17 @@ missing decision or gate answer.
 
 ## Common root causes (check these before anything exotic)
 
+- **Provider connection interrupted**: `NIKA-INFER-001` names the service
+  endpoint and a transport cause when available. Check that endpoint's service;
+  a declared `retry:` can retry a connection failure within its attempt and
+  timeout limits. Without `retry:`, there is one attempt. Authentication errors,
+  malformed responses and capability refusals do not become transient because
+  their message mentions a connection. An interrupted call may still have
+  generated or billed tokens: absent usage is unknown, never proof of zero spend.
+  An agent whose tools already ran suppresses whole-task replay after a connection
+  failure, even with `on_codes`; reconcile those effects before a manual rerun.
+  `--model mock/echo` can rehearse the envelope model; per-task pins and tools
+  retain their own behavior.
 - **Model does not resolve**: `nika check <file> --json` →
   `models_resolve` says whether every `model:` runs in THIS binary;
   `nika catalog` names the env var each provider needs.
@@ -123,6 +134,15 @@ missing decision or gate answer.
 
 ## Tamper evidence
 
+`nika run --json` is an ordered execution journal, not a live provider-token
+feed. Task lifecycle frames are emitted together at task settlement to preserve
+deterministic wave order; a slow earlier task can delay a later task's frames.
+Consequently, adjacent `task_started` and terminal timestamps describe emission,
+not the actual request start. Use the terminal `duration_ms` for elapsed task
+work and `nika trace ls --json` for the writer's liveness. A live writer does not
+prove that its provider is responding. The provider stream API is a separate
+door; workflow `infer:` currently uses buffered inference.
+
 `nika trace verify <trace>` checks the recorded hash links. A consistent
 unkeyed chain alone does not rule out rewriting the entire journal; compare
 the head with independently trusted evidence or verify its trusted seal.
@@ -130,7 +150,7 @@ Exit 0 verified · 2 broken · 3 unchained or missing input · 5 incomplete. The
 verdict also names the highest tier honestly attained — chain OK ·
 **SEALED** (the `run_sealed` signature verifies against a custody
 key) · **ANCHORED** (the detached sidecar verifies fully offline) ·
-**REPLAYED** (`--replay` compares a fresh run; verify never
+**REPLAYED** (`--replay <fresh-trace>` compares a fresh run; verify never
 re-executes). A journal that never reached a lifecycle-terminal frame
 verifies **INCOMPLETE**: the verifier's finding about a run that died
 mid-flight — not a pass, and not a tamper claim. Say which one you
@@ -147,3 +167,11 @@ does not prove that the producer told the truth.
 - Never edit a trace. Never delete a paused trace to "clean up".
 - If the binary is missing: `brew install supernovae-st/tap/nika` —
   do not reconstruct runs from memory.
+
+## Completion
+
+A diagnosis names the evidenced cause, remaining hypotheses and the smallest
+repair. When repair and recovery are requested and authorized, continue through
+the affected check, reconciled retry and output inspection; do not stop at the
+first plausible explanation. Preserve the original effect scope and budget,
+and ask only for a missing decision or a human gate's actual answer.

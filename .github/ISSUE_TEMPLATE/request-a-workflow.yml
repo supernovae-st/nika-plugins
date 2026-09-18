@@ -1,5 +1,5 @@
 name: Request a workflow
-description: Describe a repeatable AI task — get a checked, trace-proven .nika.yaml back (from us or the community)
+description: Describe a repeatable AI task — get a checked, trace-proven .nika back (from us or the community)
 title: "workflow request: <what should it do>"
 labels: ["workflow-request", "help wanted"]
 body:

@@ -1,13 +1,13 @@
 # Nika MCP oracle — read-only stdio server (validate + learn · no execution)
-# Runs `nika mcp`: agents validate .nika.yaml workflows and learn the language
+# Runs `nika mcp`: agents validate .nika workflows and learn the language
 # (schema · templates · examples · catalogs). Execution stays on the CLI.
 #
 # Build:  docker build -t nika-mcp .
 # Run:    docker run -i --rm nika-mcp        (stdio JSON-RPC)
-# Pin a version: docker build --build-arg NIKA_VERSION=0.118.7 -t nika-mcp .
+# Pin a version: docker build --build-arg NIKA_VERSION=0.120.0 -t nika-mcp .
 
 FROM ubuntu:24.04 AS fetch
-ARG NIKA_VERSION=0.118.7
+ARG NIKA_VERSION=0.120.0
 ARG TARGETARCH
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl ca-certificates \

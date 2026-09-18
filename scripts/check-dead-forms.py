@@ -225,7 +225,7 @@ def _nika() -> str:
 def _rc(text: str):
     import tempfile
     with tempfile.TemporaryDirectory() as d:
-        f = pathlib.Path(d) / "probe.nika.yaml"
+        f = pathlib.Path(d) / "probe.nika"
         f.write_text(text)
         try:
             return subprocess.run([_nika(), "check", str(f)],
@@ -381,7 +381,7 @@ def is_nika_block(body: list) -> bool:
 
 def fence_lines(rel: str, lines: list) -> set:
     """1-based line numbers that sit inside a NIKA WORKFLOW document."""
-    if rel.endswith((".nika.yaml", ".nika.yml")):
+    if pathlib.Path(rel).suffix == ".nika":
         return set(range(1, len(lines) + 1))
     if rel.endswith((".yaml", ".yml")):
         # A whole registry/CI file is a nika document only if it carries a

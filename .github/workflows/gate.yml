@@ -88,6 +88,11 @@ jobs:
       # comment is not a carve-out worth maintaining.
       - name: No kit-native surface teaches a dead language form
         run: python3 scripts/check-dead-forms.py
+      - name: Retired program-suffix ratchet
+        run: |
+          python3 scripts/suffix_ratchet.py
+          python3 scripts/suffix_ratchet.py --selftest
+          python3 -m unittest scripts/test_suffix_ratchet.py -v
       # A form has TWO death dates: the day the spec retires it and the day
       # the engine refuses it. Between them the REPLACEMENT does not parse,
       # so a rule that fires early tells every author to write a file that

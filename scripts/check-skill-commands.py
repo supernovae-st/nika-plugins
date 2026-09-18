@@ -86,13 +86,12 @@ def retired_command_forms(md: pathlib.Path) -> list:
     Match the flag before or after the destination and in agent terminal
     calls as well as inline code. Stop at a command/span boundary so a
     later `nika run --from` is not confused with the retired creation flag.
-    The canonical creation form is `nika new <template|intent> <dest>`.
+    The canonical creation form is `nika compile <skeleton|hello> [dest]`.
     """
-    pattern = re.compile(r"\bnika[ \t]+new\b[^\n`;]*?[ \t]--from(?![a-zA-Z0-9_-])")
+    pattern = re.compile(r"\bnika[ \t]+new\b")
     return [(number, match.group(0))
             for number, line in enumerate(md.read_text().splitlines(), 1)
-            for match in pattern.finditer(line)
-            if not re.match(r"[^`]*` is obsolete here\. Use positional intent and destination;", line[match.end():])]
+            for match in pattern.finditer(line)]
 
 
 def quiet_door_ships(nika: str, sub: str, cache: dict) -> bool:
@@ -124,7 +123,7 @@ def main() -> int:
         for line, form in retired:
             failed = True
             print(f"✗ {md.relative_to(ROOT)}:{line} teaches retired argv: {form}; "
-                  "use nika new <template|intent> <dest> (no --from)",
+                  "use nika compile <skeleton|hello> [dest] (Ready dest only)",
                   file=sys.stderr)
         taught = taught_subcommands(md)
         missing = {s for s in taught - shipped

@@ -52,22 +52,22 @@ with tempfile.TemporaryDirectory() as tmp:
         for form in [
             "`nika new --from '?'`",
             "`nika new --from`",
-            "`nika new --from=chain flow.nika.yaml`",
-            '```\nterminal(command="nika new flow.nika.yaml --from chain")\n```',
-            "```sh\nnika new --force --from chain flow.nika.yaml\n```",
+            "`nika new '?'`",
+            "`nika new chain flow.nika`",
+            '```\nterminal(command="nika new flow.nika --from chain")\n```',
+            "```sh\nnika new --force --from chain flow.nika\n```",
         ]:
             md.write_text(form)
             stderr = io.StringIO()
             with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
                 code = MODULE.main()
             assert code == 1, f"retired form slipped green: {form}"
-            assert "--from" in stderr.getvalue(), stderr.getvalue()
+            assert "nika new" in stderr.getvalue(), stderr.getvalue()
         for form in [
-            "- `nika new --from ...` is obsolete here. Use positional intent and destination;",
-            "`nika new '?'`", "`nika new chain flow.nika.yaml`",
-            "```sh\nnika new 'summarize a page' flow.nika.yaml --force\n```",
-            "`nika run flow.nika.yaml --from task`",
-            "```sh\nnika new chain flow.nika.yaml; nika run flow.nika.yaml --from task\n```",
+            "`nika compile --list`", "`nika compile hello hello.nika`",
+            "```sh\nnika compile chain --json\n```",
+            "`nika run flow.nika --from task`",
+            "```sh\nnika compile hello hello.nika; nika run flow.nika --from task\n```",
         ]:
             md.write_text(form)
             with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):

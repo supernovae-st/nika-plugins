@@ -1,6 +1,6 @@
 ---
 name: nika-migration
-description: Convert existing automation — shell scripts, Python glue, Makefile targets, CI jobs, prompt chains in docs — into checkable .nika.yaml workflows. Use when a script wraps LLM calls or HTTP/file plumbing, a prompt chain lives in a README or notebook, or ad-hoc automation needs audit, cost bounds and replayable traces.
+description: Convert existing scripts, CI jobs or prompt chains into .nika workflows while preserving behavior. Use when an existing automation is being ported.
 ---
 
 # Migrating existing automation to Nika
@@ -28,7 +28,7 @@ sub-second pure-shell pipelines with zero AI and zero HTTP (a
 | `curl` / `wget` / `fetch()` helper | `invoke:` `tool: "nika:fetch"` — **for an API, set `mode: raw` or `mode: jq`** (the default `markdown` mode is for pages and escapes JSON bodies) |
 | `curl … \| jq` in one breath | ONE fetch task: `mode: jq` + `jq: '<expression>'` — the shape rides the fetch |
 | `jq` / `sed` on JSON | `nika:jq` (arg name is `expression`), or an `extract:` binding |
-| `cat` / `cp` / `mkdir` / `tee` | `nika:read` / `nika:write` (`create_dirs: true`) |
+| `cat` / `cp` / `mkdir` / `tee` | `nika:read` / `nika:write` — a directory is made by writing its FIRST file inside it with `create_dirs: true`, never by an empty write at the directory's path (that creates a FILE there, and nothing deletes it) |
 | in-place file edits | `nika:edit` |
 | the LLM call (SDK, `curl` to an API) | `infer:` with `prompt`, `schema?`, `max_tokens` |
 | an agent loop (retry-until-good) | `agent:` with `tools` allowlist + `max_turns` |
@@ -51,21 +51,24 @@ sub-second pure-shell pipelines with zero AI and zero HTTP (a
 1. **Read the source completely.** Inventory: inputs · outputs · side
    effects · credentials · the failure the author feared (that guard
    clause is the intent — keep it).
-2. **Route to a template**: `nika new '?'` lists the embedded
+2. **Inspect an exact skeleton**: `nika compile --list` lists the embedded
    set; pick the OUTER shape (chain · fanout · gate-and-act ·
-   etl-state · agent-loop · human-gated-ship) and instantiate with
-   `nika new <template> <file>.nika.yaml`.
+   etl-state · agent-loop · human-gated-ship) and preview with
+   `nika compile <template> --json`. Answer its stable questions explicitly,
+   then name a destination to write a Ready candidate. Unsupported migration
+   intent remains incomplete; do not substitute a nearby shape for the request.
 3. **Map with the table.** Native-first is the law: `invoke: nika:*`
    → `invoke: mcp:<server>/<tool>` → `exec:` last. Every surviving
    `exec:` gets its ledger row (task · command · why no native path ·
    unlock that removes it).
-4. **Shape under mock**: `model: mock/echo` while the structure
-   settles — `nika check <file>` after every change, repair from the
-   diagnostics until exit 0, then `--native-strict`.
+4. **Validate the intended model and structure**: `nika check <file>`
+   performs static checks without inference. Preserve the selected model;
+   use `mock/echo` only for a deliberate simulated rehearsal. Repair the
+   final candidate from diagnostics and require `--native-strict` readiness.
 5. **Declare the boundary**: `permits:` is mandatory — an effect under
    no block refuses `NIKA-AUTH-006` at check.
-   `nika check <file> --infer-permits` prints the tightest block;
-   paste it in. The script trusted its author; the workflow trusts
+   `nika check <file> --infer-permits` proposes a block;
+   review it against intended effects before applying it. The script trusted its author; the workflow trusts
    nobody by default (a pure-compute port still declares
    `permits: {}`).
 6. **Prove the intended parity** on controlled inputs and authorized
@@ -89,7 +92,7 @@ sub-second pure-shell pipelines with zero AI and zero HTTP (a
 
 ## Porting a pre-0.106 workflow file
 
-A `.nika.yaml` written before 0.106 can refuse to check today — the
+A `.nika` written before 0.106 can refuse to check today — the
 flag day changed what an existing file MEANS. Run `nika check <file>
 --fix` first: it migrates three classes mechanically, comment-
 preserving and idempotent.

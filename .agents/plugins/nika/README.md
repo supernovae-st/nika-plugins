@@ -6,7 +6,7 @@
 
 Teach your agent to hand repeatable work to
 [Nika](https://github.com/supernovae-st/nika): a plain-text
-`.nika.yaml` workflow it can **check before a token is spent** and
+`.nika` workflow it can **check before a token is spent** and
 **verify after**. One `Add` installs the full bundle — your agent
 learns to author, debug, operate and migrate workflows on its own.
 
@@ -18,20 +18,20 @@ brew install supernovae-st/tap/nika   # the binary first; the plugin invokes it
 
 | Component | What it does |
 |---|---|
-| `nika-authoring` skill | the author → check → repair loop, taught step by step |
+| `nika-authoring` skill | a concise authoring entry with task-specific language and validation references |
 | `nika-debugging` skill | run forensics: trace ls → show → outputs → verify · resume lines · surgical reruns |
 | `nika-operating` skill | day-2 hardening: spend caps · permits · secrets · model swaps · CI goldens · OTLP export |
 | `nika-migration` skill | convert scripts, CI jobs and prompt chains to workflows — mapping table + parity protocol |
-| `nika-author` subagent | routes an intent to a template, fills the `# SLOT:` markers, loops `nika check` until rc=0 — writes and verifies; launching belongs to the conversation |
+| `nika-author` subagent | writes or repairs the requested artifact, checks it and reports blockers; launching belongs to the conversation |
 | `nika-debugger` subagent | root-causes a failed or paused run from its hash-chained trace, hands back the exact resume line |
 | `nika-migrator` subagent | ports existing automation: inventory → native-first mapping → check loop → golden pin |
-| language rule | the 4-verb surface (`infer` · `exec` · `invoke` · `agent`), auto-loaded on `*.nika.yaml` |
+| language rule | the 4-verb surface (`infer` · `exec` · `invoke` · `agent`), auto-loaded on `*.nika` |
 | delegation rule | teaches the agent WHEN to propose a workflow (repeatable · multi-step · spend-bound AI work) and which bundled surface to reach for |
-| `/nika:check` · `/nika:explain` · `/nika:new` | audit a file · explain a finding code · scaffold from a template |
+| `/nika:check` · `/nika:explain` · `/nika:compile` | audit a file · explain a finding code · compile an exact skeleton or conservative edit |
 | `/nika:trace` · `/nika:permits` | read a run's flight recorder (verdict · root cause · resume line) · infer and paste the tightest permits boundary |
 | `/nika:doctor` | diagnose this machine's Nika surface — binary · installed plugin kits (train drift, per-client fix) · providers · wiring — advisory by design, never breaks automation |
 | session-context hook | a workspace with workflows greets the agent with the full nika map at session start (surfaces · laws · where traces live) — Cursor **and** Claude Code dialects |
-| check-on-edit hook | every agent edit to a `*.nika.yaml` is audited immediately (findings in the hook log; never blocks the edit) |
+| check-on-edit hook | every agent edit to a `*.nika` is audited immediately (findings in the hook log; never blocks the edit) |
 | guard-run hook | pre-run judgment with findings on refusal (Cursor `beforeShellExecution` · Claude Code `PreToolUse`); installation and availability boundaries below |
 | MCP oracle (9 tools) | `nika_check` · `nika_explain` · `nika_schema` · `nika_examples` · `nika_template` · `nika_canon` · `nika_catalog` · `nika_tools` · `nika_inspect` — read-only, by design |
 
@@ -39,15 +39,15 @@ brew install supernovae-st/tap/nika   # the binary first; the plugin invokes it
   <img src="https://raw.githubusercontent.com/supernovae-st/nika-vscode/main/media/check-as-you-type.gif" alt="nika check findings appearing as you type" width="640">
 </p>
 
-## The loop it teaches
+## The work it supports
 
-1. route the intent to a template (`nika new <name>` or the
-   `nika_template` tool)
-2. fill every `# SLOT:` marker — touch nothing else
-3. `nika check` — findings carry `NIKA-XXXX` codes with fix hints
-4. repair, re-check, until `rc=0`
-5. the human runs it: `nika run <file>` — and the trace proves it
-   (`nika trace verify`)
+Start from the named workflow or a suitable template, resolve unfamiliar shapes
+from the installed catalog, and adapt the artifact to the requested result.
+The authoring entry routes to only the needed references. Check the final file,
+repair actionable findings, and report concrete blockers if it is not ready.
+When execution is requested and authorized, the coordinating agent can run it
+within the existing effects and budget, inspect outputs and verify the trace.
+A check, run result and integrity verdict are different evidence.
 
 No plugin store to audit on the workflow side either: everything
 callable is a tool under `invoke:`, and the engine ships its own
@@ -86,7 +86,8 @@ callable is a tool under `invoke:`, and the engine ships its own
   the binary yourself.
 - The engine stays the authority: hooks are a seatbelt, never the
   airbag. Everything the oracle answers is read-only by design: the
-  plugin can audit and teach, only YOU run workflows.
+  MCP oracle audits and teaches; execution uses the host's visible shell
+  tools under the user's authorization and the engine's admission boundaries.
 
 ## Links
 

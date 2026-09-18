@@ -4,7 +4,7 @@
 pkgname=nika-bin
 pkgver=0.107.0
 pkgrel=1
-pkgdesc="Workflow language + engine for AI pipelines — audit .nika.yaml statically (cost/permits/secrets) before running, verify the hash-chained trace after"
+pkgdesc="Workflow language + engine for AI pipelines — audit .nika statically (cost/permits/secrets) before running, verify the hash-chained trace after"
 arch=('x86_64' 'aarch64')
 url="https://github.com/supernovae-st/nika"
 license=('AGPL-3.0-or-later')
