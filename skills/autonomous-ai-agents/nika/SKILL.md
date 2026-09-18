@@ -20,7 +20,8 @@ metadata:
 
 Use [Nika](https://nika.sh) through the Hermes `terminal` tool to capture repeatable
 AI work in checked `*.nika` files. Nika is an AGPL-3.0-or-later workflow engine;
-this MIT-licensed skill teaches the Hermes handoff to public Nika 0.118.7. Hermes
+this MIT-licensed skill teaches the Hermes handoff to public Nika 0.120
+(`nika compile`). Hermes
 owns the user's intent and authorization; Nika checks the file, admits execution
 under its boundaries, and produces outputs and evidence when execution records them.
 
@@ -53,12 +54,19 @@ Use `search_files` to find an existing workflow, `read_file` to inspect it, and
 `write_file` or `patch` to author or repair it. Keep the artifact in the user's
 project and pass that project as the `terminal` working directory.
 
-Discover a template and create a file without overwriting an existing owner:
+Discover a template and create a file without overwriting an existing owner.
+Preview first; a destination writes only a Ready candidate; `--force` is
+required to replace:
 
 ```
-terminal(command="nika new '?'")
-terminal(command="nika new chain flow.nika", workdir="~/project")
+terminal(command="nika compile --list")
+terminal(command="nika compile hello hello.nika", workdir="~/project")
+terminal(command="nika compile chain --json", workdir="~/project")
 ```
+
+`nika compile chain` stays incomplete until its questions are answered with
+repeatable `--answer KEY=JSON_LITERAL`. Unknown intent stays incomplete and
+does not pick a substitute workflow.
 
 Read the generated file. For language details, use the installed `nika --help`,
 `nika catalog --tools`, and the matching release's
@@ -152,7 +160,7 @@ unstarted producer, and process death can prevent cleanup.
 
 | Command | Use |
 |---|---|
-| `nika new '?'` / `nika new <template> <file>` | Discover and create a workflow |
+| `nika compile --list` / `nika compile hello hello.nika` | Discover skeletons and write a Ready destination |
 | `nika check <file> --json --native-strict` | Read the file's distinct verdicts |
 | `nika explain <file>` / `nika explain <code>` | Understand the plan or finding |
 | `nika catalog --tools` / `nika catalog` | Discover shipped tools or models |
@@ -183,8 +191,9 @@ unstarted producer, and process death can prevent cleanup.
 
 ## Pitfalls
 
-- `nika new --from ...` is obsolete here. Use positional intent and destination;
-  bare `nika new` needs a TTY. Do not overwrite an existing artifact casually.
+- Overwriting an existing destination requires `--force`. Omitting the
+  destination is preview only. Unknown intent stays incomplete; it does not
+  select a substitute workflow.
 - A cost estimate is not an invoice. The checker's output-token estimate omits
   input billing; unpriced models or compute must remain explicitly unpriced.
   A metered cap stops new admissions after crossing it; already admitted calls

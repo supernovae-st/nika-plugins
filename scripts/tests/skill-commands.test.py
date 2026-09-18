@@ -52,7 +52,8 @@ with tempfile.TemporaryDirectory() as tmp:
         for form in [
             "`nika new --from '?'`",
             "`nika new --from`",
-            "`nika new --from=chain flow.nika`",
+            "`nika new '?'`",
+            "`nika new chain flow.nika`",
             '```\nterminal(command="nika new flow.nika --from chain")\n```',
             "```sh\nnika new --force --from chain flow.nika\n```",
         ]:
@@ -61,13 +62,12 @@ with tempfile.TemporaryDirectory() as tmp:
             with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(stderr):
                 code = MODULE.main()
             assert code == 1, f"retired form slipped green: {form}"
-            assert "--from" in stderr.getvalue(), stderr.getvalue()
+            assert "nika new" in stderr.getvalue(), stderr.getvalue()
         for form in [
-            "- `nika new --from ...` is obsolete here. Use positional intent and destination;",
-            "`nika new '?'`", "`nika new chain flow.nika`",
-            "```sh\nnika new 'summarize a page' flow.nika --force\n```",
+            "`nika compile --list`", "`nika compile hello hello.nika`",
+            "```sh\nnika compile chain --json\n```",
             "`nika run flow.nika --from task`",
-            "```sh\nnika new chain flow.nika; nika run flow.nika --from task\n```",
+            "```sh\nnika compile hello hello.nika; nika run flow.nika --from task\n```",
         ]:
             md.write_text(form)
             with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
