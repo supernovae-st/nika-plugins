@@ -29,14 +29,15 @@
 <!-- Engine clips load from supernovae-st/nika at main (media/), where they are
      rendered from captured CLI output. They are not pinned to a release tag, so a
      clip can show a newer engine than the release this marketplace mirrors. -->
+<p align="center"><strong>Watch a coding agent write a workflow with the plugin, repair what the check finds, and rehearse the run.</strong></p>
+
 <p align="center">
-  <a href="https://github.com/supernovae-st/nika/raw/refs/heads/main/media/videos/chat-to-workflow.mp4">
-    <img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/chat-to-workflow.optimized.gif"
-         alt="An illustrated chat where the same meeting-notes request comes back three Mondays in a row, next to meeting-actions.nika: nika check marks the file run ready, and a run on a local model lists each action item with its owner and deadline" width="760">
+  <a href="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/agent-plugin.optimized.gif">
+    <img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/agent-plugin.optimized.gif"
+         alt="Asked to turn CHANGELOG.md into release notes, a coding agent with the plugin's nika-authoring skill drafts release-notes.nika; nika check refuses nika:read_file, the agent repairs it to nika:read, the re-check says run ready, and a mock/echo rehearsal writes release-notes.md" width="960">
   </a>
-  <br>
-  <sub><i>If you ask it twice, keep it as a workflow.</i> The request you retype every Monday, kept as one checked file. Click to play the video.</sub>
 </p>
+<p align="center"><sub>Notice that the check refuses the draft before anything runs (<code>nika:read_file</code> is not a canonical builtin), and that the rehearsal comes only after the repaired file checks run ready. The agent session and the project view are illustrations; the skill is the plugin's own, and both checks and the <code>mock/echo</code> rehearsal are captured from the real CLI. Click the clip to see it full size.</sub></p>
 
 ## What is Nika?
 
@@ -96,8 +97,6 @@ no key, and leaves nothing behind.
 
 ## What your agent can do
 
-<!-- motion: a coding agent using the Nika plugin to write, check and run a workflow -->
-
 <table>
   <tr>
     <td width="33%" valign="top">
@@ -140,34 +139,48 @@ Ask in plain words, or type a slash command:
 | `/nika:trace` · `/nika:permits` · `/nika:doctor` | reads a run's record · writes the tightest `permits:` block · diagnoses this machine's setup |
 
 **Watch each step.** Every command and every line of terminal output in these
-clips is captured from the real CLI; click a poster to play its clip.
+clips is captured from the real CLI; click a clip to see it full size.
 
-<table>
-  <tr>
-    <td width="50%" align="center" valign="top">
-      <a href="https://github.com/supernovae-st/nika/raw/refs/heads/main/media/videos/static-check-fix.mp4"><img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/posters/static-check-fix.png" alt="nika check flags two defects in a pull-request review workflow before anything runs; after the fix, shown as a real diff, the re-check is clean and run ready" width="400"></a><br>
-      <b>Checked before it runs</b><br>
-      <sub><code>nika check</code> catches two defects; the fix passes a clean re-check</sub>
-    </td>
-    <td width="50%" align="center" valign="top">
-      <a href="https://github.com/supernovae-st/nika/raw/refs/heads/main/media/videos/permits-audit.mp4"><img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/posters/permits-audit.png" alt="A workflow's permits drawn as a map of what each task may reach: nika check catches the task that reaches a host outside the boundary, and the widened boundary passes" width="400"></a><br>
-      <b>The file is the boundary</b><br>
-      <sub>What a workflow may touch, drawn from its <code>permits:</code>; an escape is caught before anything runs</sub>
-    </td>
-  </tr>
-  <tr>
-    <td width="50%" align="center" valign="top">
-      <a href="https://github.com/supernovae-st/nika/raw/refs/heads/main/media/videos/workflow-gallery.mp4"><img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/posters/workflow-gallery.png" alt="The gallery nika try lists: a step-by-step path through the language, then ready-made jobs from bookmark triage and meeting actions to release notes and support triage" width="400"></a><br>
-      <b>Start from a ready workflow</b><br>
-      <sub>The jobs <code>nika try</code> lists, from meeting notes to release notes</sub>
-    </td>
-    <td width="50%" align="center" valign="top">
-      <a href="https://github.com/supernovae-st/nika/raw/refs/heads/main/media/videos/full-loop.mp4"><img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/posters/full-loop.png" alt="Four commands, offline: nika compile writes hello.nika, nika check marks it run ready, nika run rehearses it on a mock model, and nika trace verify confirms the run's record is intact" width="400"></a><br>
-      <b>Compile, check, run, verify</b><br>
-      <sub>The four commands, offline on a mock model, ending with the record verified</sub>
-    </td>
-  </tr>
-</table>
+**Checked before it runs.** Watch `nika check` catch two defects in a
+pull-request review workflow before any model is called.
+
+<p align="center">
+  <a href="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/static-check-fix.optimized.gif">
+    <img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/static-check-fix.optimized.gif"
+         alt="nika check flags two defects in a pull-request review workflow before anything runs; after the fix, shown as a real diff, the re-check is clean and run ready" width="860">
+  </a>
+</p>
+<p align="center"><sub>Notice that each finding names its fix, down to a did-you-mean for a misspelled task. The fix is a real diff, and the re-check ends run ready. Captured from the real CLI; nothing runs.</sub></p>
+
+**The file is the boundary.** Watch the check draw what each task may reach
+from the workflow's `permits:`, and catch the one task that reaches past it.
+
+<p align="center">
+  <a href="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/permits-audit.optimized.gif">
+    <img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/permits-audit.optimized.gif"
+         alt="A workflow's permits drawn as a map of what each task may reach: nika check catches the task that reaches a host outside the boundary, and the widened boundary passes" width="860">
+  </a>
+</p>
+<p align="center"><sub>Notice that the escape, a fetch to a host the file never declared, is caught before anything runs, and that the check passes only once the file itself widens the boundary. The map is drawn from the file; the check output is captured from the real CLI.</sub></p>
+
+**Start from a ready workflow.** Watch the jobs `nika try` lists, from
+meeting notes to release notes.
+
+<p align="center">
+  <a href="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/workflow-gallery.optimized.gif">
+    <img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/workflow-gallery.optimized.gif"
+         alt="The gallery nika try lists: a step-by-step path through the language, then ready-made jobs from bookmark triage and meeting actions to release notes and support triage" width="860">
+  </a>
+</p>
+<p align="center"><sub>Notice that each ready-made job is tagged with the verbs it uses, and that the step-by-step path through the language starts at <code>nika try 01-hello</code>, offline. The names, verbs and lines are the real <code>nika try</code> listing.</sub></p>
+
+▶ [Watch the four commands by hand](https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/full-loop.optimized.gif):
+compile, check, run on a mock model, then verify the run's record, offline and
+captured from the real CLI.
+
+▶ [Watch a request retyped every Monday become one checked file](https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/chat-to-workflow.optimized.gif):
+the chat is an illustration; the file, its check and its run on a local model
+are real.
 
 ## Install in your client
 
