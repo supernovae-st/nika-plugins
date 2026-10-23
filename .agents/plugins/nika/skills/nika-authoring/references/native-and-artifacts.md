@@ -50,8 +50,8 @@ otherwise, in this order:
 
 ## Native-first (the law)
 
-The order is `invoke: nika:*` → `invoke: mcp:<server>/<tool>` →
-`exec:`. Before writing ANY `exec:`, answer in your head:
+The order is a builtin (`invoke: { tool: "nika:<name>" }`) → an MCP tool
+(`invoke: { tool: "mcp:<server>/<tool>" }`) → `exec:`. Before writing ANY `exec:`, answer in your head:
 
 1. **Which builtin replaces it?** The embedded set spans SIX families.
    Assume one exists before assuming it does not — most `exec:` lines
@@ -191,7 +191,7 @@ the human at handoff, not to expect a green.
   else is NIKA-VAR-021). Pure ordering is `after: { <id>: success }`.
   Use the predicates in the [task-modifier table](language.md); `nika spec --schema`
   and `nika check` own the accepted spellings (`NIKA-DAG-005` otherwise).
-- Models are `provider/name` (`ollama/llama3.2:3b` local-first ·
+- Models are `provider/name` (`ollama/llama3.2:3b` local ·
   `mock/echo` simulated inference).
 - Timeouts are quoted Go-durations (`timeout: "7m"`) — give local
   providers ≥300s: thinking models routinely think past 30s.
