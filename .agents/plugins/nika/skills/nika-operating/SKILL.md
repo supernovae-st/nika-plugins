@@ -73,6 +73,19 @@ After a lost response or cancellation, inspect the file and trace before retry:
 publication may already have completed. Atomic visibility does not promise
 fsync durability or that a detached write has stopped.
 
+## Stop and resume
+
+- Ctrl-C (or SIGTERM) stops a run cleanly: work already in flight
+  completes and is counted, tasks not yet started are cancelled, the
+  trace is sealed with `workflow_cancelled`, and the run exits 130. A
+  second Ctrl-C aborts mid-flight and leaves the trace incomplete.
+- `nika run <file> --resume <trace>` reuses every task the trace
+  completed (`cache hit (resume)`) and runs the rest. A task in flight
+  at the Stop completed: reconcile what it did before anything
+  downstream of it runs again.
+- A run paused on a human gate exits 4 and resumes the same way, with
+  the person's answer: `--resume <trace> --answer <task>=<value>`.
+
 ## Secrets (masked, declared, sunk)
 
 - Every credential rides `${{ secrets.X }}`, declared in the
@@ -117,8 +130,8 @@ fsync durability or that a detached write has stopped.
   structure first, spend later. The CLI override changes the envelope
   model only: inspect per-task model pins before calling a rehearsal
   offline. Tools, writes, subprocesses and secret sources remain real.
-- Sovereignty path: `--model ollama/<model>` runs local — same file,
-  same check, same trace. Give local providers `timeout: "300s"`+.
+- Local models: `--model ollama/<model>` runs on the machine — same
+  file, same check, same trace. Give local providers `timeout: "300s"`+.
 - The file does not hardcode a vendor: swapping cloud↔local is a
   `--model` flag or one line in the YAML, never a rewrite.
 
@@ -138,9 +151,38 @@ fsync durability or that a detached write has stopped.
 - `--native-strict` in CI keeps `exec:` honest: any shell task an
   embedded builtin covers fails the gate (the exec ledger documents
   the survivors).
-- Schedule with the scheduler you already have (cron · CI · a
-  systemd timer): the engine is a binary, the workflow is a file, and
-  `--var key=value` carries the `inputs:` the file declares.
+- Recurring work is a beat in the project's `nika.yaml`, never a cron
+  line, a CI schedule or a hand-written timer (they skip the firer: no
+  missed-slot rule, no overlap lock, no ceiling per firing, no firing
+  record). One `arm:` entry names the workflow, the cadence with its
+  zone inside (`TZ=Europe/Paris 30 7 * * 1-5`, an IANA zone name), the
+  ceiling of one firing (`plafond:`) and what a missed slot becomes
+  (`manqué:`); neither has a default: take each from what the person
+  gave, what the project keeps or what they delegated, and ask, once, only
+  for one still missing. Write the `manqué` value the targeted binary fires:
+  0.122.0 and the 0.123 previews fire `sauter` and `rattraper-une-fois`,
+  read `rattraper` UNREADY and refuse the bounded `{ rattraper: N }`;
+  `nika arm --json` on that binary is the judge. Per-beat `inputs:` give
+  the workflow's declared inputs their values. `nika check nika.yaml`
+  judges the file; `nika arm --json` reads every beat and reports READY,
+  UNREADY with its `blockers`, or DORMANT, writing nothing. One scoped
+  instruction can cover saving, running and, when it says so, activating,
+  each once: carry out what it covers without asking again. Activate a
+  READY beat: `nika arm --emit launchd|systemd --write`, then loading the
+  unit, or a resident `nika serve`. `--emit` refuses an UNREADY beat: no
+  unit arms a run that cannot start. An unknown alone never makes a beat
+  UNREADY: a beat whose workflow calls a child reads READY and names the
+  unknown « a nested workflow's routes are judged only at its own
+  dispatch »; `nika serve --once --dry` says what a firing would do. A
+  unit carries the revision of the schedule it was written for: after a
+  cadence change, emit and load it again (the firer refuses a stale wake
+  and names that re-emit). A suspension is the triple `actif: false`,
+  `raison:` and `jusqu_au: YYYY-MM-DD`; it ends at midnight after that
+  date, in the cadence's zone. Deleting the line does not disarm on its
+  own: the next `--emit … --write` retires that beat's unit, removing its
+  file and printing the unload command to run.
+  Guide: https://docs.nika.sh/guides/projects-and-schedules
+  (reference: https://docs.nika.sh/reference/arm)
 
 ## MCP servers and definition drift
 
