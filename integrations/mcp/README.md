@@ -18,11 +18,13 @@ mcp_servers:
 { "mcpServers": { "nika": { "command": "nika", "args": ["mcp"] } } }
 ```
 
-`nika wire <client>` writes the stanza for you where supported — at 0.106.0
+`nika wire <client>` writes the stanza for you where supported — at 0.123.0
 the targets are cursor · vscode · windsurf · claude · claude-desktop · cline
 · codex · continue · zed · opencode · hermes · gemini · qwen · lmstudio ·
-junie, and `wire all` does the row. `nika wire --help` prints the live list;
-per-client pages with exact file paths:
+junie · grok · antigravity · kimi · kiro · copilot · amp. `nika wire
+detected --dry-run` previews the clients this machine shows, `nika wire
+detected` wires them, and `wire all` is the advanced sweep. `nika wire --help`
+prints the live list; per-client pages with exact file paths:
 https://docs.nika.sh/integrations/mcp-clients
 
 Docker hosts (directory checkers, sandboxed runners): [`Dockerfile`](Dockerfile)
@@ -32,7 +34,7 @@ speaks stdio JSON-RPC, introspection-probed in-container.
 
 MCPB is a historical distribution lane, not a current release promise.
 Engine `v0.99.0` shipped the two archived bundles recorded in
-[`server.json`](server.json); later trains, including `v0.116.0`, do not ship
+[`server.json`](server.json); later releases, including `v0.123.0`, do not ship
 `.mcpb` assets or `MCPB.sha256`. Do not submit that archival manifest as the
 current engine version. Install the engine through Homebrew or a verified
 release archive, then use `nika wire <client>`; Docker hosts can use the
@@ -49,24 +51,26 @@ list):
 | `nika_check` | is this workflow valid — the same audit as the CLI |
 | `nika_inspect` | its anatomy: tasks · verbs · waves · cost · permits |
 | `nika_explain` | one `NIKA-XXXX` code: cause · category · fix-form |
-| `nika_schema` | the envelope JSON Schema (thirteen keys · closed) |
+| `nika_schema` | the envelope JSON Schema (nine keys · closed) |
 | `nika_examples` | the embedded example set |
 | `nika_template` | a template skeleton to start from |
 | `nika_canon` | the canonical registry (verbs · builtins · providers) |
 | `nika_catalog` | provider/model ids · capabilities · required env vars |
 | `nika_tools` | the builtins an `invoke` reaches without any MCP server |
 
-`initialize` advertises the `tools` capability and nothing else at 0.106.0:
-`prompts/list` answers `-32601 method not found`. So the five `/nika:*`
-slash commands do **not** arrive over MCP — they come from the plugin
-manifests, in the clients that read one. Wire the oracle for validation;
-install the plugin for the commands. Probe it yourself in one line:
+At 0.123.0, `initialize` advertises the `tools` and `prompts` capabilities.
+`prompts/list` serves five prompts, `check`, `explain`, `compile`, `trace` and
+`permits`, the same jobs as five of the plugin's six `/nika:*` commands. The
+sixth, `/nika:doctor`, and the skills, subagents and hooks come only from the
+plugin manifests, in the clients that read one. Wire the oracle for
+validation; install the plugin for the rest. Probe it yourself in one line:
 
 ```sh
 printf '%s\n' \
   '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-06-18","capabilities":{},"clientInfo":{"name":"probe","version":"1"}}}' \
   '{"jsonrpc":"2.0","method":"notifications/initialized"}' \
-  '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' | nika mcp
+  '{"jsonrpc":"2.0","id":2,"method":"tools/list","params":{}}' \
+  '{"jsonrpc":"2.0","id":3,"method":"prompts/list","params":{}}' | nika mcp
 ```
 
 ## The read-only posture (why there is no run tool)

@@ -50,7 +50,7 @@ tool names against the live binary instead); local-first examples; the words
 | newsletters (AI-engineering) | `Agents write the workflow, the engine keeps it honest: typed outputs, budget caps, did-you-mean fixes at check time, and a hash-chained trace any reviewer can re-verify` |
 | package registries (AUR · nixpkgs · distro) | `Workflow language + engine for AI pipelines — author .nika, statically audit (cost/permits/secrets), run on any LLM provider, verify the trace. Single static Rust binary` |
 | static-analysis / linter lists | `A static analyzer for AI workflows: schema, DAG order, cost bounds, secret-flow and permission escapes caught before execution — findings carry codes and machine-applicable fixes` |
-| VS Code extension showcases | `The .nika cockpit: check-as-you-type diagnostics from the real engine, a live DAG canvas that runs and replays workflows, cost inlays before a token is spent` |
+| VS Code extension showcases | `The editor extension, frozen at 0.120 and not qualified with 0.123: use nika lsp and the JSON Schema` |
 
 ### Alternative-to anchors (comparison sites — honest pairings only)
 

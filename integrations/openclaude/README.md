@@ -33,7 +33,7 @@ openclaude plugin marketplace update nika   # later: pull a new kit version
 ```
 
 One Add gets the whole bundle: 4 skills (author · debug · operate ·
-migrate), 3 subagents, 5 commands, the delegation rule, the three seatbelt
+migrate), 3 subagents, 6 commands, the delegation rule, the three seatbelt
 hooks and the read-only MCP oracle.
 
 **Honest status — read before quoting this.** The lines above are derived
@@ -43,11 +43,12 @@ sees `nika` listed under `plugin marketplace list` has PROVEN it, and this
 paragraph becomes a date and a version instead of a caveat.
 
 What the bundle's two halves each carry is worth knowing before you debug a
-missing piece — and this part IS probed here, against `nika mcp` 0.106.0 on
-this machine. The oracle serves nine `nika_*` tools over `tools/list` and
-declares no other capability: `prompts/list` answers `-32601`. So the five
-`/nika:*` commands are read from the plugin manifest, never from MCP — a
-client that loaded the MCP stanza alone gets validation and no commands.
+missing piece — and this part IS probed, against `nika mcp` 0.123.0. The
+oracle serves nine `nika_*` tools over `tools/list` and five prompts over
+`prompts/list` (`check`, `explain`, `compile`, `trace`, `permits`). The sixth
+command, `/nika:doctor`, and the skills, subagents and hooks are read from the
+plugin manifest, never from MCP — a client that loaded the MCP stanza alone
+gets validation and those five prompts, nothing more.
 
 ## The project scaffold — works with no plugin at all
 
@@ -91,7 +92,7 @@ distribution.
 
 ## The open probe
 
-`nika wire <client>` does not yet carry an `openclaude` target. Where
-OpenClaude expects a user-level MCP server stanza to live (inside
-`~/.openclaude.json`, or a project file) was not settled by this read —
-that is the one question to answer before adding the target.
+`nika wire <client>` has no `openclaude` target (0.123.0). Where OpenClaude
+expects a user-level MCP server stanza to live (inside `~/.openclaude.json`,
+or a project file) was not settled by this read; until someone confirms it,
+add the stanza from [`../mcp/README.md`](../mcp/README.md) by hand.
