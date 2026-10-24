@@ -4,8 +4,9 @@
 > the AUR. The [`PKGBUILD`](PKGBUILD) here was last prepared for 0.107.0 (its
 > `pkgver`), and nothing bumps it with engine releases. To use it, first set
 > `pkgver` to the release you want and take both `sha256sums` lines from that
-> release's `SHA256SUMS`. Homebrew, the install script and the release
-> archives are the maintained ways to install on Linux.
+> release's `SHA256SUMS`. The maintained ways to install on Linux (npm,
+> Homebrew, the install script, the release archives and more) are on the
+> [installation page](https://docs.nika.sh/getting-started/installation).
 
 The [AUR](https://aur.archlinux.org) accepts first-party packages; publishing
 needs an AUR account + an SSH key (a separate account system — one-time
@@ -42,8 +43,6 @@ regenerate `.SRCINFO`, commit, push. Nothing does this automatically today.
   from the next tag carry `completions/`, and package() installs them
   conditionally (present ≥0.100, absent on 0.99.0) without ever executing
   the target-arch binary.
-- The ledger entry lives in `listings.yaml` (`queued_operator` until the
-  account ceremony happens).
 
 ## If it is ever published: automate the bump
 
