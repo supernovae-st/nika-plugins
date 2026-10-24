@@ -15,8 +15,8 @@ command -v vhs >/dev/null || { echo "vhs not installed (brew install vhs)" >&2; 
 NIKA="${NIKA_BIN:-$(command -v nika || true)}"
 [ -n "$NIKA" ] && [ -x "$NIKA" ] || { echo "nika not found (set NIKA_BIN)" >&2; exit 1; }
 
-# The sandbox the tapes enter: a fresh fake home + a git-initialized demo
-# dir (welcome reads the workspace), and the engine to record.
+# The sandbox the tapes enter: a fresh fake home, a git-initialized demo
+# project, and the engine to record.
 rm -rf /tmp/you
 mkdir -p /tmp/you/demo /tmp/you/bin
 git -C /tmp/you/demo init -q -b main

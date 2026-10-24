@@ -700,7 +700,7 @@ The five gate scripts, replayed against the 0.123.0 release:
 ✓ README ⟺ nika mcp agree · 9 tools: nika_canon · nika_catalog · nika_check · nika_examples · nika_explain · nika_inspect · nika_schema · nika_template · nika_tools
 ✓ skills/autonomous-ai-agents/nika/SKILL.md · 9 taught subcommands ship; no known retired argv: catalog · check · compile · doctor · explain · mcp · run · test · trace
 ✓ the client matrix holds (schema · manifests · counts · wire)
-✓ no dead language forms across 32 kit-native teaching files
+✓ no dead language forms across 31 kit-native teaching files
 ✓ vocabulary law holds across 46 tracked .md files
 ```
 
