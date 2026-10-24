@@ -46,8 +46,10 @@ Two facts we verified live so you don't have to:
 
 The oracle validates and teaches; running workflows stays on the terminal,
 where `--max-cost-usd`, effect permits and the trace live. Nine tools ride
-`tools/list` and nothing else does — `prompts/list` is not served at 0.106.0,
-so the `/nika:*` slash commands are a plugin feature, not an MCP one.
+`tools/list`. At 0.123.0 the oracle also serves five prompts over
+`prompts/list` (`check`, `explain`, `compile`, `trace`, `permits`); the rest
+of the `/nika:*` commands, the skills and the hooks are a plugin feature, not
+an MCP one.
 
 ## Three things a session gets wrong from memory
 

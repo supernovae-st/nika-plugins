@@ -1,4 +1,12 @@
-# AUR package — `nika-bin` (prepared · operator publishes)
+# AUR package — `nika-bin` (prepared · never published)
+
+> **Status: unpublished and not maintained.** No `nika-bin` package exists on
+> the AUR. The [`PKGBUILD`](PKGBUILD) here was last prepared for 0.107.0 (its
+> `pkgver`), and nothing bumps it with engine releases. To use it, first set
+> `pkgver` to the release you want and take both `sha256sums` lines from that
+> release's `SHA256SUMS`. The maintained ways to install on Linux (npm,
+> Homebrew, the install script, the release archives and more) are on the
+> [installation page](https://docs.nika.sh/getting-started/installation).
 
 The [AUR](https://aur.archlinux.org) accepts first-party packages; publishing
 needs an AUR account + an SSH key (a separate account system — one-time
@@ -19,14 +27,13 @@ docker run --rm -v "$PWD:/pkg" -w /pkg archlinux:base-devel \
 docker run --rm -v "$PWD:/pkg" -w /pkg archlinux:base-devel \
   bash -c "useradd -m b && chown -R b /pkg && pacman -Sy --noconfirm && su b -c 'makepkg -si --noconfirm'"
 # 5. Push = publish:
-git add PKGBUILD .SRCINFO && git commit -m "nika-bin 0.105.0" && git push
+git add PKGBUILD .SRCINFO && git commit -m "nika-bin <pkgver>" && git push
 ```
 
 ## Per-release refresh (agent-preparable)
 
 Bump `pkgver`, refresh the two sha256 lines from the release `SHA256SUMS`,
-regenerate `.SRCINFO`, commit, push. Candidate for the release train once
-the account exists.
+regenerate `.SRCINFO`, commit, push. Nothing does this automatically today.
 
 ## Notes
 
@@ -36,12 +43,11 @@ the account exists.
   from the next tag carry `completions/`, and package() installs them
   conditionally (present ≥0.100, absent on 0.99.0) without ever executing
   the target-arch binary.
-- The ledger entry lives in `listings.yaml` (`queued_operator` until the
-  account ceremony happens).
 
-## Release-train auto-bump (wire after the ceremony)
+## If it is ever published: automate the bump
 
-`KSXGitHub/github-actions-deploy-aur@v4.1.3` (verified maintained) in the
-engine's release workflow, next to the brew bump: regenerates PKGBUILD
-version + sha256s + .SRCINFO and pushes to AUR on every tag — the AUR
-"do not submit and forget" maintainer obligation becomes structural.
+`KSXGitHub/github-actions-deploy-aur@v4.1.3` (maintained as of 2026-07-11) in
+the engine's release workflow, next to the brew bump, would regenerate the
+PKGBUILD version, sha256s and .SRCINFO and push to the AUR on every tag, so
+the AUR "do not submit and forget" maintainer obligation becomes structural.
+None of this is wired, and the AUR is not one of the maintained install paths.

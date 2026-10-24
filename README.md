@@ -306,7 +306,13 @@ nika wire detected --dry-run   # preview the clients this machine has, and the f
 nika wire detected             # write them
 ```
 
-<!-- motion: nika wire detected previewing, then wiring, the MCP clients a machine has -->
+<p align="center">
+  <a href="media/wire-detected.gif">
+    <img src="media/wire-detected.gif"
+         alt="nika wire detected --dry-run lists the Cursor, Claude Code and VS Code files it would update and writes nothing; nika wire detected updates the three; a second run reports all three current; Cursor's settings still hold the filesystem server next to nika" width="860">
+  </a>
+</p>
+<p align="center"><sub>Notice that the preview writes nothing, the second run reports every client <code>current</code>, and Cursor keeps the server it already had. Recorded with the released nika 0.123.0 in a sandbox home where Cursor and Claude Code keep their settings and a project has a VS Code MCP file; every line is the binary's own (<a href="scripts/media/wire-detected.tape">wire-detected.tape</a>).</sub></p>
 
 Every client on one page:
 [docs.nika.sh/integrations/everywhere](https://docs.nika.sh/integrations/everywhere).
@@ -490,19 +496,20 @@ Every submission is recorded in <a href="listings.yaml"><code>listings.yaml</cod
 
 The binary moved and a plugin stayed behind? `nika doctor` reads the version
 each client actually loads, names any plugin that lags the binary and prints
-the fix for each one. Replayed on a machine whose Cursor copy and Claude Code
-install lag 0.121.0:
+the fix for each one. Replayed with nika 0.123.0 on a machine whose Cursor
+copy lags behind:
 
 ```sh
 nika doctor --plain | grep -A1 '^! kit'
 ```
 
 ```
-! kit        cursor plugin kit 0.110.0 lags the binary (0.121.0)
+! kit        cursor plugin kit 0.110.0 lags the binary (0.123.0)
   fix: re-sync the local drop: scripts/update-mirrors.sh (nika-plugins checkout)
-! kit        claude plugin kit 0.116.2 lags the binary (0.121.0)
-  fix: claude plugin marketplace update nika, then claude plugin update nika@nika
 ```
+
+A lagging Claude Code install gets its own line, with the fix from the table
+below.
 
 Nothing updates anything else: Homebrew never touches a plugin, and a
 marketplace never touches the binary. One move per piece:
@@ -605,8 +612,9 @@ Three mechanisms, each with its own scope:
 | `nika wire <client>` | one machine | the read-only oracle, added to that client's MCP settings |
 
 The [VS Code extension](https://github.com/supernovae-st/nika-vscode) is not a
-plugin: it is the editor experience, and on Cursor it points you to this
-plugin for the agent side.
+plugin, and it is frozen at 0.120 and not qualified with 0.123: in an editor,
+use `nika lsp` and the JSON Schema. On Cursor it points you to this plugin
+for the agent side.
 
 **Why a separate repository?** `plugin marketplace add` clones its target. The
 engine repository carries the whole Rust workspace and its media; this one
@@ -687,14 +695,14 @@ NIKA_BIN=/absolute/path/to/nika python3 scripts/check-dead-forms.py
 python3 scripts/check-vocab.py
 ```
 
-The five gate scripts, replayed against a 0.121.0 build:
+The five gate scripts, replayed against the 0.123.0 release:
 
 ```
 ✓ README ⟺ nika mcp agree · 9 tools: nika_canon · nika_catalog · nika_check · nika_examples · nika_explain · nika_inspect · nika_schema · nika_template · nika_tools
 ✓ skills/autonomous-ai-agents/nika/SKILL.md · 9 taught subcommands ship; no known retired argv: catalog · check · compile · doctor · explain · mcp · run · test · trace
 ✓ the client matrix holds (schema · manifests · counts · wire)
-✓ no dead language forms across 32 kit-native teaching files
-✓ vocabulary law holds across 44 tracked .md files
+✓ no dead language forms across 31 kit-native teaching files
+✓ vocabulary law holds across 46 tracked .md files
 ```
 
 The pins, the versions and upstream drift are judged in
@@ -715,7 +723,7 @@ the versions it was checked with, and gated against the released binary.
 | 🦋 | [nika](https://github.com/supernovae-st/nika) | The engine and CLI: write, check, run and verify AI workflows |
 | 📖 | [nika-docs](https://github.com/supernovae-st/nika-docs) | The documentation, live at [docs.nika.sh](https://docs.nika.sh) |
 | 📜 | [nika-spec](https://github.com/supernovae-st/nika-spec) | The language specification and the suite that proves an engine follows it |
-| 🧩 | [nika-vscode](https://github.com/supernovae-st/nika-vscode) | The editor extension: your workflow as a live graph, errors as you type |
+| 🧩 | [nika-vscode](https://github.com/supernovae-st/nika-vscode) | The editor extension, frozen at 0.120 and not qualified with 0.123: use `nika lsp` and the JSON Schema |
 | 🟦 | [nika-client](https://github.com/supernovae-st/nika-client) | Run and verify workflows from TypeScript |
 | ✅ | [nika-action](https://github.com/supernovae-st/nika-action) | A GitHub Action that posts a `nika check` verdict on your pull requests |
 | 🚀 | [nika-actions-starter](https://github.com/supernovae-st/nika-actions-starter) | A ready template: workflows, editor setup and CI from the first push |
