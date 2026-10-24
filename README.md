@@ -306,7 +306,13 @@ nika wire detected --dry-run   # preview the clients this machine has, and the f
 nika wire detected             # write them
 ```
 
-<!-- motion: nika wire detected previewing, then wiring, the MCP clients a machine has -->
+<p align="center">
+  <a href="media/wire-detected.gif">
+    <img src="media/wire-detected.gif"
+         alt="nika wire detected --dry-run lists the Cursor, Claude Code and VS Code files it would update and writes nothing; nika wire detected updates the three; a second run reports all three current; Cursor's settings still hold the filesystem server next to nika" width="860">
+  </a>
+</p>
+<p align="center"><sub>Notice that the preview writes nothing, the second run reports every client <code>current</code>, and Cursor keeps the server it already had. Recorded with the released nika 0.123.0 in a sandbox home where Cursor and Claude Code keep their settings and a project has a VS Code MCP file; every line is the binary's own (<a href="scripts/media/wire-detected.tape">wire-detected.tape</a>).</sub></p>
 
 Every client on one page:
 [docs.nika.sh/integrations/everywhere](https://docs.nika.sh/integrations/everywhere).
@@ -490,19 +496,20 @@ Every submission is recorded in <a href="listings.yaml"><code>listings.yaml</cod
 
 The binary moved and a plugin stayed behind? `nika doctor` reads the version
 each client actually loads, names any plugin that lags the binary and prints
-the fix for each one. Replayed on a machine whose Cursor copy and Claude Code
-install lag 0.121.0:
+the fix for each one. Replayed with nika 0.123.0 on a machine whose Cursor
+copy lags behind:
 
 ```sh
 nika doctor --plain | grep -A1 '^! kit'
 ```
 
 ```
-! kit        cursor plugin kit 0.110.0 lags the binary (0.121.0)
+! kit        cursor plugin kit 0.110.0 lags the binary (0.123.0)
   fix: re-sync the local drop: scripts/update-mirrors.sh (nika-plugins checkout)
-! kit        claude plugin kit 0.116.2 lags the binary (0.121.0)
-  fix: claude plugin marketplace update nika, then claude plugin update nika@nika
 ```
+
+A lagging Claude Code install gets its own line, with the fix from the table
+below.
 
 Nothing updates anything else: Homebrew never touches a plugin, and a
 marketplace never touches the binary. One move per piece:
@@ -687,14 +694,14 @@ NIKA_BIN=/absolute/path/to/nika python3 scripts/check-dead-forms.py
 python3 scripts/check-vocab.py
 ```
 
-The five gate scripts, replayed against a 0.121.0 build:
+The five gate scripts, replayed against the 0.123.0 release:
 
 ```
 ✓ README ⟺ nika mcp agree · 9 tools: nika_canon · nika_catalog · nika_check · nika_examples · nika_explain · nika_inspect · nika_schema · nika_template · nika_tools
 ✓ skills/autonomous-ai-agents/nika/SKILL.md · 9 taught subcommands ship; no known retired argv: catalog · check · compile · doctor · explain · mcp · run · test · trace
 ✓ the client matrix holds (schema · manifests · counts · wire)
 ✓ no dead language forms across 32 kit-native teaching files
-✓ vocabulary law holds across 44 tracked .md files
+✓ vocabulary law holds across 46 tracked .md files
 ```
 
 The pins, the versions and upstream drift are judged in
