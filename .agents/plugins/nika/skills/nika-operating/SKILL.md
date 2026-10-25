@@ -160,9 +160,10 @@ fsync durability or that a detached write has stopped.
   (`manqué:`); neither has a default: take each from what the person
   gave, what the project keeps or what they delegated, and ask, once, only
   for one still missing. Write the `manqué` value the targeted binary fires:
-  0.122.0 and the 0.123 previews fire `sauter` and `rattraper-une-fois`,
-  read `rattraper` UNREADY and refuse the bounded `{ rattraper: N }`;
-  `nika arm --json` on that binary is the judge. Per-beat `inputs:` give
+  0.122.0 and 0.123.0 fire `sauter` and `rattraper-une-fois` and read
+  `rattraper` UNREADY; 0.123.0 reads the bounded `{ rattraper: N }` UNREADY
+  too, where 0.122.0 refused it; `nika arm --json` on that binary is the
+  judge. Per-beat `inputs:` give
   the workflow's declared inputs their values. `nika check nika.yaml`
   judges the file; `nika arm --json` reads every beat and reports READY,
   UNREADY with its `blockers`, or DORMANT, writing nothing. One scoped
@@ -181,8 +182,8 @@ fsync durability or that a detached write has stopped.
   date, in the cadence's zone. Deleting the line does not disarm on its
   own: the next `--emit … --write` retires that beat's unit, removing its
   file and printing the unload command to run.
-  Guide: https://docs.nika.sh/guides/projects-and-schedules
-  (reference: https://docs.nika.sh/reference/arm)
+  Reference: https://docs.nika.sh/reference/arm
+  (the project file: https://docs.nika.sh/sdk/project/nika-yaml)
 
 ## MCP servers and definition drift
 
@@ -240,7 +241,9 @@ re-pinning is a review decision, not an automatic fix for drift.
 6. Spend cap on the run line (`--max-cost-usd`).
 7. Trace store known (`.nika/traces/`) — export wired if anyone
    watches dashboards.
-8. For a run someone will audit: signed (`nika sign`), verified to its
+8. For a run someone will audit: the workflow signed (`nika sign` binds
+   the file to its author), the journal sealed (only a run key from
+   `nika key init` seals a run; `nika sign` never does), verified to its
    highest honest tier (`nika trace verify`), packed
    (`nika trace evidence`).
 
