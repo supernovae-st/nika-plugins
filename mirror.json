@@ -72,7 +72,7 @@
     {
       "class": "kit-native",
       "path": "integrations/mcp/server.json",
-      "proof": "parses in CI · MCP Registry manifest shape — submission itself is a later, announced step"
+      "proof": "parses in CI · the archived MCP Registry manifest of the two real v0.99.0 bundles, kept at 0.99.0 by scripts/check-clients-matrix.py · historical evidence, never submitted as the current engine version (integrations/mcp/README.md)"
     },
     {
       "class": "kit-native",
