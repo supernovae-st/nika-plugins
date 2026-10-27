@@ -612,7 +612,7 @@ Three mechanisms, each with its own scope:
 | `nika wire <client>` | one machine | the read-only oracle, added to that client's MCP settings |
 
 The [VS Code extension](https://github.com/supernovae-st/nika-vscode) is not a
-plugin, and it is frozen at 0.120 and not qualified with 0.123: in an editor,
+plugin, and it is frozen at 0.120 and not qualified with 0.124: in an editor,
 use `nika lsp` and the JSON Schema. On Cursor it points you to this plugin
 for the agent side.
 
@@ -723,7 +723,7 @@ the versions it was checked with, and gated against the released binary.
 | 🦋 | [nika](https://github.com/supernovae-st/nika) | The engine and CLI: write, check, run and verify AI workflows |
 | 📖 | [nika-docs](https://github.com/supernovae-st/nika-docs) | The documentation, live at [docs.nika.sh](https://docs.nika.sh) |
 | 📜 | [nika-spec](https://github.com/supernovae-st/nika-spec) | The language specification and the suite that proves an engine follows it |
-| 🧩 | [nika-vscode](https://github.com/supernovae-st/nika-vscode) | The editor extension, frozen at 0.120 and not qualified with 0.123: use `nika lsp` and the JSON Schema |
+| 🧩 | [nika-vscode](https://github.com/supernovae-st/nika-vscode) | The editor extension, frozen at 0.120 and not qualified with 0.124: use `nika lsp` and the JSON Schema |
 | 🟦 | [nika-client](https://github.com/supernovae-st/nika-client) | Run and verify workflows from TypeScript |
 | ✅ | [nika-action](https://github.com/supernovae-st/nika-action) | A GitHub Action that posts a `nika check` verdict on your pull requests |
 | 🚀 | [nika-actions-starter](https://github.com/supernovae-st/nika-actions-starter) | A ready template: workflows, editor setup and CI from the first push |

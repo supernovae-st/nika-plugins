@@ -18,7 +18,7 @@ mcp_servers:
 { "mcpServers": { "nika": { "command": "nika", "args": ["mcp"] } } }
 ```
 
-`nika wire <client>` writes the stanza for you where supported — at 0.123.0
+`nika wire <client>` writes the stanza for you where supported — at 0.124.0
 the targets are cursor · vscode · windsurf · claude · claude-desktop · cline
 · codex · continue · zed · opencode · hermes · gemini · qwen · lmstudio ·
 junie · grok · antigravity · kimi · kiro · copilot · amp. `nika wire
@@ -34,7 +34,7 @@ speaks stdio JSON-RPC, introspection-probed in-container.
 
 MCPB is a historical distribution lane, not a current release promise.
 Engine `v0.99.0` shipped the two archived bundles recorded in
-[`server.json`](server.json); later releases, including `v0.123.0`, do not ship
+[`server.json`](server.json); later releases, including `v0.124.0`, do not ship
 `.mcpb` assets or `MCPB.sha256`. Do not submit that archival manifest as the
 current engine version. Install the engine through Homebrew or a verified
 release archive, then use `nika wire <client>`; Docker hosts can use the
@@ -58,7 +58,7 @@ list):
 | `nika_catalog` | provider/model ids · capabilities · required env vars |
 | `nika_tools` | the builtins an `invoke` reaches without any MCP server |
 
-At 0.123.0, `initialize` advertises the `tools` and `prompts` capabilities.
+At 0.124.0, `initialize` advertises the `tools` and `prompts` capabilities.
 `prompts/list` serves five prompts, `check`, `explain`, `compile`, `trace` and
 `permits`, the same jobs as five of the plugin's six `/nika:*` commands. The
 sixth, `/nika:doctor`, and the skills, subagents and hooks come only from the

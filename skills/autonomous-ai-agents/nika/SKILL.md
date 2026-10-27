@@ -1,7 +1,7 @@
 ---
 name: nika
 description: "Runs repeatable AI work with checks, budgets and traces."
-version: 1.2.5
+version: 1.2.6
 author: Thibaut Melen (@ThibautMelen) · SuperNovae Studio (github.com/supernovae-st)
 license: MIT
 platforms: [linux, macos]
@@ -20,7 +20,7 @@ metadata:
 
 Use [Nika](https://nika.sh) through the Hermes `terminal` tool to capture repeatable
 AI work in checked `*.nika` files. Nika is an AGPL-3.0-or-later workflow engine;
-this MIT-licensed skill teaches the Hermes handoff to public Nika 0.123
+this MIT-licensed skill teaches the Hermes handoff to public Nika 0.124
 (`nika compile`). Hermes
 owns the user's intent and authorization; Nika checks the file, admits execution
 under its boundaries, and produces outputs and evidence when execution records them.
@@ -70,7 +70,7 @@ does not pick a substitute workflow.
 
 Read the generated file. For language details, use the installed `nika --help`,
 `nika catalog --tools`, and the matching release's
-[authoring guide](https://github.com/supernovae-st/nika/blob/v0.123.0/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
+[authoring guide](https://github.com/supernovae-st/nika/blob/v0.124.0/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
 If the read-only `nika mcp` oracle is already wired, use `nika_schema`,
 `nika_examples`, `nika_template`, `nika_check`, and `nika_explain` as needed.
 The oracle proposes or diagnoses; workflow execution remains a separate action.
