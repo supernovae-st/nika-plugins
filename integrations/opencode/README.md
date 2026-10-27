@@ -44,9 +44,10 @@ Two facts we verified live so you don't have to:
   Trust that line, not a model's enumeration — small local models can invent
   tool names instead of reading them.
 
+<!-- TODO(0.124.0 tag): re-run the MCP probe on the released 0.124.0 binary. 0.123.2 answers with nine tools and these five prompts, and the oracle's protocol and prompts are unchanged in the 0.124.0 candidate. -->
 The oracle validates and teaches; running workflows stays on the terminal,
 where `--max-cost-usd`, effect permits and the trace live. Nine tools ride
-`tools/list`. At 0.123.0 the oracle also serves five prompts over
+`tools/list`. At 0.124.0 the oracle also serves five prompts over
 `prompts/list` (`check`, `explain`, `compile`, `trace`, `permits`); the rest
 of the `/nika:*` commands, the skills and the hooks are a plugin feature, not
 an MCP one.

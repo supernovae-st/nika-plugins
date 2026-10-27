@@ -10,7 +10,7 @@ tags:
   - audit
   - local-first
 trust: community
-version: 0.1.3
+version: 0.1.4
 license: MIT
 author: ThibautMelen
 tools_required:
@@ -21,7 +21,7 @@ tools_required:
 
 Use [Nika](https://nika.sh) through the host's Bash tool to capture repeatable
 AI work in a `*.nika` artifact. Nika is an AGPL-3.0-or-later workflow engine;
-this MIT-licensed skill teaches the public Nika 0.123 compile door. The host owns the
+this MIT-licensed skill teaches the public Nika 0.124 compile door. The host owns the
 user's intent and authorization. A check gives evidence; engine and host gates
 still control execution.
 
@@ -44,7 +44,7 @@ shape, `nika compile --list` names templates and
 `--answer KEY=JSON_LITERAL`; unknown intent stays incomplete. Resolve exact
 syntax from `nika spec --schema`, `nika catalog`,
 `nika catalog --tools` and the matching release's
-[authoring guide](https://github.com/supernovae-st/nika/blob/v0.123.0/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
+[authoring guide](https://github.com/supernovae-st/nika/blob/v0.124.0/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
 Read examples for unresolved structures, not a fixed quota before every edit.
 
 ## Author and validate
