@@ -42,7 +42,6 @@ layout parity is verified; the round trip is not. Anyone who runs it and
 sees `nika` listed under `plugin marketplace list` has PROVEN it, and this
 paragraph becomes a date and a version instead of a caveat.
 
-<!-- TODO(0.124.0 tag): re-run the MCP probe on the released 0.124.0 binary. 0.123.2 answers with nine tools and these five prompts, and the oracle's protocol and prompts are unchanged in the 0.124.0 candidate. -->
 What the bundle's two halves each carry is worth knowing before you debug a
 missing piece — and this part IS probed, against `nika mcp` 0.124.0. The
 oracle serves nine `nika_*` tools over `tools/list` and five prompts over
@@ -93,7 +92,6 @@ distribution.
 
 ## The open probe
 
-<!-- TODO(0.124.0 tag): re-run `nika wire --help` on the released 0.124.0 binary. 0.123.2 lists no `openclaude` target, and the client registry is unchanged in the 0.124.0 candidate. -->
 `nika wire <client>` has no `openclaude` target (0.124.0). Where OpenClaude
 expects a user-level MCP server stanza to live (inside `~/.openclaude.json`,
 or a project file) was not settled by this read; until someone confirms it,

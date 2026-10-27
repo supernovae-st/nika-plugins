@@ -18,7 +18,6 @@ mcp_servers:
 { "mcpServers": { "nika": { "command": "nika", "args": ["mcp"] } } }
 ```
 
-<!-- TODO(0.124.0 tag): re-run `nika wire --help` on the released 0.124.0 binary and keep this list only if it matches. 0.123.2 prints these 21 targets, and the client registry is unchanged in the 0.124.0 candidate. -->
 `nika wire <client>` writes the stanza for you where supported — at 0.124.0
 the targets are cursor · vscode · windsurf · claude · claude-desktop · cline
 · codex · continue · zed · opencode · hermes · gemini · qwen · lmstudio ·
@@ -33,7 +32,6 @@ builds the oracle from the release artifacts (SHA256SUMS-verified, multi-arch
 amd64/arm64) — `docker build -t nika-mcp . && docker run -i --rm nika-mcp`
 speaks stdio JSON-RPC, introspection-probed in-container.
 
-<!-- TODO(0.124.0 tag): confirm the v0.124.0 release lists no `.mcpb` asset and no `MCPB.sha256`. v0.123.0 and v0.123.2 list none, and the release workflow is unchanged since v0.123.2. -->
 MCPB is a historical distribution lane, not a current release promise.
 Engine `v0.99.0` shipped the two archived bundles recorded in
 [`server.json`](server.json); later releases, including `v0.124.0`, do not ship
@@ -60,7 +58,6 @@ list):
 | `nika_catalog` | provider/model ids · capabilities · required env vars |
 | `nika_tools` | the builtins an `invoke` reaches without any MCP server |
 
-<!-- TODO(0.124.0 tag): re-run the probe on the released 0.124.0 binary. 0.123.2 answers with the tools and prompts capabilities, nine tools and these five prompts, and the oracle's protocol and prompts are unchanged in the 0.124.0 candidate. -->
 At 0.124.0, `initialize` advertises the `tools` and `prompts` capabilities.
 `prompts/list` serves five prompts, `check`, `explain`, `compile`, `trace` and
 `permits`, the same jobs as five of the plugin's six `/nika:*` commands. The
