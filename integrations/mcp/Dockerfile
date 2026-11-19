@@ -20,8 +20,8 @@ RUN set -eu; \
     esac; \
     T="nika-linux-${A}-${NIKA_VERSION}.tar.gz"; \
     cd /tmp; \
-    curl -fsSL -O "https://github.com/supernovae-st/nika/releases/download/v${NIKA_VERSION}/${T}"; \
-    curl -fsSL -O "https://github.com/supernovae-st/nika/releases/download/v${NIKA_VERSION}/SHA256SUMS"; \
+    curl -fsSL -O "https://github.com/nika-open/nika/releases/download/v${NIKA_VERSION}/${T}"; \
+    curl -fsSL -O "https://github.com/nika-open/nika/releases/download/v${NIKA_VERSION}/SHA256SUMS"; \
     grep " ${T}\$" SHA256SUMS | sha256sum -c -; \
     tar -xzf "${T}" -C /usr/local/bin nika; \
     chmod +x /usr/local/bin/nika

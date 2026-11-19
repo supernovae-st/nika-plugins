@@ -70,7 +70,7 @@ does not pick a substitute workflow.
 
 Read the generated file. For language details, use the installed `nika --help`,
 `nika catalog --tools`, and the matching release's
-[authoring guide](https://github.com/supernovae-st/nika/blob/v0.124.0/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
+[authoring guide](https://github.com/nika-open/nika/blob/v0.124.0/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
 If the read-only `nika mcp` oracle is already wired, use `nika_schema`,
 `nika_examples`, `nika_template`, `nika_check`, and `nika_explain` as needed.
 The oracle proposes or diagnoses; workflow execution remains a separate action.

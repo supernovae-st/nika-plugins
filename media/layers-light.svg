@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-label="Three layers: the engine supernovae-st/nika is the source of truth, mirrored byte-pinned into this repo, one Add per client · nika init equips one repository · nika wire wires one machine · nika-vscode is the IDE product, not a plugin">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" role="img" aria-label="Three layers: the engine nika-open/nika is the source of truth, mirrored byte-pinned into this repo, one Add per client · nika init equips one repository · nika wire wires one machine · nika-vscode is the IDE product, not a plugin">
   <!-- The three layers · same THEME contract as hero-dark.svg (the light
        twin swaps only the THEME block · scripts/media/derive-hero-light.py). -->
   <style>
@@ -49,7 +49,7 @@
 
     <!-- the source of truth -->
     <rect x="60" y="24" width="360" height="64" rx="10" fill="var(--chip-bg)" stroke="var(--chip-stroke)"/>
-    <text class="mono box" x="82" y="51">supernovae-st/nika</text>
+    <text class="mono box" x="82" y="51">nika-open/nika</text>
     <text class="mono sub" x="82" y="74">the engine · the kit's source of truth</text>
 
     <line class="march" x1="240" y1="88" x2="240" y2="117" stroke="var(--legend-dim)" stroke-width="1.4"/>
@@ -58,7 +58,7 @@
 
     <!-- this repo -->
     <rect x="60" y="117" width="420" height="64" rx="10" fill="var(--chip-bg)" stroke="var(--accent)" stroke-opacity="0.55"/>
-    <text class="mono box" x="82" y="144">supernovae-st/nika-plugins</text>
+    <text class="mono box" x="82" y="144">nika-open/nika-plugins</text>
     <text class="mono sub" x="82" y="167">the install surface · a light clone</text>
     <text class="mono dim" x="464" y="144" text-anchor="end">◀ you are here</text>
 

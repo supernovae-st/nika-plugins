@@ -3,7 +3,7 @@
 ## Reporting
 
 Please report vulnerabilities privately via
-[GitHub security advisories](https://github.com/supernovae-st/nika-plugins/security/advisories/new)
+[GitHub security advisories](https://github.com/nika-open/nika-plugins/security/advisories/new)
 — not in public issues. You'll get an acknowledgment within 72 hours.
 
 ## What this repo is — and what installing from it runs
@@ -13,7 +13,7 @@ Please report vulnerabilities privately via
   install. The binary they teach (`nika`) is installed separately, from
   its own release pipeline, checksum-verified.
 - **The mirror is pinned.** Engine-mirror files are byte-identical
-  projections of `supernovae-st/nika`, pinned by sha256 in `mirror.json`
+  projections of `nika-open/nika`, pinned by sha256 in `mirror.json`
   — a hand-edit on this side is a hard CI failure, so what you install
   from here is what the engine repo reviewed.
 - **Kit-native files are binary-truth-checked.** Every `nika`

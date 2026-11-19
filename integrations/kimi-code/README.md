@@ -6,7 +6,7 @@ Verified live 2026-07-31 · kimi-code 0.30.0 · nika 0.106.1.
 [Kimi Code CLI](https://github.com/MoonshotAI/kimi-code) reads MCP servers
 from `mcp.json` at two levels · user `~/.kimi-code/mcp.json` (shared across
 projects) and project `.kimi-code/mcp.json` (same-named entries: project
-wins). Binary first (`brew install supernovae-st/tap/nika`), then add the
+wins). Binary first (`brew install nika-open/tap/nika`), then add the
 read-only oracle to the user file:
 
 ```json

@@ -130,7 +130,7 @@
     <!-- the five doors, typed in a loop -->
     <rect x="326" y="182" width="560" height="46" rx="9" fill="var(--chip-bg)" stroke="var(--chip-stroke)"/>
     <g clip-path="url(#type0)">
-      <text class="mono cmd" x="344" y="212"><tspan fill="var(--accent)">$</tspan> brew install supernovae-st/tap/nika<tspan class="caret" fill="var(--accent)">▋</tspan></text>
+      <text class="mono cmd" x="344" y="212"><tspan fill="var(--accent)">$</tspan> brew install nika-open/tap/nika<tspan class="caret" fill="var(--accent)">▋</tspan></text>
     </g>
     <g clip-path="url(#type1)">
       <text class="mono cmd" x="344" y="212"><tspan fill="var(--accent)">$</tspan> claude plugin install nika@nika<tspan class="caret" fill="var(--accent)">▋</tspan></text>
@@ -142,7 +142,7 @@
       <text class="mono cmd" x="344" y="212"><tspan fill="var(--accent)">$</tspan> grok plugin install nika@nika --trust<tspan class="caret" fill="var(--accent)">▋</tspan></text>
     </g>
     <g clip-path="url(#type4)">
-      <text class="mono cmd" x="344" y="212"><tspan fill="var(--accent)">$</tspan> npx skills add supernovae-st/nika-plugins<tspan class="caret" fill="var(--accent)">▋</tspan></text>
+      <text class="mono cmd" x="344" y="212"><tspan fill="var(--accent)">$</tspan> npx skills add nika-open/nika-plugins<tspan class="caret" fill="var(--accent)">▋</tspan></text>
     </g>
 
     <!-- verb legend -->

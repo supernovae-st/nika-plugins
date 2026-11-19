@@ -37,7 +37,7 @@ clients:
     name: Claude Code
     class: A
     status: proven
-    install: "claude plugin marketplace add supernovae-st/nika-plugins && claude plugin install nika@nika"
+    install: "claude plugin marketplace add nika-open/nika-plugins && claude plugin install nika@nika"
     components: {manifest: native-manifest, skills: native-manifest,
                  subagents: native-manifest, commands: native-manifest,
                  hooks: native-manifest, mcp: native-manifest,
@@ -52,7 +52,7 @@ clients:
     name: Codex
     class: A
     status: proven
-    install: "codex plugin marketplace add supernovae-st/nika-plugins && codex plugin add nika@nika"
+    install: "codex plugin marketplace add nika-open/nika-plugins && codex plugin add nika@nika"
     components: {manifest: native-manifest, skills: native-manifest,
                  commands: native-manifest, hooks: native-manifest,
                  mcp: native-manifest, presentation: native-manifest,
@@ -82,7 +82,7 @@ clients:
     name: OpenClaude
     class: A
     status: wired
-    install: "openclaude plugin marketplace add supernovae-st/nika-plugins && openclaude plugin install nika@nika"
+    install: "openclaude plugin marketplace add nika-open/nika-plugins && openclaude plugin install nika@nika"
     components: {manifest: claude-layout, skills: claude-layout,
                  subagents: claude-layout, commands: claude-layout,
                  hooks: claude-layout, mcp: claude-layout, scaffold: init}
@@ -96,7 +96,7 @@ clients:
     name: Grok Build (xAI)
     class: A
     status: proven
-    install: "grok plugin marketplace add supernovae-st/nika-plugins && grok plugin install nika@nika --trust"
+    install: "grok plugin marketplace add nika-open/nika-plugins && grok plugin install nika@nika --trust"
     components: {manifest: claude-layout, skills: claude-layout,
                  subagents: claude-layout, commands: claude-layout,
                  hooks: claude-layout, mcp: claude-layout, scaffold: init}
@@ -123,7 +123,7 @@ clients:
     name: VS Code · Copilot
     class: B
     status: wired
-    install: "Settings → chat.plugins.enabled, then npx plugins add supernovae-st/nika-plugins · or nika wire vscode for the oracle alone · the compiled extension (nika-vscode) is a separate product"
+    install: "Settings → chat.plugins.enabled, then npx plugins add nika-open/nika-plugins · or nika wire vscode for the oracle alone · the compiled extension (nika-vscode) is a separate product"
     components: {manifest: agent-plugin, skills: agent-plugin,
                  mcp: wire, scaffold: init}
     class_gap: "Agent Plugins v1 standardises skills and MCP and nothing else (§7 · commands, subagents, hooks and rules are named as too client-specific for a portable contract), so the portable manifest cannot carry them and VS Code has no other loader for ours · mcp stays `wire` because that path is proven and needs no preview setting, the portable mcp.json is a second road"
@@ -295,7 +295,7 @@ clients:
     name: Hermes · skills.sh clients
     class: B
     status: proven
-    install: "hermes skills tap add supernovae-st/nika-plugins · or npx skills add supernovae-st/nika-plugins"
+    install: "hermes skills tap add nika-open/nika-plugins · or npx skills add nika-open/nika-plugins"
     components: {skills: skill-pack, mcp: wire, scaffold: init}
     class_gap: "skills-first client · the delegation skill carries the teaching · no manifest/commands/hooks surfaces"
     wire: hermes

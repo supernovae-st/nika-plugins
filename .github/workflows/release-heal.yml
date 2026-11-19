@@ -25,7 +25,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          latest="$(curl -fsSL -o /dev/null -w '%{url_effective}' https://github.com/supernovae-st/nika/releases/latest | sed 's|.*/tag/||')"
+          latest="$(curl -fsSL -o /dev/null -w '%{url_effective}' https://github.com/nika-open/nika/releases/latest | sed 's|.*/tag/||')"
           ref="$(python3 -c 'import json; print(json.load(open("mirror.json"))["engine_ref"])')"
           if [ "$latest" = "$ref" ]; then echo "mirror follows the newest release (${ref}) — nothing to heal"; exit 0; fi
           branch="bot/mirror-resync-${latest}"

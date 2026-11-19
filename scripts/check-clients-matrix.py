@@ -316,7 +316,7 @@ def check_upstream(findings_warn):
               f"bundle files under {scope}")
 
 
-EVERYWHERE = ("https://raw.githubusercontent.com/supernovae-st/nika-docs/"
+EVERYWHERE = ("https://raw.githubusercontent.com/nika-open/nika-docs/"
               "main/integrations/everywhere.mdx")
 
 

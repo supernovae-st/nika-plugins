@@ -71,7 +71,7 @@ if command -v nika >/dev/null 2>&1; then
     fi
   fi
 else
-  echo "· binary: nika absent — every surface invokes it (brew install supernovae-st/tap/nika)"
+  echo "· binary: nika absent — every surface invokes it (brew install nika-open/tap/nika)"
 fi
 
 # ── Cursor (local plugin dir · rsync is the only writer) ──────────────
