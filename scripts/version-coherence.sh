@@ -14,7 +14,7 @@ UA="nika-version-coherence (contact@supernovae.studio)"
 fail=0
 say() { printf ' %s\n' "$*"; }
 
-latest="$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/supernovae-st/nika/releases/latest)"
+latest="$(curl -fsSLI -o /dev/null -w '%{url_effective}' https://github.com/nika-open/nika/releases/latest)"
 latest="${latest##*/tag/v}"
 say "engine latest release · ${latest}"
 
@@ -24,7 +24,7 @@ say "engine latest release · ${latest}"
 # tag (@v1) and retagging breaks external pinners — flagged ⚠, never
 # auto-fixed. New 1.x tags anywhere else stay RED.
 for repo in gh-nika nika-action nika-vscode nika-client nika-plugins; do
-  tag="$(curl -fsSLI -o /dev/null -w '%{url_effective}' "https://github.com/supernovae-st/${repo}/releases/latest" 2>/dev/null || true)"
+  tag="$(curl -fsSLI -o /dev/null -w '%{url_effective}' "https://github.com/nika-open/${repo}/releases/latest" 2>/dev/null || true)"
   tag="${tag##*/tag/}"
   case "$tag" in
     v1.* | 1.*)
@@ -41,7 +41,7 @@ for repo in gh-nika nika-action nika-vscode nika-client nika-plugins; do
 done
 
 # ── 2 · install surfaces quote the latest engine release ────────────────
-brew_v="$(curl -fsSL -H "User-Agent: $UA" https://raw.githubusercontent.com/supernovae-st/homebrew-tap/main/Formula/nika.rb | sed -n 's/.*version "\(.*\)".*/\1/p' | head -1)"
+brew_v="$(curl -fsSL -H "User-Agent: $UA" https://raw.githubusercontent.com/nika-open/homebrew-tap/main/Formula/nika.rb | sed -n 's/.*version "\(.*\)".*/\1/p' | head -1)"
 if [ "$brew_v" = "$latest" ]; then say "✔ brew formula ${brew_v}"; else
   say "✖ brew formula ${brew_v} ≠ latest ${latest}"
   fail=1
@@ -62,7 +62,7 @@ fi
 # only pre-Diamond tags » about a registry that was carrying the current
 # release the whole time (caught 2026-08-02). A gate that cries wolf gets
 # read as noise, which costs more than the check is worth.
-ghcr_tags="$(curl -fsSL "https://ghcr.io/token?scope=repository:supernovae-st/nika:pull" | python3 -c "import json,sys; print(json.load(sys.stdin)['token'])" | xargs -I{} curl -fsSL -H "Authorization: Bearer {}" "https://ghcr.io/v2/supernovae-st/nika/tags/list?n=1000" | python3 -c "import json,sys; print(' '.join(json.load(sys.stdin).get('tags') or []))" || true)"
+ghcr_tags="$(curl -fsSL "https://ghcr.io/token?scope=repository:nika-open/nika:pull" | python3 -c "import json,sys; print(json.load(sys.stdin)['token'])" | xargs -I{} curl -fsSL -H "Authorization: Bearer {}" "https://ghcr.io/v2/nika-open/nika/tags/list?n=1000" | python3 -c "import json,sys; print(' '.join(json.load(sys.stdin).get('tags') or []))" || true)"
 case " $ghcr_tags " in
   *" $latest "*) say "✔ ghcr carries ${latest}" ;;
   "  ") say "· ghcr — no tags visible (skip)" ;;

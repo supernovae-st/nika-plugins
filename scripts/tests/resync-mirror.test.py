@@ -115,7 +115,7 @@ with tempfile.TemporaryDirectory() as tmp:
     )
     digest = "0" * 64
     manifest = {
-        "engine_repo": "supernovae-st/nika",
+        "engine_repo": "nika-open/nika",
         "engine_ref": "v0.118.7",
         "engine_scope": ".agents/plugins/nika/",
         "synced_at_engine_sha": "deadbeef",

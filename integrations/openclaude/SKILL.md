@@ -44,7 +44,7 @@ shape, `nika compile --list` names templates and
 `--answer KEY=JSON_LITERAL`; unknown intent stays incomplete. Resolve exact
 syntax from `nika spec --schema`, `nika catalog`,
 `nika catalog --tools` and the matching release's
-[authoring guide](https://github.com/supernovae-st/nika/blob/v0.124.0/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
+[authoring guide](https://github.com/nika-open/nika/blob/v0.124.0/.agents/plugins/nika/skills/nika-authoring/SKILL.md).
 Read examples for unresolved structures, not a fixed quota before every edit.
 
 ## Author and validate

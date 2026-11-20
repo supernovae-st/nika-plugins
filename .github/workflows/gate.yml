@@ -157,7 +157,7 @@ jobs:
           python3 scripts/tests/resync-mirror.test.py
           python3 scripts/tests/skill-commands.test.py
       # mirror.json is the drift CONTRACT (two classes):
-      #   engine-mirror — byte-identical projection of supernovae-st/nika,
+      #   engine-mirror — byte-identical projection of nika-open/nika,
       #     pinned by sha256 at the engine SHA it was proven against.
       #     A pin mismatch = the KIT is corrupted → fail HARD everywhere.
       #   kit-native — owned here, proven against the released binary below.
@@ -202,7 +202,7 @@ jobs:
         run: |
           set -euo pipefail
           ref="$(python3 -c 'import json; print(json.load(open("mirror.json"))["engine_ref"])')"
-          base="https://raw.githubusercontent.com/supernovae-st/nika/${ref}"
+          base="https://raw.githubusercontent.com/nika-open/nika/${ref}"
           drifted=0
           # path=local file · source (optional)=where it lives in the ENGINE
           # tree when the two differ (e.g. the root marketplace logo pinned
@@ -218,7 +218,7 @@ jobs:
           done < <(python3 -c 'import json; [print(e["path"], e.get("source", e["path"]), sep="\t") for e in json.load(open("mirror.json"))["entries"] if e["class"]=="engine-mirror"]')
           if [ "$drifted" = "1" ]; then exit 1; fi
           echo "mirror bytes match engine ${ref}"
-          latest="$(curl -fsSL -o /dev/null -w '%{url_effective}' https://github.com/supernovae-st/nika/releases/latest | sed 's|.*/tag/||')"
+          latest="$(curl -fsSL -o /dev/null -w '%{url_effective}' https://github.com/nika-open/nika/releases/latest | sed 's|.*/tag/||')"
           if [ "$latest" != "$ref" ]; then
             msg="engine released ${latest} and the mirror follows ${ref} — run scripts/resync-mirror.py --ref ${latest} (release-heal opens the PR daily)"
             if [ "${{ github.event_name }}" = "schedule" ]; then echo "::error::${msg}"; exit 1; fi
@@ -242,10 +242,10 @@ jobs:
         run: |
           set -euo pipefail
           tag=$(curl -fsSL -o /dev/null -w '%{url_effective}' \
-            https://github.com/supernovae-st/nika/releases/latest | sed 's|.*/tag/||')
+            https://github.com/nika-open/nika/releases/latest | sed 's|.*/tag/||')
           ver=${tag#v}
           echo "checking marketplace docs against nika ${tag}"
-          dl="https://github.com/supernovae-st/nika/releases/download/${tag}"
+          dl="https://github.com/nika-open/nika/releases/download/${tag}"
           asset="nika-linux-x64-${ver}.tar.gz"
           curl -fsSL "${dl}/${asset}" -o "${asset}"
           curl -fsSL "${dl}/SHA256SUMS" -o SHA256SUMS

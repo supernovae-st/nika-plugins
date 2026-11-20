@@ -15,25 +15,25 @@
 </p>
 
 <p align="center">
-  <a href=".claude-plugin/marketplace.json"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fsupernovae-st%2Fnika-plugins%2Fmain%2F.claude-plugin%2Fmarketplace.json&query=%24.plugins%5B0%5D.version&label=plugin&prefix=v" alt="plugin version"></a>
-  <a href="https://github.com/supernovae-st/nika-plugins/actions/workflows/gate.yml"><img src="https://github.com/supernovae-st/nika-plugins/actions/workflows/gate.yml/badge.svg" alt="gate status"></a>
-  <a href="https://github.com/supernovae-st/nika/releases/latest"><img src="https://img.shields.io/github/v/release/supernovae-st/nika?label=engine" alt="Engine release"></a>
+  <a href=".claude-plugin/marketplace.json"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2Fnika-open%2Fnika-plugins%2Fmain%2F.claude-plugin%2Fmarketplace.json&query=%24.plugins%5B0%5D.version&label=plugin&prefix=v" alt="plugin version"></a>
+  <a href="https://github.com/nika-open/nika-plugins/actions/workflows/gate.yml"><img src="https://github.com/nika-open/nika-plugins/actions/workflows/gate.yml/badge.svg" alt="gate status"></a>
+  <a href="https://github.com/nika-open/nika/releases/latest"><img src="https://img.shields.io/github/v/release/nika-open/nika?label=engine" alt="Engine release"></a>
   <a href="https://docs.nika.sh"><img src="https://img.shields.io/badge/docs-docs.nika.sh-8b8cf8.svg" alt="Documentation"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" alt="AGPL-3.0"></a>
   <br>
-  <a href="https://scorecard.dev/viewer/?uri=github.com/supernovae-st/nika-plugins"><img src="https://api.scorecard.dev/projects/github.com/supernovae-st/nika-plugins/badge" alt="OpenSSF Scorecard"></a>
+  <a href="https://scorecard.dev/viewer/?uri=github.com/nika-open/nika-plugins"><img src="https://api.scorecard.dev/projects/github.com/nika-open/nika-plugins/badge" alt="OpenSSF Scorecard"></a>
   <a href="https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/supernovae-st/nika-plugins"><img src="https://archive.softwareheritage.org/badge/origin/https://github.com/supernovae-st/nika-plugins/" alt="Archived by Software Heritage"></a>
   <a href="https://skills.sh/supernovae-st/nika-plugins"><img src="https://skills.sh/b/supernovae-st/nika-plugins" alt="skills.sh listing"></a>
 </p>
 
-<!-- Engine clips load from supernovae-st/nika at main (media/), where they are
+<!-- Engine clips load from nika-open/nika at main (media/), where they are
      rendered from captured CLI output. They are not pinned to a release tag, so a
      clip can show a newer engine than the release this marketplace mirrors. -->
 <p align="center"><strong>Watch a coding agent write a workflow with the plugin, repair what the check finds, and rehearse the run.</strong></p>
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/agent-plugin.optimized.gif">
-    <img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/agent-plugin.optimized.gif"
+  <a href="https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/agent-plugin.optimized.gif">
+    <img src="https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/agent-plugin.optimized.gif"
          alt="Asked to turn CHANGELOG.md into release notes, a coding agent with the plugin's nika-authoring skill drafts release-notes.nika; nika check refuses nika:read_file, the agent repairs it to nika:read, the re-check says run ready, and a mock/echo rehearsal writes release-notes.md" width="960">
   </a>
 </p>
@@ -59,7 +59,7 @@ can verify. One Rust binary, local-first, open source (AGPL-3.0).
 > plugin, and your agent writes the file, runs `nika check` and repairs what it
 > finds, runs the workflow when you ask, and reads the run's record when
 > something breaks. The `nika` binary does the work; the plugin, written in the
-> [engine repository](https://github.com/supernovae-st/nika) and mirrored here
+> [engine repository](https://github.com/nika-open/nika) and mirrored here
 > at each release, teaches your agent to drive it.
 
 ## Start in two minutes
@@ -67,7 +67,7 @@ can verify. One Rust binary, local-first, open source (AGPL-3.0).
 1. **Install `nika`**, the binary the plugin drives (macOS or Linux):
 
    ```sh
-   brew install supernovae-st/tap/nika
+   brew install nika-open/tap/nika
    ```
 
    <sub>No Homebrew? <code>curl -LsSf https://nika.sh/install.sh | sh</code> · then <code>nika --version</code> confirms it.</sub>
@@ -75,7 +75,7 @@ can verify. One Rust binary, local-first, open source (AGPL-3.0).
 2. **Add the plugin to your agent.** In Claude Code:
 
    ```sh
-   claude plugin marketplace add supernovae-st/nika-plugins
+   claude plugin marketplace add nika-open/nika-plugins
    claude plugin install nika@nika
    ```
 
@@ -145,8 +145,8 @@ clips is captured from the real CLI; click a clip to see it full size.
 pull-request review workflow before any model is called.
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/static-check-fix.optimized.gif">
-    <img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/static-check-fix.optimized.gif"
+  <a href="https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/static-check-fix.optimized.gif">
+    <img src="https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/static-check-fix.optimized.gif"
          alt="nika check flags two defects in a pull-request review workflow before anything runs; after the fix, shown as a real diff, the re-check is clean and run ready" width="860">
   </a>
 </p>
@@ -156,8 +156,8 @@ pull-request review workflow before any model is called.
 from the workflow's `permits:`, and catch the one task that reaches past it.
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/permits-audit.optimized.gif">
-    <img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/permits-audit.optimized.gif"
+  <a href="https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/permits-audit.optimized.gif">
+    <img src="https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/permits-audit.optimized.gif"
          alt="A workflow's permits drawn as a map of what each task may reach: nika check catches the task that reaches a host outside the boundary, and the widened boundary passes" width="860">
   </a>
 </p>
@@ -167,18 +167,18 @@ from the workflow's `permits:`, and catch the one task that reaches past it.
 meeting notes to release notes.
 
 <p align="center">
-  <a href="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/workflow-gallery.optimized.gif">
-    <img src="https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/workflow-gallery.optimized.gif"
+  <a href="https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/workflow-gallery.optimized.gif">
+    <img src="https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/workflow-gallery.optimized.gif"
          alt="The gallery nika try lists: a step-by-step path through the language, then ready-made jobs from bookmark triage and meeting actions to release notes and support triage" width="860">
   </a>
 </p>
 <p align="center"><sub>Notice that each ready-made job is tagged with the verbs it uses, and that the step-by-step path through the language starts at <code>nika try 01-hello</code>, offline. The names, verbs and lines are the real <code>nika try</code> listing.</sub></p>
 
-▶ [Watch the four commands by hand](https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/full-loop.optimized.gif):
+▶ [Watch the four commands by hand](https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/full-loop.optimized.gif):
 compile, check, run on a mock model, then verify the run's record, offline and
 captured from the real CLI.
 
-▶ [Watch a request retyped every Monday become one checked file](https://raw.githubusercontent.com/supernovae-st/nika/main/media/gifs/chat-to-workflow.optimized.gif):
+▶ [Watch a request retyped every Monday become one checked file](https://raw.githubusercontent.com/nika-open/nika/main/media/gifs/chat-to-workflow.optimized.gif):
 the chat is an illustration; the file, its check and its run on a local model
 are real.
 
@@ -213,7 +213,7 @@ delegation rule); its row is what its manifest declares, not yet checked live.</
 ### Claude Code
 
 ```sh
-claude plugin marketplace add supernovae-st/nika-plugins
+claude plugin marketplace add nika-open/nika-plugins
 claude plugin install nika@nika
 ```
 
@@ -223,7 +223,7 @@ Open a new session to use them.
 ### Codex
 
 ```sh
-codex plugin marketplace add supernovae-st/nika-plugins
+codex plugin marketplace add nika-open/nika-plugins
 codex plugin add nika@nika
 ```
 
@@ -235,7 +235,7 @@ the next time you start `codex`.
 ### Grok Build
 
 ```sh
-grok plugin marketplace add supernovae-st/nika-plugins
+grok plugin marketplace add nika-open/nika-plugins
 grok plugin install nika@nika --trust
 ```
 
@@ -250,7 +250,7 @@ commands, hooks and the oracle. This repository lists it for Cursor in
 [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json). Three
 ways in:
 
-- **Through its plugin system:** `npx plugins add supernovae-st/nika-plugins`
+- **Through its plugin system:** `npx plugins add nika-open/nika-plugins`
   ([below](#every-client-you-have-one-command)).
 - **As a local copy:** copy `.agents/plugins/nika` from a checkout of this
   repository into `~/.cursor/plugins/local/nika`; `scripts/update-mirrors.sh`
@@ -261,20 +261,20 @@ ways in:
 ### Hermes, or any skills.sh client
 
 ```sh
-npx skills add supernovae-st/nika-plugins
+npx skills add nika-open/nika-plugins
 ```
 
 This installs the delegation skill, written for Hermes: it hands repeatable
 work to Nika through the agent's terminal, from finding or writing the
 `.nika` file to checking it and reading the run's evidence. It is listed on
 [skills.sh](https://skills.sh/supernovae-st/nika-plugins). Hermes also takes
-it with `hermes skills tap add supernovae-st/nika-plugins`, and
+it with `hermes skills tap add nika-open/nika-plugins`, and
 `nika wire hermes` adds the oracle.
 
 ### Every client you have, one command
 
 ```sh
-npx plugins add supernovae-st/nika-plugins
+npx plugins add nika-open/nika-plugins
 ```
 
 Vercel's installer finds which of Claude Code, Cursor, Codex, Grok Build,
@@ -284,7 +284,7 @@ plugin system. Add `-t <client>` for just one, or `--scope project` to keep
 it in the repository. VS Code reads only the portable part of the bundle,
 the skills and the oracle, once its `chat.plugins.enabled` setting is on.
 
-`npx plugins discover supernovae-st/nika-plugins` shows what it found before
+`npx plugins discover nika-open/nika-plugins` shows what it found before
 anything is written. Replayed with `plugins@1.3.4` on 2026-09-10:
 
 ```
@@ -349,7 +349,7 @@ rehearsal: mock/echo answers by echoing the prompt — not a real answer · a re
 
 `nika try` on its own lists the whole gallery: a step-by-step path through the
 language, then ready-made jobs. Missing the one you need?
-[Ask for it](https://github.com/supernovae-st/nika-plugins/issues/new?template=request-a-workflow.yml):
+[Ask for it](https://github.com/nika-open/nika-plugins/issues/new?template=request-a-workflow.yml):
 the answer ships as a checked file.
 
 **Then pick a real model.** A mock model echoes your prompt: it proves the
@@ -589,7 +589,7 @@ the current folder):
 
 ```mermaid
 flowchart LR
-    engine["supernovae-st/nika<br/>the engine, where the kit is written"]
+    engine["nika-open/nika<br/>the engine, where the kit is written"]
     plugins["nika-plugins<br/>this repository"]
     agent["Your coding agent"]
     binary["The nika binary"]
@@ -611,7 +611,7 @@ Three mechanisms, each with its own scope:
 | `nika init` | one repository | agent guides (`AGENTS.md`, `CLAUDE.md` and friends), the authoring skill, rules, hooks and oracle settings, written into the repository |
 | `nika wire <client>` | one machine | the read-only oracle, added to that client's MCP settings |
 
-The [VS Code extension](https://github.com/supernovae-st/nika-vscode) is not a
+The [VS Code extension](https://github.com/nika-open/nika-vscode) is not a
 plugin, and it is frozen at 0.120 and not qualified with 0.124: in an editor,
 use `nika lsp` and the JSON Schema. On Cursor it points you to this plugin
 for the agent side.
@@ -620,7 +620,7 @@ for the agent side.
 engine repository carries the whole Rust workspace and its media; this one
 carries only the plugin, so the install is quick. The bundle is copied
 verbatim from the engine's
-[`.agents/plugins/`](https://github.com/supernovae-st/nika/tree/main/.agents/plugins)
+[`.agents/plugins/`](https://github.com/nika-open/nika/tree/main/.agents/plugins)
 at the release named in [`mirror.json`](mirror.json). A fix to a mirrored skill
 lands in the engine repository and reaches this marketplace with the next
 release; the daily `release-heal` workflow opens that re-sync pull request.
@@ -720,18 +720,18 @@ the versions it was checked with, and gated against the released binary.
 
 | | Repository | What it gives you |
 |---|---|---|
-| 🦋 | [nika](https://github.com/supernovae-st/nika) | The engine and CLI: write, check, run and verify AI workflows |
-| 📖 | [nika-docs](https://github.com/supernovae-st/nika-docs) | The documentation, live at [docs.nika.sh](https://docs.nika.sh) |
-| 📜 | [nika-spec](https://github.com/supernovae-st/nika-spec) | The language specification and the suite that proves an engine follows it |
-| 🧩 | [nika-vscode](https://github.com/supernovae-st/nika-vscode) | The editor extension, frozen at 0.120 and not qualified with 0.124: use `nika lsp` and the JSON Schema |
-| 🟦 | [nika-client](https://github.com/supernovae-st/nika-client) | Run and verify workflows from TypeScript |
-| ✅ | [nika-action](https://github.com/supernovae-st/nika-action) | A GitHub Action that posts a `nika check` verdict on your pull requests |
-| 🚀 | [nika-actions-starter](https://github.com/supernovae-st/nika-actions-starter) | A ready template: workflows, editor setup and CI from the first push |
-| 📦 | [nika-registry](https://github.com/supernovae-st/nika-registry) | Shareable workflows, pinned and re-verified |
-| 🤖 | **[nika-plugins](https://github.com/supernovae-st/nika-plugins)** | **Teaches your coding agent (Claude Code, Codex, Cursor…) to write Nika** |
-| 🍺 | [homebrew-tap](https://github.com/supernovae-st/homebrew-tap) | `brew install supernovae-st/tap/nika` |
-| 🐙 | [gh-nika](https://github.com/supernovae-st/gh-nika) | The Nika CLI as a GitHub CLI extension |
-| 🏛️ | [nika-estate](https://github.com/supernovae-st/nika-estate) | Where each file in Nika's core repositories comes from, declared and re-checkable |
+| 🦋 | [nika](https://github.com/nika-open/nika) | The engine and CLI: write, check, run and verify AI workflows |
+| 📖 | [nika-docs](https://github.com/nika-open/nika-docs) | The documentation, live at [docs.nika.sh](https://docs.nika.sh) |
+| 📜 | [nika-spec](https://github.com/nika-open/nika-spec) | The language specification and the suite that proves an engine follows it |
+| 🧩 | [nika-vscode](https://github.com/nika-open/nika-vscode) | The editor extension, frozen at 0.120 and not qualified with 0.124: use `nika lsp` and the JSON Schema |
+| 🟦 | [nika-client](https://github.com/nika-open/nika-client) | Run and verify workflows from TypeScript |
+| ✅ | [nika-action](https://github.com/nika-open/nika-action) | A GitHub Action that posts a `nika check` verdict on your pull requests |
+| 🚀 | [nika-actions-starter](https://github.com/nika-open/nika-actions-starter) | A ready template: workflows, editor setup and CI from the first push |
+| 📦 | [nika-registry](https://github.com/nika-open/nika-registry) | Shareable workflows, pinned and re-verified |
+| 🤖 | **[nika-plugins](https://github.com/nika-open/nika-plugins)** | **Teaches your coding agent (Claude Code, Codex, Cursor…) to write Nika** |
+| 🍺 | [homebrew-tap](https://github.com/nika-open/homebrew-tap) | `brew install nika-open/tap/nika` |
+| 🐙 | [gh-nika](https://github.com/nika-open/gh-nika) | The Nika CLI as a GitHub CLI extension |
+| 🏛️ | [nika-estate](https://github.com/nika-open/nika-estate) | Where each file in Nika's core repositories comes from, declared and re-checkable |
 <!-- /city:map -->
 
 This repository mirrors the engine's kit and carries the wiring for each
@@ -749,15 +749,15 @@ their frontmatter says.
 ## Security
 
 Report a vulnerability privately through
-[GitHub security advisories](https://github.com/supernovae-st/nika-plugins/security/advisories/new).
+[GitHub security advisories](https://github.com/nika-open/nika-plugins/security/advisories/new).
 [SECURITY.md](SECURITY.md) explains the posture: nothing here runs on install,
 the mirror is pinned by checksum, and the oracle is read-only.
 
 ## Contributing
 
 Mirrored files are fixed in the engine: open issues and pull requests on
-[supernovae-st/nika](https://github.com/supernovae-st/nika)
-([CONTRIBUTING.md](https://github.com/supernovae-st/nika/blob/main/CONTRIBUTING.md)).
+[nika-open/nika](https://github.com/nika-open/nika)
+([CONTRIBUTING.md](https://github.com/nika-open/nika/blob/main/CONTRIBUTING.md)).
 Files owned here (`clients.yaml`, `integrations/`, `skills/`, `scripts/`,
 `media/`, this README) take pull requests here; [AGENTS.md](AGENTS.md)
 explains which is which. The documentation lives at

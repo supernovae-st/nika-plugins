@@ -9,7 +9,7 @@ natively (xAI's own compatibility contract) · so this kit installs
 UNPORTED, the full bundle in one add:
 
 ```sh
-grok plugin marketplace add supernovae-st/nika-plugins
+grok plugin marketplace add nika-open/nika-plugins
 grok plugin install nika@nika --trust
 ```
 

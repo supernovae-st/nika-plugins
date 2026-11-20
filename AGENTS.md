@@ -15,7 +15,7 @@ Every content file belongs to one of two classes, declared in
 `mirror.json` (the SSOT the gate loops over — never a hardcoded list):
 
 - **engine-mirror** (`.agents/plugins/nika/**`) — a **byte-identical
-  mirror of the engine repo** (`supernovae-st/nika`, same paths) at the
+  mirror of the engine repo** (`nika-open/nika`, same paths) at the
   **released tag** `mirror.json.engine_ref` (the stable train · what
   `brew install` gives a user), pinned by sha256 at the engine SHA it was
   proven against — never `main`: the kit is teaching, and mirrored from

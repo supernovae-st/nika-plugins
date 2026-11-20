@@ -281,7 +281,7 @@ entries:
       github connect = BROWSER AUTH, human-only per their own skill
       rules · repo-owner match required) → operator runbook is
       `npx -y @lobehub/market-cli login` then `github connect` then
-      `plugin submit https://github.com/supernovae-st/nika` (async
+      `plugin submit https://github.com/nika-open/nika` (async
       import ~minutes · poll plugin list max 10 min) · probe verified
       2026-07-11 (no local credentials yet) · 6th gate class — intake
       migrated from issues to authed self-service
@@ -603,7 +603,7 @@ entries:
       # here: it writes into the operator's real clients, and a door is
       # documented from what discovery proves, not from what a README claims.
     url: https://www.npmjs.com/package/plugins
-    installed_via: npx plugins add supernovae-st/nika-plugins
+    installed_via: npx plugins add nika-open/nika-plugins
     description_block: none — the installer renders our marketplace card verbatim
     submitted: null
     notes: >-
@@ -624,8 +624,11 @@ entries:
       # ~a day later, 2026-07-10 ~08h), so the move is to record it, not to
       # point the README back at a name that no longer exists. The badge
       # endpoint (/b/...) already answers 200 under the new name.
-    url: https://skills.sh/supernovae-st/nika-plugins
-    installed_via: npx skills add supernovae-st/nika-plugins
+    url: https://skills.sh/supernovae-st/nika-plugins  # 2026-11-20 measured:
+      # this URL answers 200; skills.sh/nika-open/nika-plugins 404s and its
+      # badge reads "resource not found". The url and the README badge stay on
+      # the entry that resolves until the index follows the move to nika-open.
+    installed_via: npx skills add nika-open/nika-plugins
     description_block: skills-registries lead (description-bank §per-surface)
     submitted: null
     kill_check: 2026-08-14  # if still 404 by then, the auto-index did not
@@ -945,6 +948,10 @@ entries:
     class: auto-indexed
     status: live
     url: https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/supernovae-st/nika
+      # 2026-11-20 measured: github.com/nika-open/nika and nika-open/nika-plugins
+      # are new origins with no archive yet (API 404). The archived origin above
+      # stays the url, and the README badges with it, until a save-code-now
+      # request for the new origins lands.
     submitted: 2026-07-11
     description_block: n/a (permanent archive · not a directory listing)
     notes: save-code-now request ACCEPTED 2026-07-11 via the anonymous API
@@ -1440,7 +1447,7 @@ entries:
   - surface: GitHub CLI extensions (gh extension browse · topic gh-extension)
     class: auto-indexed
     status: live
-    url: https://github.com/supernovae-st/gh-nika
+    url: https://github.com/nika-open/gh-nika
     submitted: 2026-07-12
     description_block: one-line (bank) in the README hero
     payload: NEW artifact — gh-nika extension (Apache-2.0 wrapper · pass-through
@@ -1545,7 +1552,7 @@ queued_operator:
       ubuntu-24.04 glibc-2.39 · initialize + tools/list answered) — unblocks
       awesome-mcp-servers PR 9743 (missing-glama gate) in the same move
   - surface: MCP Registry (registry.modelcontextprotocol.io)
-    blocker: mcp-publisher login github (org grant io.github.supernovae-st/*)
+    blocker: mcp-publisher login github (org grant io.github.nika-open/*)
       — interactive auth ONLY; the payload needs no further work
     payload_ready: integrations/mcp/server.json is publishable AS-IS —
       $schema 2025-12-11 · two mcpb lanes pointing at the live v0.98.0
