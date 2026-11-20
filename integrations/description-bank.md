@@ -41,6 +41,7 @@ tool names against the live binary instead); local-first examples; the words
 |---|---|
 | MCP directories | the three-line block (the oracle IS the listing) |
 | awesome-mcp lists | one line + `read-only oracle: validate + learn, no execution` |
+| MCP Registry (`server.json` description · 100 characters at most) | `Read-only oracle: check .nika workflows before they run and learn the language. Never executes.` |
 | skills registries | `Author → check → repair loop for Nika workflows — teaches agents to write valid .nika, never invent syntax` |
 | GitHub Action marketplace | `Plan with receipts: check verdict, honest cost floor, permits and the DAG on every PR — static, zero secrets` |
 | Hermes/agent catalogs | `The deterministic workflow worker: Hermes orchestrates, Nika runs repeatable work budget-capped with verifiable receipts` |

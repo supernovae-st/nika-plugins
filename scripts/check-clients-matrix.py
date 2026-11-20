@@ -209,20 +209,51 @@ def check_mcpb_history(rows, findings):
         findings.append(
             "integrations/mcp/README.md promises MCPB on every release")
 
-    archive = json.loads((ROOT / "integrations/mcp/server.json").read_text())
-    if archive.get("version") != "0.99.0":
-        findings.append("integrations/mcp/server.json is the v0.99.0 archive")
-    packages = archive.get("packages") or []
-    if not packages or any(p.get("registryType") != "mcpb" for p in packages):
+
+REGISTRY_MANIFEST = "integrations/mcp/server.json"
+REGISTRY_NAME = "io.github.nika-open/nika"
+REGISTRY_PACKAGE = "@nika-open/nika"
+
+
+def check_registry_manifest(findings):
+    """server.json is the MCP Registry entry: one npm package, one version.
+
+    The registry proves npm ownership through the `mcpName` of the exact
+    version named here, and .github/workflows/mcp-registry.yml refuses to
+    publish before that version is on npm. Offline, the gate holds the shape
+    a publication relies on: the npm lane only (the mcpb lane ended at
+    v0.99.0), `nika mcp` over stdio, a description within the schema's 100
+    characters, and one version for the server and its package, so a bump
+    cannot move one and miss the other.
+    """
+    manifest = json.loads((ROOT / REGISTRY_MANIFEST).read_text())
+    if manifest.get("name") != REGISTRY_NAME:
+        findings.append(f"{REGISTRY_MANIFEST}: name must be {REGISTRY_NAME}")
+    if not 1 <= len(manifest.get("description") or "") <= 100:
         findings.append(
-            "integrations/mcp/server.json may contain only the real archived "
-            "MCPB packages")
-    for package in packages:
-        if package.get("version") != "0.99.0" or "/v0.99.0/" not in str(
-                package.get("identifier", "")):
-            findings.append(
-                "integrations/mcp/server.json package escapes the v0.99.0 "
-                "archive boundary")
+            f"{REGISTRY_MANIFEST}: description must hold 1 to 100 characters")
+    packages = manifest.get("packages") or []
+    if len(packages) != 1 or packages[0].get("registryType") != "npm":
+        findings.append(
+            f"{REGISTRY_MANIFEST}: expected exactly one npm package (the "
+            "mcpb lane ended at v0.99.0)")
+        return
+    package = packages[0]
+    if package.get("identifier") != REGISTRY_PACKAGE:
+        findings.append(
+            f"{REGISTRY_MANIFEST}: the npm package must be {REGISTRY_PACKAGE}")
+    if package.get("version") != manifest.get("version"):
+        findings.append(
+            f"{REGISTRY_MANIFEST}: package version {package.get('version')!r} "
+            f"differs from server version {manifest.get('version')!r} · bump "
+            "both")
+    if (package.get("transport") or {}).get("type") != "stdio":
+        findings.append(f"{REGISTRY_MANIFEST}: the oracle speaks stdio")
+    if package.get("packageArguments") != [{"type": "positional",
+                                            "value": "mcp"}]:
+        findings.append(
+            f"{REGISTRY_MANIFEST}: the package must run `nika mcp` (one "
+            "positional argument, mcp)")
 
 
 def check_counts(findings):
@@ -377,6 +408,7 @@ def main() -> int:
         check_manifests(rows, findings)
         portable = check_agent_plugin(rows, findings)
         check_mcpb_history(rows, findings)
+        check_registry_manifest(findings)
         derived = check_counts(findings)
         check_wire(rows, findings)
         print(f"  agent-plugin: portable manifest "

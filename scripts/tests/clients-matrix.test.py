@@ -23,6 +23,7 @@
 #
 # Exit: 0 all mutations killed · 1 one survived.
 
+import json
 import os
 import pathlib
 import shutil
@@ -35,6 +36,7 @@ import yaml
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 GATE = "scripts/check-clients-matrix.py"
 BUNDLE = ".agents/plugins/nika"
+SERVER_JSON = "integrations/mcp/server.json"
 
 # vscode is the row that carries the portable claim (PRIMARY-verified
 # 2026-08-07). If that ever moves, this constant moves with it.
@@ -57,6 +59,13 @@ def set_cells(tree: pathlib.Path, cells: dict) -> None:
             row["components"] = cells
     with path.open("w") as fh:
         yaml.safe_dump(doc, fh, allow_unicode=True, sort_keys=False)
+
+
+def edit_json(path: pathlib.Path, edit) -> None:
+    """Rewrite a JSON file through the parser, never as text."""
+    doc = json.loads(path.read_text())
+    edit(doc)
+    path.write_text(json.dumps(doc, indent=2) + "\n")
 
 
 def replace_text(path: pathlib.Path, old: str, new: str) -> None:
@@ -115,6 +124,13 @@ def main() -> int:
                  t / "integrations/mcp/README.md",
                  "MCPB is a historical distribution lane",
                  "MCPB hosts: every engine release ships bundles"))
+        case("server.json reclaims a retired mcpb package", "RED",
+             lambda t: edit_json(
+                 t / SERVER_JSON,
+                 lambda d: d["packages"][0].update(registryType="mcpb")))
+        case("server.json bumps the server version alone", "RED",
+             lambda t: edit_json(
+                 t / SERVER_JSON, lambda d: d.update(version="0.0.0-drift")))
 
     if fails:
         print(f"\n{fails}/{total} mutation(s) survived — the gate does not "

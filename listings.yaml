@@ -1552,12 +1552,17 @@ queued_operator:
       ubuntu-24.04 glibc-2.39 · initialize + tools/list answered) — unblocks
       awesome-mcp-servers PR 9743 (missing-glama gate) in the same move
   - surface: MCP Registry (registry.modelcontextprotocol.io)
-    blocker: mcp-publisher login github (org grant io.github.nika-open/*)
-      — interactive auth ONLY; the payload needs no further work
-    payload_ready: integrations/mcp/server.json is publishable AS-IS —
-      $schema 2025-12-11 · two mcpb lanes pointing at the live v0.98.0
-      release bundles with real fileSha256 · the npm lane behind them stays
-      the future-revival shape (cargo 0.98.x publish upgrades it further)
+    blocker: >-
+      @nika-open/nika 0.124.5 must be on npm with mcpName
+      io.github.nika-open/nika (the SDK release after nika-client PR 176) ·
+      then an operator dispatch of .github/workflows/mcp-registry.yml
+      (GitHub OIDC · no interactive login, no stored secret)
+    payload_ready: >-
+      integrations/mcp/server.json · $schema 2025-12-11 · one npm package,
+      @nika-open/nika 0.124.5, launched as `npx -y @nika-open/nika@0.124.5
+      mcp` over stdio · description pinned in the description bank (MCP
+      Registry row) · the v0.99.0 mcpb manifest it replaces stays in git
+      history
   - surface: hermesatlas.com
     blocker: web form (« suggest a repo ») — human submission
     payload_ready: description-bank hermes/agent-catalogs lead
