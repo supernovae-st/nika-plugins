@@ -10,7 +10,7 @@ tool names against the live binary instead); local-first examples; the words
 
 ## One line (≤160 chars — awesome lists, directory taglines)
 
-> Nika — intent-as-code for AI workflows: author a reviewable DAG in YAML,
+> Nika — intent-as-code for AI workflows: write a reviewable `.nika` file,
 > audit cost/permits **before** running, keep tamper-evident traces after.
 
 ## Three lines (MCP directories, marketplace cards)
