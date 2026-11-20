@@ -947,11 +947,11 @@ entries:
   - surface: Software Heritage (archive.softwareheritage.org)
     class: auto-indexed
     status: live
-    url: https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/supernovae-st/nika
-      # 2026-11-20 measured: github.com/nika-open/nika and nika-open/nika-plugins
-      # are new origins with no archive yet (API 404). The archived origin above
-      # stays the url, and the README badges with it, until a save-code-now
-      # request for the new origins lands.
+    url: https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/nika-open/nika
+      # 2026-11-20: Software Heritage archived the new origins github.com/nika-open/nika
+      # and nika-open/nika-plugins (save code now, visits at 09:35 and 09:36 UTC), so
+      # the url and the README badges name them. The supernovae-st origins stay
+      # archived with the history from before the move.
     submitted: 2026-07-11
     description_block: n/a (permanent archive · not a directory listing)
     notes: save-code-now request ACCEPTED 2026-07-11 via the anonymous API

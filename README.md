@@ -22,7 +22,7 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" alt="AGPL-3.0"></a>
   <br>
   <a href="https://scorecard.dev/viewer/?uri=github.com/nika-open/nika-plugins"><img src="https://api.scorecard.dev/projects/github.com/nika-open/nika-plugins/badge" alt="OpenSSF Scorecard"></a>
-  <a href="https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/supernovae-st/nika-plugins"><img src="https://archive.softwareheritage.org/badge/origin/https://github.com/supernovae-st/nika-plugins/" alt="Archived by Software Heritage"></a>
+  <a href="https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/nika-open/nika-plugins"><img src="https://archive.softwareheritage.org/badge/origin/https://github.com/nika-open/nika-plugins/" alt="Archived by Software Heritage"></a>
   <a href="https://skills.sh/supernovae-st/nika-plugins"><img src="https://skills.sh/b/supernovae-st/nika-plugins" alt="skills.sh listing"></a>
 </p>
 
@@ -487,7 +487,7 @@ that file):
 <a href="https://github.com/davila7/claude-code-templates">aitmpl.com</a> ·
 <a href="https://github.com/SchemaStore/schemastore">SchemaStore</a> (YAML catalog; a <code>*.nika</code> fileMatch follow-up is still owed) ·
 <a href="https://www.libhunt.com/r/nika">LibHunt</a> ·
-<a href="https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/supernovae-st/nika">Software Heritage</a>.
+<a href="https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/nika-open/nika">Software Heritage</a>.
 Every submission is recorded in <a href="listings.yaml"><code>listings.yaml</code></a> and checked on a schedule.</sub>
 
 ## Update or remove
