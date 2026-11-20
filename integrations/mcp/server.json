@@ -1,30 +1,29 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.nika-open/nika",
-  "description": "Intent-as-code for AI workflows: author a reviewable DAG in YAML, audit cost and permits before running, keep tamper-evident traces after.",
+  "title": "Nika",
+  "description": "Read-only oracle: check .nika workflows before they run and learn the language. Never executes.",
   "repository": {
     "url": "https://github.com/nika-open/nika",
     "source": "github"
   },
-  "version": "0.99.0",
+  "websiteUrl": "https://nika.sh",
+  "version": "0.124.5",
   "packages": [
     {
-      "registryType": "mcpb",
-      "identifier": "https://github.com/nika-open/nika/releases/download/v0.99.0/nika-mcp-macos-arm64-0.99.0.mcpb",
-      "version": "0.99.0",
-      "fileSha256": "db68f6630964d98646a70fc77d67693e01dbe97fa90bcaf95ac1870a6c65cad8",
+      "registryType": "npm",
+      "identifier": "@nika-open/nika",
+      "version": "0.124.5",
+      "runtimeHint": "npx",
       "transport": {
         "type": "stdio"
-      }
-    },
-    {
-      "registryType": "mcpb",
-      "identifier": "https://github.com/nika-open/nika/releases/download/v0.99.0/nika-mcp-linux-x64-0.99.0.mcpb",
-      "version": "0.99.0",
-      "fileSha256": "bbea64f36eb38a178dbf7a73217eed2898b506a3b47f978422f650f5f4753665",
-      "transport": {
-        "type": "stdio"
-      }
+      },
+      "packageArguments": [
+        {
+          "type": "positional",
+          "value": "mcp"
+        }
+      ]
     }
   ]
 }

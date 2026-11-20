@@ -1,0 +1,109 @@
+name: mcp-registry
+
+# Publishes integrations/mcp/server.json to the official MCP Registry
+# (registry.modelcontextprotocol.io) as io.github.nika-open/nika. The
+# manifest names one npm package, @nika-open/nika: its `nika` bin hands its
+# arguments to the native engine npm installs beside it, so
+# `npx -y @nika-open/nika@<version> mcp` serves the read-only oracle over
+# stdio.
+#
+# Dispatch only, never on push or tag: a publication is an operator act,
+# run after the SDK release is on npm and the server.json version bump has
+# merged. The registry proves npm ownership through the `mcpName` field of
+# that version's package.json; the first step refuses earlier, with a
+# plain message, when the version is missing or claims another name.
+#
+# SECURITY: read-only by default. The job holds id-token: write so that
+# `mcp-publisher login github-oidc` can trade a GitHub OIDC token for a
+# registry token scoped to io.github.nika-open/*. mcp-publisher is pinned
+# to an exact release and verified before it runs: its archive against the
+# checksums file of that release, and its Sigstore bundle against the
+# registry's release workflow at that tag. No github.event data reaches
+# the shell; every value comes from the checked-out server.json.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: publish io.github.nika-open/nika
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write # GitHub OIDC · exchanged by mcp-publisher login github-oidc
+    env:
+      SERVER_JSON: integrations/mcp/server.json
+      # An exact release, upgraded deliberately (never releases/latest).
+      MCP_PUBLISHER_VERSION: v1.8.9
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: The npm version exists and claims this server name
+        run: |
+          set -euo pipefail
+          name="$(jq -er '.name' "$SERVER_JSON")"
+          version="$(jq -er '.version' "$SERVER_JSON")"
+          if [ "$(jq '.packages | length' "$SERVER_JSON")" != 1 ] \
+            || [ "$(jq -r '.packages[0].registryType' "$SERVER_JSON")" != npm ]; then
+            echo "::error::${SERVER_JSON} must name exactly one npm package"
+            exit 1
+          fi
+          pkg="$(jq -er '.packages[0].identifier' "$SERVER_JSON")"
+          pkg_version="$(jq -er '.packages[0].version' "$SERVER_JSON")"
+          if [ "$pkg_version" != "$version" ]; then
+            echo "::error::server version ${version} and package version ${pkg_version} differ · bump both"
+            exit 1
+          fi
+          # The registry's own lookup: /<scope>%2F<name>/<version>
+          url="https://registry.npmjs.org/${pkg/\//%2F}/${pkg_version}"
+          status="$(curl -sS --retry 3 -o "$RUNNER_TEMP/npm-version.json" -w '%{http_code}' "$url")"
+          if [ "$status" != 200 ]; then
+            echo "::error::${pkg}@${pkg_version} is not on npm (HTTP ${status} from ${url}) · release the SDK first"
+            exit 1
+          fi
+          mcp_name="$(jq -r '.mcpName // ""' "$RUNNER_TEMP/npm-version.json")"
+          if [ "$mcp_name" != "$name" ]; then
+            echo "::error::${pkg}@${pkg_version} declares mcpName '${mcp_name}' and server.json names '${name}' · the registry would refuse it"
+            exit 1
+          fi
+          echo "${pkg}@${pkg_version} is on npm and claims ${name}"
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Install mcp-publisher (pinned · checksum and Sigstore verified)
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP"
+          archive=mcp-publisher_linux_amd64.tar.gz
+          sums="registry_${MCP_PUBLISHER_VERSION#v}_checksums.txt"
+          base="https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}"
+          curl -fsSL --retry 3 -o "$archive" "${base}/${archive}"
+          curl -fsSL --retry 3 -o "${archive}.sigstore.json" "${base}/${archive}.sigstore.json"
+          curl -fsSL --retry 3 -o "$sums" "${base}/${sums}"
+          grep " ${archive}\$" "$sums" | sha256sum -c -
+          cosign verify-blob \
+            --bundle "${archive}.sigstore.json" \
+            --certificate-identity "https://github.com/modelcontextprotocol/registry/.github/workflows/release.yml@refs/tags/${MCP_PUBLISHER_VERSION}" \
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \
+            "$archive"
+          tar -xzf "$archive" mcp-publisher
+          ./mcp-publisher --version
+
+      - name: Validate server.json with the registry
+        run: |
+          "$RUNNER_TEMP/mcp-publisher" validate "$SERVER_JSON"
+
+      - name: Log in with GitHub OIDC
+        run: |
+          "$RUNNER_TEMP/mcp-publisher" login github-oidc
+
+      - name: Publish
+        run: |
+          "$RUNNER_TEMP/mcp-publisher" publish "$SERVER_JSON"

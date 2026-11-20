@@ -72,7 +72,7 @@
     {
       "class": "kit-native",
       "path": "integrations/mcp/server.json",
-      "proof": "parses in CI · the archived MCP Registry manifest of the two real v0.99.0 bundles, kept at 0.99.0 by scripts/check-clients-matrix.py · historical evidence, never submitted as the current engine version (integrations/mcp/README.md)"
+      "proof": "parses in CI · the MCP Registry manifest of io.github.nika-open/nika: one npm package @nika-open/nika whose version equals the server version, held by scripts/check-clients-matrix.py · published only by the dispatch-only .github/workflows/mcp-registry.yml, which first requires that npm version to declare mcpName io.github.nika-open/nika (integrations/mcp/README.md)"
     },
     {
       "class": "kit-native",

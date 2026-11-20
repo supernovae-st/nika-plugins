@@ -33,12 +33,43 @@ amd64/arm64) — `docker build -t nika-mcp . && docker run -i --rm nika-mcp`
 speaks stdio JSON-RPC, introspection-probed in-container.
 
 MCPB is a historical distribution lane, not a current release promise.
-Engine `v0.99.0` shipped the two archived bundles recorded in
-[`server.json`](server.json); later releases, including `v0.124.0`, do not ship
-`.mcpb` assets or `MCPB.sha256`. Do not submit that archival manifest as the
-current engine version. Install the engine through Homebrew or a verified
-release archive, then use `nika wire <client>`; Docker hosts can use the
-verified image recipe above.
+Engine `v0.99.0` shipped two `.mcpb` bundles; later releases do not ship
+`.mcpb` assets or `MCPB.sha256`, and the registry manifest that named them
+lives on only in git history. Install the engine through Homebrew or a
+verified release archive, then use `nika wire <client>`; Docker hosts can use
+the verified image recipe above, and registry clients the npm package below.
+
+## From the MCP Registry (npm)
+
+[`server.json`](server.json) is the oracle's entry in the official MCP
+Registry, `io.github.nika-open/nika`. It names one package, `@nika-open/nika`
+on npm: the TypeScript SDK, whose `nika` bin hands the arguments it receives
+to the native engine npm installs alongside it (macOS and glibc Linux, arm64
+and x64, Node.js 22 or later). A client that installs from the registry
+launches the same read-only oracle over stdio, `<version>` being the one
+`server.json` names:
+
+```sh
+npx -y @nika-open/nika@<version> mcp
+```
+
+### Publishing a version
+
+The registry accepts the package only when the npm version `server.json`
+names declares `"mcpName": "io.github.nika-open/nika"` in its `package.json`.
+A publication takes three steps:
+
+1. Release the SDK with that field, so `@nika-open/nika@<version>` is on npm.
+2. Merge a pull request that sets both `version` fields of `server.json` to
+   that version (the gate holds them equal).
+3. Dispatch the workflow from `main`:
+   `gh workflow run mcp-registry.yml -R nika-open/nika-plugins --ref main`.
+
+[`mcp-registry.yml`](../../.github/workflows/mcp-registry.yml) runs only on
+dispatch. It refuses to publish unless that npm version exists and claims
+this server name, installs `mcp-publisher` at a pinned release after checking
+its checksum and its Sigstore bundle, validates the manifest with the
+registry, logs in with GitHub OIDC (no stored secret) and publishes.
 
 ## What the oracle serves
 
@@ -81,10 +112,7 @@ the CLI, where `--max-cost-usd`, effect permits and the trace live. An agent
 that wants to run a workflow shells out to `nika run` under your terminal's
 permissions, visibly, like any other command you'd review.
 
-Companions in this folder: [`server.json`](server.json) is the archived
-MCP Registry manifest for the two real `v0.99.0` bundles and their original
-`fileSha256` values. It is evidence of that historical lane, not a template to
-version-bump or a claim that current releases carry bundles. Install current
-Nika via Homebrew, a verified release archive, or the Dockerfile;
-[`THREAT-MODEL.md`](THREAT-MODEL.md) states plainly what the oracle and the
-trace chain do and do not prove.
+Companions in this folder: [`server.json`](server.json), the MCP Registry
+manifest described above; [`Dockerfile`](Dockerfile), the verified image
+recipe; and [`THREAT-MODEL.md`](THREAT-MODEL.md), which states plainly what
+the oracle and the trace chain do and do not prove.
